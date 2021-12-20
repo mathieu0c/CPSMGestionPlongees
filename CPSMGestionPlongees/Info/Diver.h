@@ -66,6 +66,12 @@ int exists(const Diver& a, QSqlDatabase db, const QString &table);
 //this function may change diver.id and diver.address.id
 int storeInDB(Diver& diver, QSqlDatabase db, const QString &table);
 
+/*!
+ * \brief removeAllFromDiver : delete a diver and it's address if not used by any other one
+ * \param id
+ * \param db
+ * \param table
+ */
 void removeAllFromDiver(int id, QSqlDatabase db, const QString& table);
 
 QString to_string(const Diver& diver);

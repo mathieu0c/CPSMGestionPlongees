@@ -4,6 +4,10 @@
 #include <QSqlError>
 #include <QSqlQuery>
 
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
+#include <QRegularExpressionMatchIterator>
+
 #include <QSqlRecord>
 #include <QSqlResult>
 
@@ -120,6 +124,23 @@ int queryCount(QSqlDatabase& db,QString request,const QStringList& argList,const
         request = request.arg(e);
     }
 
+
+    QRegularExpression re("(SELECT )(.*)( FROM)");
+    auto matchs{re.globalMatch(request)};
+
+    QStringList groupList{};
+    while(matchs.hasNext())
+    {
+        auto match{matchs.next()};
+        groupList << match.captured(1);
+        groupList << match.captured(2);
+        groupList << match.captured(3);
+    }
+    if(groupList.size() != 3)//not matched expected occurencies
+        throw std::runtime_error{"Invalid match count"};
+
+    request = groupList[0] + "COUNT(" + groupList[1] + ")" + groupList[2];
+
     query.prepare(request);//prepare sql query
 
     for(const auto& e : valList) //bind all values (this way add some injection protection)
@@ -130,12 +151,13 @@ int queryCount(QSqlDatabase& db,QString request,const QStringList& argList,const
     query.exec();
 
 
-    int out{};
+    query.next();
+    int out{query.value(0).toInt()};
 
-    while(query.next())//while we find something correspondant
-    {
-        out += 1;
-    }
+//    while(query.next())//while we find something correspondant
+//    {
+//        out += 1;
+//    }
 
     auto err{query.lastError()};
     if(err.type() != QSqlError::ErrorType::NoError)//if there was an error

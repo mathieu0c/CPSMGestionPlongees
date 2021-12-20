@@ -56,7 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
         throw std::runtime_error("Cannot open DB");
 
 //    db::createDB();
-//    db::initDB();
+    db::initDB();
 
     ui->tab_debug->on_pb_refreshTablesList_clicked();
     ui->tab_debug->setTableIndex(1);
