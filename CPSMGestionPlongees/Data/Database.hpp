@@ -21,6 +21,15 @@ int countField(QSqlDatabase& db,const QString& table,const QString& field,QVaria
 QVector<QVector<QVariant>> querySelect(QSqlDatabase& db,QString request,const QStringList& argList,const QVector<QVariant>& valList);
 
 //return the number of row matching the query result
+/*!
+ * \brief queryCount : return the count of occurences for a standard "SELECT X FROM Y...". Note that this function expect
+ * this pattern to be followed.
+ * \param db
+ * \param request
+ * \param argList
+ * \param valList
+ * \return
+ */
 int queryCount(QSqlDatabase& db,QString request,const QStringList& argList,const QVector<QVariant>& valList);
 
 //----------------- Local
