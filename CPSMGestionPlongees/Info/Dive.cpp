@@ -52,7 +52,8 @@ int addToDB(Dive &dive, QSqlDatabase db, QString table)
     //--- DiveMembers
     for(const auto& diver : dive.divers)
     {
-        qDebug() << "INSERT INTO : " << global::table_divesMembers;
+        if(enableDebug)
+            qDebug() << "INSERT INTO : " << global::table_divesMembers;
         query.prepare(QString{"INSERT INTO %1(diveId,diverId,diveType) VALUES (?,?,?)"}.arg(global::table_divesMembers));
         query.addBindValue(lastId);
         query.addBindValue(std::get<0>(diver));

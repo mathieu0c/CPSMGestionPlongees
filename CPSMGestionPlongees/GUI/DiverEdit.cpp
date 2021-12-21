@@ -141,16 +141,16 @@ void DiverEdit::resetDiver(){
 
 void DiverEdit::on_pb_family_clicked()
 {
-    qDebug() << "---\t\t" << __func__;
+//    qDebug() << "---\t\t" << __func__;
     auto tempId{Dialog_EditFamily::getAddressId(m_tempDiver.id,m_tempDiver.address.id,this)};
     if(!tempId)//if the family edition was cancelled
     {
-        qDebug() << "No new id";
+//        qDebug() << "No new id";
         return;
     }
 
     auto id{tempId.value()};
-    qDebug() << "New id : " << id;
+//    qDebug() << "New id : " << id;
     if(id != -1)
         m_tempDiver.address = info::readAddressFromDB(id,QSqlDatabase::database(),global::table_diversAddresses);
     else

@@ -77,6 +77,9 @@ void DiverSearch::refreshDiverList()
     QString querStr{"SELECT %0 FROM %1 INNER JOIN %2 ON %1.diverLevelId = %2.id INNER JOIN %3 ON %1.memberAddressId = %3.id"};
     querStr = querStr.arg(m_sql_diversColumns,global::table_divers,global::table_diverLevel,global::table_diversAddresses);
 
+//    qDebug() << "--------------------- " << __func__ << " ---------------------";
+//    qDebug() << querStr;
+//    qDebug() << m_sql_diversColumns;
     //auto querStrFirstName{querStr+" WHERE firstName LIKE ?||'%'"};
     //auto querStrLastName{querStr+" WHERE lastName LIKE ?||'%'"};
     QSqlQuery query{db()};
@@ -84,7 +87,6 @@ void DiverSearch::refreshDiverList()
     bool hasFilter{!m_filter.isEmpty()};
     QString filter{};
     QVector<QVariant> valList{};
-
 
     //if nothing is searched or there no search option selected
     if(ui->le_search->text().isEmpty() || (!ui->cb_search_firstName->isChecked() && !ui->cb_search_lastName->isChecked()))
@@ -111,26 +113,13 @@ void DiverSearch::refreshDiverList()
             filter = "lastName LIKE ?||'%' "+QString(hasFilter?"AND ":"");
             valList.append(ui->le_search->text());
         }
-
-//        //select people where firstname begin with ...
-//        if(ui->cb_search_firstName->isChecked())
-//        {
-//            querStr += "firstName LIKE ?||'%'";
-//            if(ui->cb_search_lastName->isChecked())
-//                querStr += " OR ";
-//        }
-//        //select people where lastname begin with ...
-//        if(ui->cb_search_lastName->isChecked())
-//        {
-//            querStr += "lastName LIKE ?||'%'";
-//        }
     }
 
     filter += m_filter;
     valList += m_filterValues;
 
-    qDebug() << "Member filter : " << m_filter;
-    qDebug() << "Filter : " << filter;
+//    qDebug() << "Member filter : " << m_filter;
+//    qDebug() << "Filter : " << filter;
 
     if(!filter.isEmpty())
     {
@@ -143,13 +132,6 @@ void DiverSearch::refreshDiverList()
         qDebug() << "Diver search query : " << querStr;
     query.prepare(querStr);
 
-//    if(!ui->le_search->text().isEmpty())
-//    {
-//        if(ui->cb_search_firstName->isChecked())
-//            query.addBindValue(ui->le_search->text());
-//        if(ui->cb_search_lastName->isChecked())
-//            query.addBindValue(ui->le_search->text());
-//    }
     for(const auto& val : valList)
     {
         query.addBindValue(val);

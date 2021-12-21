@@ -65,7 +65,8 @@ int countField(QSqlDatabase& db,const QString& table,const QString& field,QVaria
         return -1;
     }
 
-    qDebug() << query.value(0);
+    if(enableDebug)
+        qDebug() << query.value(0);
     return 0;
 }
 

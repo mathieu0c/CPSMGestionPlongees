@@ -24,15 +24,11 @@ Dialog_EditFamily::Dialog_EditFamily(QString dbName,QWidget *parent) :
     if(parent)
         this->setModal(true);
 
-    qDebug() << "----------------------------------------- "<<__func__;
-
     ui->diverSearch->setHiddenButton(true);
     ui->diverSearch->setSelectionMode(QAbstractItemView::SingleSelection);
 
     ui->diverSearch->setSelectionColumns(QString{"lastName,firstName,%0.address,%0.postalCode,%0.city"}.arg(global::table_diversAddresses),{"Nom de famille","Prénom","Addresse","CP","Ville"});
     ui->diverSearch->refreshDiverList();
-
-
 }
 
 Dialog_EditFamily::~Dialog_EditFamily()
@@ -106,7 +102,7 @@ void Dialog_EditFamily::setMode(EditMode mode)
 std::optional<int> Dialog_EditFamily::getAddressId(int diverId,int addressId, QWidget* parent, QString dbName)
 {
     Dialog_EditFamily dial{dbName,parent};
-    qDebug() << addressId;
+
     dial.setDBName(dbName);
     dial.setDiverId(diverId);
     dial.setAddressId(addressId);
@@ -142,11 +138,9 @@ void Dialog_EditFamily::refreshSearchFilter(EditMode mode)
     if(mode == EditMode::selectFamily)
     {
         ui->diverSearch->setFilter(QString{"%1.id != ?"},{global::table_divers},{m_diverId});
-        qDebug() << "SELECT FAMILY";
     }
     else if(mode == EditMode::quitFamily)
     {
-        qDebug() << "QUIT FAMILY";
         ui->diverSearch->setFilter(QString{"%0.id = ? AND %1.id != ?"},{global::table_diversAddresses,global::table_divers},{m_addressId,m_diverId});
     }
     ui->diverSearch->refreshDiverList();

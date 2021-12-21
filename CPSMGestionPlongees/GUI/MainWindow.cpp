@@ -49,7 +49,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    setEnableDebug(true,true);
+    setEnableDebug(false,true);
 
     auto openedDB{db::openLocal("d")};
     if(!openedDB)
@@ -70,6 +70,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->mainDiverSearch->setHiddenButton(true);
     ui->mainDiverSearch->refreshDiverList();
+
+
 }
 
 MainWindow::~MainWindow()
@@ -131,7 +133,7 @@ void MainWindow::on_pb_deleteDiver_clicked()
         if(i < diversIds.size()-1)
             querySelectStr += " OR ";
     }
-    qDebug() << querySelectStr;
+//    qDebug() << querySelectStr;
     auto db{QSqlDatabase::database()};
     auto divers{db::querySelect(db,querySelectStr+" ORDER BY lastName",{global::table_divers},idList)};
 

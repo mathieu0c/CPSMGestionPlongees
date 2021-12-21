@@ -35,6 +35,8 @@ public:
 
     void setFilter(QString newFilter,const QStringList& argList = {},QVector<QVariant> filterValues = {});
 
+//SELECT date,DivingSites.name,COUNT(DivesMembers.diverId) FROM Dives INNER JOIN DivingSites ON
+//Dives.diveSiteId = DivingSites.id INNER JOIN DivesMembers on DivesMembers.diveId = Dives.id
     void setSelectionColumns(QString sqlColumns,QStringList columnsNames = {}){
         m_sql_diversColumns = std::move(sqlColumns);
         m_sql_diversColumns += QString{",%0.id"}.arg(global::table_divers);
