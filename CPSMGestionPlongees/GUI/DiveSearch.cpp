@@ -1,4 +1,4 @@
-#include "DiveSearch.h"
+#include "DiveSearch.hpp"
 #include "ui_DiveSearch.h"
 
 #include "GUI/constSettings.hpp"

@@ -14,8 +14,8 @@
    <string>CPSM gestion plongées</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout">
-    <item>
+   <layout class="QGridLayout" name="gridLayout">
+    <item row="0" column="0">
      <widget class="QTabWidget" name="tabw_main">
       <property name="enabled">
        <bool>true</bool>
@@ -106,15 +106,33 @@
        <widget class="gui::DiverEdit" name="pg_editDiver"/>
       </widget>
       <widget class="QStackedWidget" name="tab_dives">
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
        <attribute name="title">
         <string>Plongées</string>
        </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <item>
-         <widget class="gui::DiverSearch" name="mainDivesSearch" native="true"/>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout">
+       <widget class="QWidget" name="pg_browseDives">
+        <widget class="gui::DiveSearch" name="mainDiveSearch" native="true">
+         <property name="geometry">
+          <rect>
+           <x>200</x>
+           <y>50</y>
+           <width>241</width>
+           <height>161</height>
+          </rect>
+         </property>
+        </widget>
+        <widget class="QWidget" name="">
+         <property name="geometry">
+          <rect>
+           <x>140</x>
+           <y>250</y>
+           <width>383</width>
+           <height>27</height>
+          </rect>
+         </property>
+         <layout class="QHBoxLayout" name="hlay_diveEdit">
           <item>
            <widget class="QPushButton" name="pb_deleteDive">
             <property name="sizePolicy">
@@ -149,8 +167,8 @@
            </widget>
           </item>
          </layout>
-        </item>
-       </layout>
+        </widget>
+       </widget>
       </widget>
      </widget>
     </item>
@@ -185,6 +203,12 @@
    <class>gui::DiverEdit</class>
    <extends>QWidget</extends>
    <header>GUI/DiverEdit.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>gui::DiveSearch</class>
+   <extends>QWidget</extends>
+   <header>GUI/DiveSearch.hpp</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

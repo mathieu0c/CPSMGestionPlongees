@@ -38,7 +38,7 @@ HEADERS += \
     Debug/global.hpp \
     GUI/Dialog_ConfirmDiverDeletion.h \
     GUI/Dialog_EditFamily.h \
-    GUI/DiveSearch.h \
+    GUI/DiveSearch.hpp \
     GUI/DiverEdit.h \
     GUI/DiverSearch.hpp \
     GUI/MainWindow.h \
