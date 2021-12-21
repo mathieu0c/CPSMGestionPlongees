@@ -25,6 +25,23 @@ DiveSearch::DiveSearch(QWidget *parent) :
     ui->setupUi(this);
 
     ui->de_endDate->setDate(QDate::currentDate());
+
+    //nullif(COUNT(DivesMembers.diverId),0)
+    setSelectionColumns(QString{"date,%0.name,nullif(COUNT(%1.diverId),0)"}.arg(
+                            global::table_divingSites,
+                            global::table_divesMembers
+                            ),
+                        {"Date","Site","Nombre de plongeurs"});
+
+    ui->tv_dives->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+
+//    refreshDivesList();
+
+    //refreshing diver list
+    connect(ui->de_beginDate,&QDateEdit::dateChanged,[&](){refreshDivesList();});
+    connect(ui->de_endDate,&QDateEdit::dateChanged,[&](){refreshDivesList();});
+//    connect(ui->cb_search_firstName,&QCheckBox::stateChanged,[&](){refreshDiverList();});
+//    connect(ui->cb_search_lastName,&QCheckBox::stateChanged,[&](){refreshDiverList();});
 }
 
 DiveSearch::~DiveSearch()
@@ -69,12 +86,17 @@ void DiveSearch::refreshDivesList()
 
     emit askRefreshDivesList();
 
-    QString querStr{"SELECT %0 FROM %1 INNER JOIN %2 ON %1.diverLevelId = %2.id INNER JOIN %3 ON %1.memberAddressId = %3.id"};
-    querStr = querStr.arg(m_sql_diversColumns,global::table_divers,global::table_diverLevel,global::table_diversAddresses);
+    //SELECT date,DivingSites.name,COUNT(DivesMembers.diverId) FROM Dives INNER JOIN DivingSites
+    //ON Dives.diveSiteId = DivingSites.id INNER JOIN DivesMembers on DivesMembers.diveId = Dives.id
+    QString querStr{"SELECT %0 FROM %1 INNER JOIN %2 ON %1.diveSiteId = %2.id INNER JOIN "
+                    "%3 ON %3.diveId = %1.id"};
+    querStr = querStr.arg(m_sql_divesColumns,
+                          global::table_dives,
+                          global::table_divingSites,
+                          global::table_divesMembers);
 
     qDebug() << "--------------------- " << __func__ << " ---------------------";
     qDebug() << querStr;
-    qDebug() << m_sql_diversColumns;
     //auto querStrFirstName{querStr+" WHERE firstName LIKE ?||'%'"};
     //auto querStrLastName{querStr+" WHERE lastName LIKE ?||'%'"};
     QSqlQuery query{db()};
@@ -82,6 +104,10 @@ void DiveSearch::refreshDivesList()
     bool hasFilter{!m_filter.isEmpty()};
     QString filter{};
     QVector<QVariant> valList{};
+
+    setFilter("date >= date(?) AND date <= date(?)",{},{ui->de_beginDate->date().toString(global::format_date),
+                                         ui->de_endDate->date().toString(global::format_date)});
+
 
     //if nothing is searched or there no search option selected
 //    if(ui->le_search->text().isEmpty() || (!ui->cb_search_firstName->isChecked() && !ui->cb_search_lastName->isChecked()))
@@ -110,55 +136,57 @@ void DiveSearch::refreshDivesList()
 //        }
 //    }
 
-//    filter += m_filter;
-//    valList += m_filterValues;
+    filter += m_filter;
+    valList += m_filterValues;
 
-////    qDebug() << "Member filter : " << m_filter;
-////    qDebug() << "Filter : " << filter;
+//    qDebug() << "Member filter : " << m_filter;
+//    qDebug() << "Filter : " << filter;
 
-//    if(!filter.isEmpty())
-//    {
-//        querStr += " WHERE " + filter;
-//    }
+    if(!filter.isEmpty())
+    {
+        querStr += " WHERE " + filter;
+    }
 
-//    querStr += " ORDER BY lastName";
+    querStr += " ORDER BY date";
 
-//    if(enableDebug)
-//        qDebug() << "Diver search query : " << querStr;
-//    query.prepare(querStr);
+    if(enableDebug || true)
+        qDebug() << "Dive search query : " << querStr;
+    query.prepare(querStr);
 
-//    for(const auto& val : valList)
-//    {
-//        query.addBindValue(val);
-//    }
+    for(const auto& val : valList)
+    {
+        query.addBindValue(val);
+    }
 
-//    query.exec();
+    query.exec();
 
-//    auto err = query.lastError();
-//    if(err.type() != QSqlError::ErrorType::NoError)
-//    {
-//        QString errStr{QString{"%0 : SQL error : %1"}.arg(__func__,err.text())};
-//        qCritical() << errStr;
-//    }
+    auto err = query.lastError();
+    if(err.type() != QSqlError::ErrorType::NoError)
+    {
+        QString errStr{QString{"%0 : SQL error : %1"}.arg(__func__,err.text())};
+        qCritical() << errStr;
+    }
 
 
-//    qobject_cast<QSqlQueryModel*>(ui->tv_dives->model())->setQuery(query);
+    qobject_cast<QSqlQueryModel*>(ui->tv_dives->model())->setQuery(query);
 
-//    if(db().isOpen() && !m_initGui)
-//    {
-//        //Setup gui
-//        for(int i{}; i < m_gui_diversColumnsNames.size();++i)
-//        {
-//            ui->tv_dives->model()->setHeaderData(i,Qt::Horizontal,m_gui_diversColumnsNames[i]);
-//        }
-//        //hide the last column
-//        ui->tv_dives->setColumnHidden(ui->tv_dives->model()->columnCount()-1,true);
-//        m_initGui = true;
-//    }
-//    else
-//    {
-//        return;
-//    }
+    ui->tv_dives->resizeColumnsToContents();
+
+    if(db().isOpen() && !m_initGui)
+    {
+        //Setup gui
+        for(int i{}; i < m_gui_divesColumnsNames.size();++i)
+        {
+            ui->tv_dives->model()->setHeaderData(i,Qt::Horizontal,m_gui_divesColumnsNames[i]);
+        }
+        //hide the last column
+        ui->tv_dives->setColumnHidden(ui->tv_dives->model()->columnCount()-1,true);
+        m_initGui = true;
+    }
+    else
+    {
+        return;
+    }
 }
 
 QVector<int> DiveSearch::getSelectedDivesId()

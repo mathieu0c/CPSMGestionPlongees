@@ -71,7 +71,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->mainDiverSearch->setHiddenButton(true);
     ui->mainDiverSearch->refreshDiverList();
 
-
+    ui->mainDiveSearch->refreshDivesList();
 }
 
 MainWindow::~MainWindow()

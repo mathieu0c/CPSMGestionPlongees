@@ -30,6 +30,8 @@ DiverSearch::DiverSearch(QWidget *parent) :
     connect(ui->le_search,&QLineEdit::textChanged,[&](){refreshDiverList();});
     connect(ui->cb_search_firstName,&QCheckBox::stateChanged,[&](){refreshDiverList();});
     connect(ui->cb_search_lastName,&QCheckBox::stateChanged,[&](){refreshDiverList();});
+
+    ui->tv_divers->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 }
 
 DiverSearch::~DiverSearch()
@@ -148,6 +150,8 @@ void DiverSearch::refreshDiverList()
 
 
     qobject_cast<QSqlQueryModel*>(ui->tv_divers->model())->setQuery(query);
+
+    ui->tv_divers->resizeColumnsToContents();
 
     if(db().isOpen() && !m_initGui)
     {
