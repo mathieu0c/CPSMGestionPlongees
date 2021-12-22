@@ -178,8 +178,8 @@ void MainWindow::on_pb_newDiver_clicked()
 
 void MainWindow::divesSelected(QVector<int> idList)
 {
-    qDebug() << "------------- " << __func__ << " -------------";
-    qDebug() << idList;
+//    qDebug() << "------------- " << __func__ << " -------------";
+//    qDebug() << idList;
 
     if(idList.size() == 0)
         return;

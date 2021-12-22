@@ -81,7 +81,7 @@ int addToDB(Dive &dive, QSqlDatabase db, QString table)
 
 Dive readDiveFromDB(int id, QSqlDatabase db, QString table)
 {
-    qDebug() << "##### " << __func__ << " #####";
+//    qDebug() << "##### " << __func__ << " #####";
     static const QString queryStr{"SELECT * FROM %1 WHERE id=?"};
     QSqlQuery query{db};
     query.prepare(queryStr.arg(table));
@@ -138,7 +138,7 @@ Dive readDiveFromDB(int id, QSqlDatabase db, QString table)
         out.divers.append(diver);
     }
 
-    qDebug() << out;
+//    qDebug() << out;
 
     return out;
 }
