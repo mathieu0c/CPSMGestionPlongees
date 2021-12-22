@@ -18,6 +18,7 @@ SOURCES += \
     Debug/global.cpp \
     GUI/Dialog_ConfirmDiverDeletion.cpp \
     GUI/Dialog_EditFamily.cpp \
+    GUI/DiveEdit.cpp \
     GUI/DiveSearch.cpp \
     GUI/DiverEdit.cpp \
     GUI/DiverSearch.cpp \
@@ -38,6 +39,7 @@ HEADERS += \
     Debug/global.hpp \
     GUI/Dialog_ConfirmDiverDeletion.h \
     GUI/Dialog_EditFamily.h \
+    GUI/DiveEdit.h \
     GUI/DiveSearch.hpp \
     GUI/DiverEdit.h \
     GUI/DiverSearch.hpp \
@@ -55,6 +57,7 @@ FORMS += \
     Debug/DbVisualizer.ui \
     GUI/Dialog_ConfirmDiverDeletion.ui \
     GUI/Dialog_EditFamily.ui \
+    GUI/DiveEdit.ui \
     GUI/DiveSearch.ui \
     GUI/DiverEdit.ui \
     GUI/DiverSearch.ui \
