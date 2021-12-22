@@ -281,8 +281,18 @@ bool initDB(QSqlDatabase db)
     //table Dives
 
     info::Dive tempDive{-1,QDate::currentDate(),2,{{1,info::DiveType::exploration},{2,info::DiveType::technical}}};
-    if(info::addToDB(tempDive,db,table_dives))
+    info::Dive tempDive2{-1,QDate::currentDate().addDays(-1),1,{{1,info::DiveType::exploration}}};
+
+    auto firstId{info::addToDB(tempDive,db,table_dives)};
+    auto secondId{info::addToDB(tempDive2,db,table_dives)};
+    if(firstId < 0)
+    {
         return false;
+    }
+    if(secondId < 0)
+    {
+        return false;
+    }
 
 //    QSqlQuery loginQuery{"SELECT id FROM Users"/*+" WHERE id="+tempLogin*/,db};
 //    loginQuery.exec();

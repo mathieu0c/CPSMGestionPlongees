@@ -55,7 +55,7 @@ MainWindow::MainWindow(QWidget *parent)
     if(!openedDB)
         throw std::runtime_error("Cannot open DB");
 
-//    db::createDB();
+    db::createDB();
     db::initDB();
 
     ui->tab_debug->on_pb_refreshTablesList_clicked();
@@ -68,9 +68,13 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->pg_editDiver,&gui::DiverEdit::endEditing,this,&MainWindow::diverChangeAccepted);
     connect(ui->pg_editDiver,&gui::DiverEdit::rejectedEditing,this,&MainWindow::diverChangeRejected);
 
+
+    connect(ui->mainDiveSearch,&gui::DiveSearch::divesSelected,this,&MainWindow::divesSelected);
+
     ui->mainDiverSearch->setHiddenButton(true);
     ui->mainDiverSearch->refreshDiverList();
 
+    ui->mainDiveSearch->setHiddenButton(true);
     ui->mainDiveSearch->refreshDivesList();
 }
 
@@ -164,11 +168,17 @@ void MainWindow::on_pb_editDiver_clicked()
     diversSelected(diversIds);
 }
 
-}//namespace gui
-
-void gui::MainWindow::on_pb_newDiver_clicked()
+void MainWindow::on_pb_newDiver_clicked()
 {
     ui->pg_editDiver->resetDiver();
 
     ui->tab_divers->setCurrentIndex(1);
 }
+
+void MainWindow::divesSelected(QVector<int> idList)
+{
+    qDebug() << "------------- " << __func__ << " -------------";
+    qDebug() << idList;
+}
+
+}//namespace gui

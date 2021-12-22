@@ -17,8 +17,7 @@ int addToDB(Dive &dive, QSqlDatabase db, QString table)
     {
         QString errMsg{QString{"info::Dive : %1 : database must be opened before being accessed"}.arg(__func__)};
 
-        if(enableDebug)
-            qCritical() << errMsg;
+        qCritical() << errMsg;
         throw std::runtime_error(errMsg.toStdString());
         return false;
     }

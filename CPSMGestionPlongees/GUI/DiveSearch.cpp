@@ -27,9 +27,9 @@ DiveSearch::DiveSearch(QWidget *parent) :
     ui->de_endDate->setDate(QDate::currentDate());
 
     //nullif(COUNT(DivesMembers.diverId),0)
-    setSelectionColumns(QString{"date,%0.name,nullif(COUNT(%1.diverId),0)"}.arg(
+    setSelectionColumns(QString{"date,%0.name,nullif(COUNT(%1.id),0)"}.arg(
                             global::table_divingSites,
-                            global::table_divesMembers
+                            global::table_dives
                             ),
                         {"Date","Site","Nombre de plongeurs"});
 
@@ -147,7 +147,7 @@ void DiveSearch::refreshDivesList()
         querStr += " WHERE " + filter;
     }
 
-    querStr += " ORDER BY date";
+    querStr += QString{" GROUP BY %0.id ORDER BY %0.date DESC"}.arg(global::table_dives);
 
     if(enableDebug || true)
         qDebug() << "Dive search query : " << querStr;

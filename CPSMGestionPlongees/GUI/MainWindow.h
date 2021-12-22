@@ -36,6 +36,8 @@ private slots:
 
     void on_pb_editDiver_clicked();
 
+    void divesSelected(QVector<int> idList);
+
 private:
     Ui::MainWindow *ui;
 };
