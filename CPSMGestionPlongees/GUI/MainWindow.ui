@@ -112,7 +112,7 @@
        <attribute name="title">
         <string>Plongées</string>
        </attribute>
-       <widget class="QWidget" name="pg_editDive"/>
+       <widget class="gui::DiveEdit" name="pg_editDive"/>
        <widget class="QWidget" name="pg_browseDives">
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
@@ -204,6 +204,12 @@
    <class>gui::DiveSearch</class>
    <extends>QWidget</extends>
    <header>GUI/DiveSearch.hpp</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>gui::DiveEdit</class>
+   <extends>QWidget</extends>
+   <header>GUI/DiveEdit.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

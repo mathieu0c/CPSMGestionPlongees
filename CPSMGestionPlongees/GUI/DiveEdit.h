@@ -1,5 +1,5 @@
-#ifndef GUI_DIVEREDIT_H
-#define GUI_DIVEREDIT_H
+#ifndef GUI_DIVEEDIT_H
+#define GUI_DIVEEDIT_H
 
 #include <QWidget>
 #include <QStringList>
@@ -55,4 +55,4 @@ private:
 
 }//namespace gui
 
-#endif // GUI_DIVEREDIT_H
+#endif // GUI_DIVEEDIT_H
