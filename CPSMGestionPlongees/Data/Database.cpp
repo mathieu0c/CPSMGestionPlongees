@@ -126,7 +126,7 @@ int queryCount(QSqlDatabase& db,QString request,const QStringList& argList,const
     }
 
 
-    QRegularExpression re("(SELECT )(.*)( FROM)");
+    QRegularExpression re("(SELECT )(.*)( FROM.*)");
     auto matchs{re.globalMatch(request)};
 
     QStringList groupList{};
@@ -152,7 +152,11 @@ int queryCount(QSqlDatabase& db,QString request,const QStringList& argList,const
     query.exec();
 
 
-    query.next();
+    if(!query.next())
+    {
+        qCritical() << __func__ << " : No valid result";
+        return -1;
+    }
     int out{query.value(0).toInt()};
 
 //    while(query.next())//while we find something correspondant

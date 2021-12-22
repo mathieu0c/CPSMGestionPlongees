@@ -95,8 +95,6 @@ void DiveSearch::refreshDivesList()
                           global::table_divingSites,
                           global::table_divesMembers);
 
-    qDebug() << "--------------------- " << __func__ << " ---------------------";
-    qDebug() << querStr;
     //auto querStrFirstName{querStr+" WHERE firstName LIKE ?||'%'"};
     //auto querStrLastName{querStr+" WHERE lastName LIKE ?||'%'"};
     QSqlQuery query{db()};
@@ -147,9 +145,10 @@ void DiveSearch::refreshDivesList()
         querStr += " WHERE " + filter;
     }
 
+    //group by to avoid duplicate and sort by date displaying newest at the top
     querStr += QString{" GROUP BY %0.id ORDER BY %0.date DESC"}.arg(global::table_dives);
 
-    if(enableDebug || true)
+    if(enableDebug)
         qDebug() << "Dive search query : " << querStr;
     query.prepare(querStr);
 

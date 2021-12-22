@@ -9,6 +9,7 @@
 #include "GUI/global.hpp"
 
 #include "Info/Diver.h"
+#include "Info/Dive.h"
 #include "Info/Address.h"
 #include "Info/global.hpp"
 
@@ -179,6 +180,15 @@ void MainWindow::divesSelected(QVector<int> idList)
 {
     qDebug() << "------------- " << __func__ << " -------------";
     qDebug() << idList;
+
+    if(idList.size() == 0)
+        return;
+
+    auto id{idList[0]};
+    auto tempDive{info::readDiveFromDB(id,QSqlDatabase::database(),global::table_dives)};
+
+//    ui->pg_editDiver->setDiver(std::move(tempDiver));
+//    ui->tab_divers->setCurrentIndex(1);
 }
 
 }//namespace gui

@@ -6,6 +6,7 @@
 #include "Data/Database.hpp"
 #include <QSqlQuery>
 #include <QSqlError>
+#include <QSqlRecord>
 
 namespace info
 {
@@ -55,8 +56,8 @@ int addToDB(Dive &dive, QSqlDatabase db, QString table)
             qDebug() << "INSERT INTO : " << global::table_divesMembers;
         query.prepare(QString{"INSERT INTO %1(diveId,diverId,diveType) VALUES (?,?,?)"}.arg(global::table_divesMembers));
         query.addBindValue(lastId);
-        query.addBindValue(std::get<0>(diver));
-        query.addBindValue(to_string(std::get<1>(diver)));
+        query.addBindValue(diver.id);
+        query.addBindValue(to_string(diver.type));
         query.exec();
 
         err = query.lastError();
@@ -80,7 +81,66 @@ int addToDB(Dive &dive, QSqlDatabase db, QString table)
 
 Dive readDiveFromDB(int id, QSqlDatabase db, QString table)
 {
+    qDebug() << "##### " << __func__ << " #####";
+    static const QString queryStr{"SELECT * FROM %1 WHERE id=?"};
+    QSqlQuery query{db};
+    query.prepare(queryStr.arg(table));
+    query.addBindValue(id);
+    query.exec();
 
+    Dive out{};
+
+
+    if(!query.next())//if nothing was found
+    {
+        if(enableDebug)
+        {
+            qDebug() << __func__ << " : No member found with id : " << id;
+        }
+        return out;
+    }
+
+    if(enableDebug)
+    {
+        qDebug() << "----------- " << __func__ << " -----------";
+        qDebug() << "Query column count : " << query.record().count();
+    }
+
+    auto err{query.lastError()};
+    if(err.type() != QSqlError::ErrorType::NoError)
+    {
+        QString errStr{QString{"%0 : SQL error : %1"}.arg(__func__,err.text())};
+        qCritical() << errStr;
+        return out;
+    }
+
+    int currentIndex{};
+
+    out.id = query.value(currentIndex++).value<int>();
+    out.date = QDate::fromString(query.value(currentIndex++).value<QString>(),global::format_date);
+    out.diveSiteId = query.value(currentIndex++).value<int>();
+
+    //count how many diverId there is
+    auto diverCount{db::queryCount(db,"SELECT diverId FROM %0 WHERE diveId = ?",{global::table_divesMembers},{out.id})};
+
+    out.divers.reserve(diverCount);
+
+    auto divers{db::querySelect(db,"SELECT diverId,diveType FROM %0 WHERE diveId = ?",{global::table_divesMembers},{out.id})};
+
+    for(const auto& diverLine : divers)
+    {
+        if(diverLine.size() != 2) //if we didn't get the two columns expected
+            throw std::runtime_error{__func__ + std::string{" : Invalid column count : expected 2 and got "}+std::to_string(diverLine.size())};
+
+        Dive::MinimalDiver diver{};
+        diver.id = diverLine[0].toInt();
+        diver.type = diveTypefrom_string(diverLine[1].toString());
+        out.divers.append(diver);
+    }
+
+    qDebug() << out;
+
+    return out;
 }
 
 
@@ -98,7 +158,7 @@ QString to_string(DiveType diveType)
     }
 }
 
-DiveType from_string(const QString& diveType)
+DiveType diveTypefrom_string(const QString& diveType)
 {
     if(diveType == "Explo")
         return DiveType::exploration;
@@ -113,10 +173,11 @@ QDebug operator<<(QDebug debug, const Dive& m)
     QDebugStateSaver saver(debug);
     debug.nospace() << "Dive{\nid : " << m.id << "\n";
     debug.nospace() << "Date : " << m.date.toString(global::format_date) << "\n";
-    debug.nospace() << "Divers :";
+    debug.nospace() << "diveSiteId : " << m.diveSiteId << "\n";
+    debug.nospace() << "Divers :" << "\n";
     for(const auto& e : m.divers)
     {
-        debug.nospace() << QString("\tId : %0    |   DiveType : %1\n").arg(std::get<0>(e),std::get<1>(e));
+        debug << QString("    Id : %0    |   DiveType : %1").arg(e.id).arg(e.type) << "\n";
     }
     debug.nospace() << "};";
 

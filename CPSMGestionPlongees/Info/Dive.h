@@ -28,10 +28,15 @@ enum DiveType{
 
 struct Dive
 {
+    struct MinimalDiver{
+        int id{-1};
+        DiveType type{};
+    };
+
     int id{-1};
     QDate date{};
     int diveSiteId{1};
-    QVector<std::tuple<int,DiveType>> divers{};//diver id and type
+    QVector<MinimalDiver> divers{};//diver id and type
 
 };
 
@@ -41,7 +46,7 @@ int addToDB(Dive &dive, QSqlDatabase db, QString table);
 Dive readDiveFromDB(int id, QSqlDatabase db, QString table);
 
 QString to_string(DiveType diveType);
-DiveType from_string(const QString& diveType);
+DiveType diveTypefrom_string(const QString& diveType);
 
 QDebug operator<<(QDebug debug, const Dive& m);
 
