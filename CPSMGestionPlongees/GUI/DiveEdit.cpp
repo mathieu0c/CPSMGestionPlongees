@@ -36,9 +36,6 @@ void DiveEdit::setDive(info::Dive diver){
         qDebug() << m_tempDive;
     }
 
-
-
-
 //    ui->le_address->setText(m_tempDiver.address);
 }
 
@@ -58,12 +55,4 @@ void gui::DiveEdit::on_buttonBox_accepted()
 void gui::DiveEdit::on_buttonBox_rejected()
 {
     emit rejectedEditing();
-}
-
-void gui::DiveEdit::on_cb_gear_global_stateChanged(int arg1)
-{
-//    ui->cb_regulator->setChecked(arg1);
-//    ui->cb_suit->setChecked(arg1);
-//    ui->cb_computer->setChecked(arg1);
-//    ui->cb_jacket->setChecked(arg1);
 }
