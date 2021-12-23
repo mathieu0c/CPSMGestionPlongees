@@ -34,6 +34,9 @@ public:
     void setSelectionMode(QAbstractItemView::SelectionMode mode);
 
     void setFilter(QString newFilter,const QStringList& argList = {},QVector<QVariant> filterValues = {});
+    void setFilterValues(QVector<QVariant> filterValues){
+        m_filterValues = std::move(filterValues);
+    }
 
 //SELECT date,DivingSites.name,COUNT(DivesMembers.diverId) FROM Dives INNER JOIN DivingSites ON
 //Dives.diveSiteId = DivingSites.id INNER JOIN DivesMembers on DivesMembers.diveId = Dives.id

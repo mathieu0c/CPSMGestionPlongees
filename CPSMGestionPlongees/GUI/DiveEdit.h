@@ -25,6 +25,8 @@ public:
     void refreshSiteList(const QStringList& list);
 
     void refreshDiversList();
+    void refreshDiverSearchFilters_global();
+    void refreshDiverSearchFilters_dive();
 
     const info::Dive& dive() const{
         return m_tempDive;

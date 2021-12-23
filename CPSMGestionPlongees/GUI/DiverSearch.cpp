@@ -129,12 +129,13 @@ void DiverSearch::refreshDiverList()
 
     querStr += " ORDER BY lastName";
 
-    if(enableDebug)
+    if(enableDebug || true)
         qDebug() << "Diver search query : " << querStr;
     query.prepare(querStr);
 
     for(const auto& val : valList)
     {
+        qDebug() << "    BIND : " << val;
         query.addBindValue(val);
     }
 
