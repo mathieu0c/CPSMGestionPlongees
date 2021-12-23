@@ -39,6 +39,7 @@ bool createDB(QSqlDatabase db = QSqlDatabase::database());
 bool initDB(QSqlDatabase db = QSqlDatabase::database());
 
 QStringList getDiverLevels(QSqlDatabase db = QSqlDatabase::database());
+QStringList getDiveSites(QSqlDatabase db = QSqlDatabase::database());
 
 }
 

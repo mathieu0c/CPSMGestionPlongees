@@ -24,14 +24,13 @@ DiverSearch::DiverSearch(QWidget *parent) :
 
     setSelectionColumns("lastName,firstName,member,level,paidDives-diveCount",{"Nom de famille","Prénom","Membre","Niveau","Solde"});
 
-    refreshDiverList();
-
     //refreshing diver list
     connect(ui->le_search,&QLineEdit::textChanged,[&](){refreshDiverList();});
     connect(ui->cb_search_firstName,&QCheckBox::stateChanged,[&](){refreshDiverList();});
     connect(ui->cb_search_lastName,&QCheckBox::stateChanged,[&](){refreshDiverList();});
 
     ui->tv_divers->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+    refreshDiverList();
 }
 
 DiverSearch::~DiverSearch()

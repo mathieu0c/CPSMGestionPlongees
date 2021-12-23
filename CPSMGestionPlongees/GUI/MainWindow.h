@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 #include "Info/Diver.h"
+#include "Info/Dive.h"
 
 #include <QSqlQuery>
 
@@ -37,6 +38,8 @@ private slots:
     void on_pb_editDiver_clicked();
 
     void divesSelected(QVector<int> idList);
+    void diveChangeAccepted(info::Dive dive);
+    void diveChangeRejected();
 
 private:
     Ui::MainWindow *ui;

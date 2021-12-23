@@ -316,4 +316,16 @@ QStringList getDiverLevels(QSqlDatabase db)
     return out;
 }
 
+QStringList getDiveSites(QSqlDatabase db)
+{
+    auto rawVal{querySelect(db,QString{"SELECT name FROM %0"},{global::table_divingSites},{})};
+    QStringList out{};
+
+    for(const auto& e : rawVal)
+    {
+        out += e.at(0).toString();
+    }
+    return out;
+}
+
 }//namespace db

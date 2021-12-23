@@ -63,6 +63,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tab_debug->setTableIndex(1);
 
     ui->pg_editDiver->refreshLevelList(db::getDiverLevels());
+    ui->pg_editDive->refreshSiteList(db::getDiveSites());
 
     connect(ui->mainDiverSearch,&gui::DiverSearch::diversSelected,this,&MainWindow::diversSelected);
 
@@ -71,6 +72,9 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     connect(ui->mainDiveSearch,&gui::DiveSearch::divesSelected,this,&MainWindow::divesSelected);
+
+    connect(ui->pg_editDive,&gui::DiveEdit::endEditing,this,&MainWindow::diveChangeAccepted);
+    connect(ui->pg_editDive,&gui::DiveEdit::rejectedEditing,this,&MainWindow::diveChangeRejected);
 
     ui->mainDiverSearch->setHiddenButton(true);
     ui->mainDiverSearch->refreshDiverList();
@@ -189,6 +193,24 @@ void MainWindow::divesSelected(QVector<int> idList)
 
 //    ui->pg_editDiver->setDiver(std::move(tempDiver));
 //    ui->tab_divers->setCurrentIndex(1);
+    ui->pg_editDive->setDive(tempDive);
+    ui->pg_editDive->refreshDiversList();
+    ui->tab_dives->setCurrentIndex(0);//switch to edit page
+}
+
+void MainWindow::diveChangeAccepted(info::Dive dive)
+{
+//    info::storeInDB(diver,QSqlDatabase::database(),global::table_divers);
+
+    qDebug() << "Dive accepted : " << dive;
+    ui->tab_dives->setCurrentIndex(1);//switch to search dive page
+    ui->mainDiveSearch->refreshDivesList();
+}
+
+void MainWindow::diveChangeRejected()
+{
+    ui->tab_dives->setCurrentIndex(1);//switch to search dive page
+    ui->mainDiveSearch->refreshDivesList();
 }
 
 }//namespace gui

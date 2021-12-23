@@ -22,7 +22,9 @@ public:
     explicit DiveEdit(QWidget *parent = nullptr);
     ~DiveEdit();
 
-    void refreshLevelList(const QStringList& list);
+    void refreshSiteList(const QStringList& list);
+
+    void refreshDiversList();
 
     const info::Dive& dive() const{
         return m_tempDive;
