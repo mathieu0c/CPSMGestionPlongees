@@ -169,8 +169,6 @@ void DiveSearch::refreshDivesList()
 
     qobject_cast<QSqlQueryModel*>(ui->tv_dives->model())->setQuery(query);
 
-    ui->tv_dives->resizeColumnsToContents();
-
     if(db().isOpen() && !m_initGui)
     {
         //Setup gui
@@ -182,10 +180,8 @@ void DiveSearch::refreshDivesList()
         ui->tv_dives->setColumnHidden(ui->tv_dives->model()->columnCount()-1,true);
         m_initGui = true;
     }
-    else
-    {
-        return;
-    }
+    ui->tv_dives->resizeColumnsToContents();
+    return;
 }
 
 QVector<int> DiveSearch::getSelectedDivesId()

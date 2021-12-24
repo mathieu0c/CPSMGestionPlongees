@@ -59,8 +59,20 @@ void DiverSearch::setFilter(QString newFilter,const QStringList& argList,QVector
     }
 }
 
-int DiverSearch::getRowCount(){
+int DiverSearch::getRowCount() const{
     return ui->tv_divers->model()->rowCount();
+}
+int DiverSearch::getColumnCount() const{
+    return ui->tv_divers->model()->columnCount();
+}
+
+QTableView* DiverSearch::table(){
+    return ui->tv_divers;
+}
+
+QModelIndex DiverSearch::indexAt(int x, int y) const
+{
+    return ui->tv_divers->model()->index(y,x);
 }
 
 void DiverSearch::refreshDiverList()
@@ -153,8 +165,6 @@ void DiverSearch::refreshDiverList()
 
     qobject_cast<QSqlQueryModel*>(ui->tv_divers->model())->setQuery(query);
 
-    ui->tv_divers->resizeColumnsToContents();
-
     if(db().isOpen() && !m_initGui)
     {
         //Setup gui
@@ -166,13 +176,13 @@ void DiverSearch::refreshDiverList()
         ui->tv_divers->setColumnHidden(ui->tv_divers->model()->columnCount()-1,true);
         m_initGui = true;
     }
-    else
-    {
-        return;
-    }
+
+    ui->tv_divers->resizeColumnsToContents();
+
+    return;
 }
 
-QVector<int> DiverSearch::getSelectedDiversId()
+QVector<int> DiverSearch::getSelectedDiversId() const
 {
     auto indexes{ui->tv_divers->selectionModel()->selectedRows()};
     auto model{qobject_cast<QSqlQueryModel*>(ui->tv_divers->model())};
@@ -187,7 +197,7 @@ QVector<int> DiverSearch::getSelectedDiversId()
     return out;
 }
 
-QVector<int> DiverSearch::getDisplayedDiversId()
+QVector<int> DiverSearch::getDisplayedDiversId() const
 {
     auto model{qobject_cast<QSqlQueryModel*>(ui->tv_divers->model())};
     auto colIndex{model->columnCount()-1};

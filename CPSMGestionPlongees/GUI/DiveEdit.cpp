@@ -8,6 +8,8 @@
 
 #include "GUI/DiverSearch.hpp"
 
+#include <QLineEdit>
+
 namespace gui
 {
 
@@ -88,9 +90,22 @@ void DiveEdit::refreshDiversList()
     ui->diverSearch_dive->refreshDiverList();
     ui->diverSearch_global->refreshDiverList();
 
-    //    for(int i{}; i < model->rowCount();++i)
-    //    {
-    //    }
+//    auto model{ui->diverSearch_dive};
+    auto rowCount{ui->diverSearch_dive->getRowCount()};
+    auto columnCount{ui->diverSearch_dive->getColumnCount()-1};//one column is hidden by default
+    auto table{ui->diverSearch_dive->table()};
+
+    for(int i{}; i < rowCount;++i)
+    {
+        auto index{ui->diverSearch_dive->indexAt(columnCount-1,i)};//modify pre-last column
+        qDebug() << __func__ << "  " << index;
+        qDebug() << index.data();
+        auto tempCb{new QComboBox()};
+        tempCb->addItem(to_string(info::DiveType::exploration),info::DiveType::exploration);
+        tempCb->addItem(to_string(info::DiveType::technical),info::DiveType::technical);
+
+        table->setIndexWidget(index,tempCb);//ownership of tempCb is given to table
+    }
 }
 
 void DiveEdit::setDive(info::Dive diver){

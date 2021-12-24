@@ -7,6 +7,7 @@
 
 #include <QWidget>
 #include <QAbstractItemView>
+#include <QTableView>
 
 #include <QSqlDatabase>
 
@@ -57,13 +58,16 @@ public:
         m_initGui = false;//we need to reset GUI config
     }
 
-    int getRowCount();
+    int getRowCount()const;
+    int getColumnCount()const;
 
+    QTableView* table();//raw access to table view necessary to create and access ComboBox from DiveEdit
+    QModelIndex indexAt(int x,int y)const;
 
     void refreshDiverList();
 
-    QVector<int> getSelectedDiversId();
-    QVector<int> getDisplayedDiversId();
+    QVector<int> getSelectedDiversId()const;
+    QVector<int> getDisplayedDiversId()const;
 
     //-----
 
@@ -71,12 +75,13 @@ public:
 signals:
     void diversSelected(QVector<int> idList);
     void askRefreshDiverList();//this signal is sent at the beginning of the function refreshDiverList()
+    void refreshedDiverList();//this signal is sent at the end of the function refreshDiverList()
 
 private slots:
     void on_tv_divers_doubleClicked(const QModelIndex &index);
 
 private:
-    QSqlDatabase db(){
+    QSqlDatabase db() const{
         return QSqlDatabase::database(m_dbName,false);
     }
 
