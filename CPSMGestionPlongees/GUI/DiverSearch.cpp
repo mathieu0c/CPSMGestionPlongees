@@ -102,18 +102,18 @@ void DiverSearch::refreshDiverList()
         //querStr += " WHERE ";
         if(ui->cb_search_firstName->isChecked() && ui->cb_search_lastName->isChecked())
         {
-            filter = "firstName LIKE ?||'%' OR lastName LIKE ?||'%' "+QString(hasFilter?"AND ":"");
+            filter = "(firstName LIKE ?||'%' OR lastName LIKE ?||'%' "+QString(hasFilter?") AND ":")");
             valList.append(ui->le_search->text());
             valList.append(ui->le_search->text());
         }
         else if(ui->cb_search_firstName->isChecked())
         {
-            filter = "firstName LIKE ?||'%' "+QString(hasFilter?"AND ":"");
+            filter = "(firstName LIKE ?||'%' "+QString(hasFilter?") AND ":")");
             valList.append(ui->le_search->text());
         }
         else if(ui->cb_search_lastName->isChecked())
         {
-            filter = "lastName LIKE ?||'%' "+QString(hasFilter?"AND ":"");
+            filter = "(lastName LIKE ?||'%' "+QString(hasFilter?") AND ":")");
             valList.append(ui->le_search->text());
         }
     }
