@@ -129,7 +129,7 @@ void DiverSearch::refreshDiverList()
         querStr += " WHERE " + filter;
     }
 
-    querStr += QString{" GROUP BY %0.id ORDER BY lastName DESC"}.arg(global::table_divers);
+    querStr += QString{" GROUP BY %0.id ORDER BY lastName ASC"}.arg(global::table_divers);
 
     if(enableDebug || true)
         qDebug() << "Diver search query : " << querStr;
