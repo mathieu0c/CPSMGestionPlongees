@@ -21,10 +21,12 @@ DiveEdit::DiveEdit(QWidget *parent) :
         [&](DiverSearch* ds)
         {
             ds->setHiddenButton(true);
-            ds->setSelectionColumns("lastName,firstName,level",{"Nom de famille","Prénom","Niveau"});
-            ds->refreshDiverList();
         }
     };
+
+    ui->diverSearch_global->setSelectionColumns("lastName,firstName,level",{"Nom de famille","Prénom","Niveau"});
+    ui->diverSearch_dive->setSqlJoins(" INNER JOIN %0 ON %1.id = %0.diverId",{global::table_divesMembers,global::table_divers});
+    ui->diverSearch_dive->setSelectionColumns("lastName,firstName,level,diveType",{"Nom de famille","Prénom","Niveau","Type"});
 
     lambdaConfigureDiverSearch(ui->diverSearch_dive);
     lambdaConfigureDiverSearch(ui->diverSearch_global);
@@ -85,6 +87,10 @@ void DiveEdit::refreshDiversList()
     refreshDiverSearchFilters_dive();
     ui->diverSearch_dive->refreshDiverList();
     ui->diverSearch_global->refreshDiverList();
+
+    //    for(int i{}; i < model->rowCount();++i)
+    //    {
+    //    }
 }
 
 void DiveEdit::setDive(info::Dive diver){

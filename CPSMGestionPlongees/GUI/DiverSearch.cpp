@@ -78,6 +78,8 @@ void DiverSearch::refreshDiverList()
     QString querStr{"SELECT %0 FROM %1 INNER JOIN %2 ON %1.diverLevelId = %2.id INNER JOIN %3 ON %1.memberAddressId = %3.id"};
     querStr = querStr.arg(m_sql_diversColumns,global::table_divers,global::table_diverLevel,global::table_diversAddresses);
 
+    if(!m_sqlJoins.isEmpty())
+        querStr += m_sqlJoins;
 //    qDebug() << "--------------------- " << __func__ << " ---------------------";
 //    qDebug() << querStr;
 //    qDebug() << m_sql_diversColumns;
@@ -127,7 +129,7 @@ void DiverSearch::refreshDiverList()
         querStr += " WHERE " + filter;
     }
 
-    querStr += " ORDER BY lastName";
+    querStr += QString{" GROUP BY %0.id ORDER BY lastName DESC"}.arg(global::table_divers);
 
     if(enableDebug || true)
         qDebug() << "Diver search query : " << querStr;

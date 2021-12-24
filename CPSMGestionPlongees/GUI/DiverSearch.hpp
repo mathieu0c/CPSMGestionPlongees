@@ -38,6 +38,16 @@ public:
         m_filterValues = std::move(filterValues);
     }
 
+    void setSqlJoins(QString sqlJoins,const QStringList& args)
+    {
+        m_sqlJoins = std::move(sqlJoins);
+
+        for(const auto& e : args)//match argument list
+        {
+            m_sqlJoins = m_sqlJoins.arg(e);
+        }
+    }
+
 //SELECT date,DivingSites.name,COUNT(DivesMembers.diverId) FROM Dives INNER JOIN DivingSites ON
 //Dives.diveSiteId = DivingSites.id INNER JOIN DivesMembers on DivesMembers.diveId = Dives.id
     void setSelectionColumns(QString sqlColumns,QStringList columnsNames = {}){
@@ -75,6 +85,8 @@ private:
 
     QString m_filter{};//Additionnal filter used to display diver list
     QVector<QVariant> m_filterValues{};//Filter values binded to query
+    QString m_sqlJoins{};//joins added to global::table_divers
+    //example : QString{" INNER JOIN %0 ON %1.id = %0.diverId"}.arg(global::table_divesMembers,global::table_divers)
 
     QString m_sql_diversColumns{/*"lastName,firstName,member,level,paidDives-diveCount"*/};
     QStringList m_gui_diversColumnsNames{/*"Nom de famille","Prénom","Membre","Niveau","Solde"*/};
