@@ -51,6 +51,8 @@ private slots:
 
 //    void on_cb_gear_global_stateChanged(int arg1);
 
+    void on_pb_diverToDive_clicked();
+
 private:
     Ui::DiveEdit *ui;
 

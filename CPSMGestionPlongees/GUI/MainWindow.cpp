@@ -100,6 +100,7 @@ void MainWindow::on_tabw_main_currentChanged(int i)
 
 void MainWindow::diversSelected(QVector<int> idList)
 {
+    qDebug() << "   DIVERS IDs : " << idList;
     if(idList.size() == 0)
         return;
 

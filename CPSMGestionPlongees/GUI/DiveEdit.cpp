@@ -129,6 +129,22 @@ void DiveEdit::resetDive(){
     setDive(std::move(m_tempDive));
 }
 
+
+void DiveEdit::on_pb_diverToDive_clicked()
+{
+    auto diversIds{ui->diverSearch_global->getSelectedDiversId()};
+    qDebug() << __func__ <<" ---------------------------------- ";
+//    qDebug() << ui->diverSearch_dive->getDisplayedDiversId();
+
+    for(const auto& e : diversIds)
+    {
+        qDebug() << "       Selected : " << e;
+        m_tempDive.divers.append({e,info::DiveType::exploration});
+    }
+
+    refreshDiversList();
+}
+
 }//namespace gui
 
 void gui::DiveEdit::on_buttonBox_accepted()

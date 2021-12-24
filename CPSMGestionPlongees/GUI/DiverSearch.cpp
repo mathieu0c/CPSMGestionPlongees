@@ -143,7 +143,7 @@ void DiverSearch::refreshDiverList()
 
     querStr += QString{" GROUP BY %0.id ORDER BY lastName ASC"}.arg(global::table_divers);
 
-    if(enableDebug || true)
+    if(enableDebug)
         qDebug() << "Diver search query : " << querStr;
     query.prepare(querStr);
 
@@ -173,7 +173,7 @@ void DiverSearch::refreshDiverList()
             ui->tv_divers->model()->setHeaderData(i,Qt::Horizontal,m_gui_diversColumnsNames[i]);
         }
         //hide the last column
-        ui->tv_divers->setColumnHidden(ui->tv_divers->model()->columnCount()-1,true);
+//        ui->tv_divers->setColumnHidden(ui->tv_divers->model()->columnCount()-1,true);
         m_initGui = true;
     }
 
@@ -192,7 +192,8 @@ QVector<int> DiverSearch::getSelectedDiversId() const
 
     for(int i{}; i < indexes.size(); ++i)
     {
-        out[i] = model->data(indexes[i].siblingAtColumn(model->columnCount()-1)).value<int>();
+//        qDebug() <<__func__ << " - - " <<   model->data(indexes[i].siblingAtColumn(model->columnCount())).toString();
+        out[i] = model->data(indexes[i].siblingAtColumn(model->columnCount()-1)).value<int>();//id is stored in the last column
     }
     return out;
 }

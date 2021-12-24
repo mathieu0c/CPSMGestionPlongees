@@ -27,7 +27,7 @@ DiveSearch::DiveSearch(QWidget *parent) :
     ui->de_endDate->setDate(QDate::currentDate());
 
     //nullif(COUNT(DivesMembers.diverId),0)
-    setSelectionColumns(QString{"date,%0.name,nullif(COUNT(%1.id),0)"}.arg(
+    setSelectionColumns(QString{"date,%0.name,COUNT(%1.id)"}.arg(//nullif(COUNT(%1.id),0)"}.arg(
                             global::table_divingSites,
                             global::table_dives
                             ),
