@@ -21,9 +21,9 @@ INNER JOIN DivingSites ON Dives.diveSiteId=DivingSites.id
 namespace info {
 
 enum DiveType{
-    undefined=0,
-    exploration=1,
-    technical=2
+    undefined=-1,
+    exploration=0,
+    technical=1
 };
 
 struct Dive
