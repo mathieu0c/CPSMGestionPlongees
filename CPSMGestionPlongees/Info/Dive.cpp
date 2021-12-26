@@ -8,6 +8,8 @@
 #include <QSqlError>
 #include <QSqlRecord>
 
+#include <algorithm>
+
 namespace info
 {
 
@@ -90,7 +92,6 @@ Dive readDiveFromDB(int id, QSqlDatabase db, QString table)
 
     Dive out{};
 
-
     if(!query.next())//if nothing was found
     {
         if(enableDebug)
@@ -143,7 +144,39 @@ Dive readDiveFromDB(int id, QSqlDatabase db, QString table)
     return out;
 }
 
+void removeDiversFromDive(Dive& dive,QVector<int> idList)
+{
+    dive.divers.erase(std::remove_if(dive.divers.begin(),dive.divers.end(),[&](Dive::MinimalDiver& diver){
+        return idList.contains(diver.id);
+    }),dive.divers.end());
+}
 
+DiveType getDiveTypeForDiver(const Dive& dive,int diverId)
+{
+    auto itDiver{std::find_if(dive.divers.begin(),dive.divers.end(),[&](const Dive::MinimalDiver& e){
+            return e.id == diverId;
+        })};
+    if(itDiver == dive.divers.end())
+    {
+        return DiveType::undefined;
+    }
+
+    return (*itDiver).type;
+}
+
+bool setDiveTypeForDiver(Dive& dive,int diverId,DiveType type)
+{
+    auto itDiver{std::find_if(dive.divers.begin(),dive.divers.end(),[&](const Dive::MinimalDiver& e){
+            return e.id == diverId;
+        })};
+    if(itDiver == dive.divers.end())
+    {
+        return false;
+    }
+    (*itDiver).type = type;
+
+    return true;
+}
 
 QString to_string(DiveType diveType)
 {
@@ -179,6 +212,16 @@ QDebug operator<<(QDebug debug, const Dive& m)
     {
         debug << QString("    Id : %0    |   DiveType : %1").arg(e.id).arg(e.type) << "\n";
     }
+    debug.nospace() << "};";
+
+    return debug;
+}
+
+QDebug operator<<(QDebug debug, const Dive::MinimalDiver& d)
+{
+    QDebugStateSaver saver(debug);
+    debug.nospace() << "MinimalDiver{\nid : " << d.id << "\n";
+    debug.nospace() << "Type : " << to_string(d.type) << "\n";
     debug.nospace() << "};";
 
     return debug;

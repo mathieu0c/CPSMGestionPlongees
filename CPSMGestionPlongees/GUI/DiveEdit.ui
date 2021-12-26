@@ -129,6 +129,9 @@
          <property name="text">
           <string>-&gt;</string>
          </property>
+         <property name="shortcut">
+          <string>Right</string>
+         </property>
         </widget>
        </item>
        <item>
@@ -147,6 +150,9 @@
          </property>
          <property name="text">
           <string>&lt;-</string>
+         </property>
+         <property name="shortcut">
+          <string>Left</string>
          </property>
         </widget>
        </item>

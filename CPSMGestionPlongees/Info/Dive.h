@@ -45,10 +45,15 @@ int addToDB(Dive &dive, QSqlDatabase db, QString table);
 
 Dive readDiveFromDB(int id, QSqlDatabase db, QString table);
 
+void removeDiversFromDive(Dive& dive,QVector<int> idList);
+DiveType getDiveTypeForDiver(const Dive& dive,int diverId);
+bool setDiveTypeForDiver(Dive& dive, int diverId, DiveType type);
+
 QString to_string(DiveType diveType);
 DiveType diveTypefrom_string(const QString& diveType);
 
 QDebug operator<<(QDebug debug, const Dive& m);
+QDebug operator<<(QDebug debug, const Dive::MinimalDiver& d);
 
 } // namespace info
 

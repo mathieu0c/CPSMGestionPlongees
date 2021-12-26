@@ -45,6 +45,9 @@ signals:
     void rejectedEditing();
 
 private slots:
+    void slot_diveComboBox(int index);
+    void refreshDiversListComboBox();//recreate the combo box for dive type
+
     void on_buttonBox_accepted();
 
     void on_buttonBox_rejected();
@@ -52,6 +55,8 @@ private slots:
 //    void on_cb_gear_global_stateChanged(int arg1);
 
     void on_pb_diverToDive_clicked();
+
+    void on_pb_diveToDiver_clicked();
 
 private:
     Ui::DiveEdit *ui;

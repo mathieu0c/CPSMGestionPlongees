@@ -172,12 +172,14 @@ void DiverSearch::refreshDiverList()
         {
             ui->tv_divers->model()->setHeaderData(i,Qt::Horizontal,m_gui_diversColumnsNames[i]);
         }
-        //hide the last column
-//        ui->tv_divers->setColumnHidden(ui->tv_divers->model()->columnCount()-1,true);
+        //hide the last column corresponding to diver id
+        ui->tv_divers->setColumnHidden(ui->tv_divers->model()->columnCount()-1,true);
         m_initGui = true;
     }
 
+
     ui->tv_divers->resizeColumnsToContents();
+    emit refreshedDiverList();
 
     return;
 }
@@ -212,6 +214,12 @@ QVector<int> DiverSearch::getDisplayedDiversId() const
         out[i] = model->data(index).toInt();
     }
     return out;
+}
+
+int DiverSearch::getDiverIdAt(const QModelIndex& index) const
+{
+    auto model{qobject_cast<QSqlQueryModel*>(ui->tv_divers->model())};
+    return model->data(index.siblingAtColumn(model->columnCount()-1)).value<int>();
 }
 
 //void gui::MainWindow::on_tv_divers_doubleClicked(const QModelIndex &index)

@@ -8,6 +8,8 @@
 
 #include "GUI/DiverSearch.hpp"
 
+#include "Info/Diver.h"
+
 #include <QLineEdit>
 
 namespace gui
@@ -40,6 +42,8 @@ DiveEdit::DiveEdit(QWidget *parent) :
     connect(ui->buttonBox,&QDialogButtonBox::rejected,this,&DiveEdit::on_buttonBox_rejected);
     connect(ui->buttonBox,&QDialogButtonBox::accepted,this,&DiveEdit::on_buttonBox_accepted);
 
+    connect(ui->diverSearch_dive,&DiverSearch::refreshedDiverList,this,&DiveEdit::refreshDiversListComboBox);
+
 //    connect(ui->le_lastName,&QLineEdit::textChanged,[&](const auto& in){
 //            ui->le_lastName->setText(in.toUpper());
 //            m_tempDiver.lastName = ui->le_lastName->text();});
@@ -52,7 +56,8 @@ DiveEdit::~DiveEdit()
 }
 
 
-void DiveEdit::refreshSiteList(const QStringList& list)
+void DiveEdit::refreshSiteList(const
+                               QStringList& list)
 {
     ui->cb_diveSite->clear();
     for(const auto& e : list)
@@ -74,6 +79,7 @@ void DiveEdit::refreshDiverSearchFilters_global()
 
 void DiveEdit::refreshDiverSearchFilters_dive()
 {
+    //refresh filter values to allow only divers with id corresponding to m_temp.divers (QList<id>)
     QString idList{};
     for(const auto& e : m_tempDive.divers)
     {
@@ -91,6 +97,11 @@ void DiveEdit::refreshDiversList()
     ui->diverSearch_global->refreshDiverList();
 
 //    auto model{ui->diverSearch_dive};
+    refreshDiversListComboBox();
+}
+
+void DiveEdit::refreshDiversListComboBox()
+{
     auto rowCount{ui->diverSearch_dive->getRowCount()};
     auto columnCount{ui->diverSearch_dive->getColumnCount()-1};//one column is hidden by default
     auto table{ui->diverSearch_dive->table()};
@@ -98,14 +109,35 @@ void DiveEdit::refreshDiversList()
     for(int i{}; i < rowCount;++i)
     {
         auto index{ui->diverSearch_dive->indexAt(columnCount-1,i)};//modify pre-last column
-        qDebug() << __func__ << "  " << index;
-        qDebug() << index.data();
+            //the last one is the diver id
+//        qDebug() << __func__ << "  " << index;
+//        qDebug() << index.data();
         auto tempCb{new QComboBox()};
-        tempCb->addItem(to_string(info::DiveType::exploration),info::DiveType::exploration);
-        tempCb->addItem(to_string(info::DiveType::technical),info::DiveType::technical);
+        auto diverId{ui->diverSearch_dive->getDiverIdAt(index)};
+        tempCb->addItem(to_string(info::DiveType::exploration),diverId);//set the diver id as meta data
+        tempCb->addItem(to_string(info::DiveType::technical),diverId);
+        tempCb->setCurrentIndex(0);
+        auto diveType{info::getDiveTypeForDiver(m_tempDive,diverId)};
+        tempCb->setCurrentIndex((diveType == info::DiveType::exploration)?0:1);
 
         table->setIndexWidget(index,tempCb);//ownership of tempCb is given to table
+        connect(qobject_cast<QComboBox*>(table->indexWidget(index)),&QComboBox::currentIndexChanged,
+            this,&DiveEdit::slot_diveComboBox);
     }
+}
+
+void DiveEdit::slot_diveComboBox(int index)
+{
+    qDebug() << "''''''''' --- " << __func__ << " --- '''''''''";
+    qDebug() << "##############################################";
+    qDebug() << m_tempDive;
+    qDebug() << "##############################################";
+    QComboBox* box{qobject_cast<QComboBox*>(QObject::sender())};
+    auto diverId{box->itemData(index).value<int>()};
+    setDiveTypeForDiver(m_tempDive,diverId,info::diveTypefrom_string(box->currentText()));
+    qDebug() << "##############################################";
+    qDebug() << m_tempDive;
+    qDebug() << "##############################################";
 }
 
 void DiveEdit::setDive(info::Dive diver){
@@ -133,6 +165,9 @@ void DiveEdit::resetDive(){
 void DiveEdit::on_pb_diverToDive_clicked()
 {
     auto diversIds{ui->diverSearch_global->getSelectedDiversId()};
+    if(!diversIds.size())
+        return;
+
     qDebug() << __func__ <<" ---------------------------------- ";
 //    qDebug() << ui->diverSearch_dive->getDisplayedDiversId();
 
@@ -141,6 +176,28 @@ void DiveEdit::on_pb_diverToDive_clicked()
         qDebug() << "       Selected : " << e;
         m_tempDive.divers.append({e,info::DiveType::exploration});
     }
+
+    refreshDiversList();
+}
+
+
+void DiveEdit::on_pb_diveToDiver_clicked()
+{
+    auto diversIds{ui->diverSearch_dive->getSelectedDiversId()};
+    if(!diversIds.size())
+        return;
+
+    qDebug() << __func__ <<" ---------------------------------- ";
+    qDebug() << m_tempDive;
+
+    for(const auto& e : diversIds)
+    {
+        qDebug() << "       Selected : " << e;
+//        m_tempDive.divers.append({e,info::DiveType::exploration});
+    }
+
+    info::removeDiversFromDive(m_tempDive,diversIds);
+    qDebug() << m_tempDive;
 
     refreshDiversList();
 }

@@ -281,7 +281,7 @@ bool initDB(QSqlDatabase db)
     //table Dives
 
     info::Dive tempDive{-1,QDate::currentDate(),2,{{1,info::DiveType::exploration},{2,info::DiveType::technical}}};
-    info::Dive tempDive2{-1,QDate::currentDate().addDays(-1),1,{{1,info::DiveType::exploration}}};
+    info::Dive tempDive2{-1,QDate::currentDate().addDays(-1),1,{{1,info::DiveType::technical}}};
     info::Dive tempDive3{-1,QDate::currentDate().addDays(1),1,{}};
 
 
@@ -293,6 +293,10 @@ bool initDB(QSqlDatabase db)
         return false;
     }
     if(secondId < 0)
+    {
+        return false;
+    }
+    if(thirdId < 0)
     {
         return false;
     }

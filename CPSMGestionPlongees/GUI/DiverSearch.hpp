@@ -69,6 +69,8 @@ public:
     QVector<int> getSelectedDiversId()const;
     QVector<int> getDisplayedDiversId()const;
 
+    int getDiverIdAt(const QModelIndex& index) const;
+
     //-----
 
 
