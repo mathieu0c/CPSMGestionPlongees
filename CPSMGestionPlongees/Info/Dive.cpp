@@ -81,6 +81,58 @@ int addToDB(Dive &dive, QSqlDatabase db, QString table)
     return lastId;
 }
 
+bool updateDB(Dive& dive,QSqlDatabase db,QString table,bool checkExistence)
+{
+    if(checkExistence)
+    {
+        if(exists(dive,db,table) == -1)//if the diver doesn't exist
+            return false;
+    }
+
+    static const QString queryStr{"UPDATE %1 SET "
+                                  "firstName = ?,"
+                                  "lastName = ?,"
+                                  "email = ?,"
+                                  "phoneNumber = ?,"
+                                  "memberAddressId = ?,"
+                                  "licenseNumber = ?,"
+                                  "certifDate = ?,"
+                                  "diverLevelId = ?,"
+                                  "member = ?,"
+                                  "diveCount = ?,"
+                                  "paidDives = ?,"
+                                  "gear_regulator = ?,"
+                                  "gear_suit = ?,"
+                                  "gear_computer = ?,"
+                                  "gear_jacket = ? "
+                                  "WHERE %1.id = ?"};
+
+//    int addressId{storeInDB(dive.address,db,global::table_diversAddresses)};
+//    diver.address.id = addressId;
+
+//    QSqlQuery query{db};
+//    query.prepare(queryStr.arg(table));
+//    query.addBindValue(diver.firstName);
+//    query.addBindValue(diver.lastName);
+//    query.addBindValue(diver.email);
+//    query.addBindValue(diver.phoneNumber);
+//    query.addBindValue(addressId);
+//    query.addBindValue(diver.licenseNumber);
+//    query.addBindValue(diver.certifDate.toString(global::format_date));
+//    query.addBindValue(diver.diverLevelId);
+//    query.addBindValue(diver.member);
+//    query.addBindValue(diver.diveCount);
+//    query.addBindValue(diver.paidDives);
+//    query.addBindValue(diver.gear_regulator);
+//    query.addBindValue(diver.gear_suit);
+//    query.addBindValue(diver.gear_computer);
+//    query.addBindValue(diver.gear_jacket);
+//    query.addBindValue(diver.id);
+//    query.exec();
+
+    return true;
+}
+
 Dive readDiveFromDB(int id, QSqlDatabase db, QString table)
 {
 //    qDebug() << "##### " << __func__ << " #####";
@@ -143,6 +195,44 @@ Dive readDiveFromDB(int id, QSqlDatabase db, QString table)
 
     return out;
 }
+
+int exists(const Dive& a,QSqlDatabase db,const QString& table)
+{
+    auto temp{db::querySelect(db,"SELECT id FROM %1 WHERE %1.id = ?",{table},{a.id})};
+
+    if(temp.size() > 0)
+    {
+        return temp[0][0].toInt();
+    }
+    return -1;
+}
+
+//int storeInDB(Dive &dive, QSqlDatabase db, const QString &table)
+//{
+//    auto id{exists(dive,db,table)};
+//    if(id == -1)//if the address doesn't exist
+//    {
+//        id = addToDB(dive,db,table);
+//        dive.id = id;
+//        return id;
+//    }
+//    else
+//    {
+//        if(dive.id == -1)
+//            dive.id = id;
+
+//        if(!updateDB(dive,db,table))
+//            return -1;
+//        return id;
+//    }
+
+//    return -1;
+//}
+
+
+
+
+
 
 void removeDiversFromDive(Dive& dive,QVector<int> idList)
 {

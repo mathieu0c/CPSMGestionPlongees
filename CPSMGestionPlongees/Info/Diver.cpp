@@ -2,6 +2,7 @@
 
 #include "Info/global.hpp"
 #include "../global.hpp"
+#include "Info/Generic.hpp"
 
 #include "Data/Database.hpp"
 
@@ -233,27 +234,27 @@ int exists(const Diver& a,QSqlDatabase db,const QString& table)
     return -1;
 }
 
-int storeInDB(Diver &diver, QSqlDatabase db, const QString &table)
-{
-    auto id{exists(diver,db,table)};
-    if(id == -1)//if the address doesn't exist
-    {
-        id = addToDB(diver,db,table);
-        diver.id = id;
-        return id;
-    }
-    else
-    {
-        if(diver.id == -1)
-            diver.id = id;
+//int storeInDB(Diver &diver, QSqlDatabase db, const QString &table)
+//{
+//    auto id{exists(diver,db,table)};
+//    if(id == -1)//if the address doesn't exist
+//    {
+//        id = addToDB(diver,db,table);
+//        diver.id = id;
+//        return id;
+//    }
+//    else
+//    {
+//        if(diver.id == -1)
+//            diver.id = id;
 
-        if(!updateDB(diver,db,table))
-            return -1;
-        return id;
-    }
+//        if(!updateDB(diver,db,table))
+//            return -1;
+//        return id;
+//    }
 
-    return -1;
-}
+//    return -1;
+//}
 
 void removeAllFromDiver(int id, QSqlDatabase db, const QString& table)
 {

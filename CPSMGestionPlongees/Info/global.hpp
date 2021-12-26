@@ -1,6 +1,8 @@
 #ifndef INFO_GLOBAL_HPP
 #define INFO_GLOBAL_HPP
 
+#include <QString>
+
 namespace info
 {
 

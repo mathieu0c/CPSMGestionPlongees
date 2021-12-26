@@ -33,7 +33,7 @@ int exists(const Address& a, QSqlDatabase db, const QString &table);
 //add data if not
 //return data id
 //this function may change a.id
-int storeInDB(Address &a, QSqlDatabase db, const QString &table);
+//int storeInDB(Address &a, QSqlDatabase db, const QString &table);
 
 QString to_string(const Address& address);
 

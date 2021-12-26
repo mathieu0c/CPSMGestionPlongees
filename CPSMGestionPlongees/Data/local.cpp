@@ -4,6 +4,7 @@
 
 #include "Info/Diver.h"
 #include "Info/Dive.h"
+#include "Info/Generic.hpp"
 
 #include <tuple>
 
@@ -270,11 +271,19 @@ bool initDB(QSqlDatabase db)
 
     info::Diver tempDiver{-1,"Mathieu","CHARS",QDate::fromString("1998-10-28",global::format_date),"mathieu@free.fr","0136984125",{-1,"15 rue des miolis","14000","Juin"},"AE-258-36",QDate::fromString("2021-08-01",global::format_date),8,0,5,2,1,0,1,0};
     info::Diver tempDiver2{-1,"Bidule","TRUX",QDate::fromString("1975-01-14",global::format_date),"trux@free.fr","0136984125",{-1,"12 rue des miolis","14000","Juin"},"AE-258-54",QDate::fromString("2021-08-01",global::format_date),8,0,5,2,1,0,1,0};
+    info::Diver tempDiver3{-1,"Nouveau","PLONGEUR",QDate::fromString("1975-01-14",global::format_date),"nouveau@free.fr","0136984125",{-1,"1360 Route","14000","Juillet"},"AE-258-54",QDate::fromString("2021-08-01",global::format_date),8,0,5,2,1,0,1,0};
+    info::Diver tempDiver4{-1,"Machin","TEST",QDate::fromString("1975-01-14",global::format_date),"test@free.fr","0136984125",{-1,"23 route de Sainte Anne","29280","Août"},"AE-258-54",QDate::fromString("2021-08-01",global::format_date),8,0,5,2,1,0,1,0};
 
     if(!info::storeInDB(tempDiver,db,table_divers))
         return false;
 
     if(!info::storeInDB(tempDiver2,db,table_divers))
+        return false;
+
+    if(!info::storeInDB(tempDiver3,db,table_divers))
+        return false;
+
+    if(!info::storeInDB(tempDiver4,db,table_divers))
         return false;
 
 

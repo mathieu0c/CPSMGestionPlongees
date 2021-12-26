@@ -12,6 +12,7 @@
 #include "Info/Dive.h"
 #include "Info/Address.h"
 #include "Info/global.hpp"
+#include "Info/Generic.hpp"
 
 #include <QFile>
 

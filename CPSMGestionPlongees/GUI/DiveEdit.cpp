@@ -29,8 +29,9 @@ DiveEdit::DiveEdit(QWidget *parent) :
     };
 
     ui->diverSearch_global->setSelectionColumns("lastName,firstName,level",{"Nom de famille","Prénom","Niveau"});
-    ui->diverSearch_dive->setSqlJoins(" INNER JOIN %0 ON %1.id = %0.diverId",{global::table_divesMembers,global::table_divers});
-    ui->diverSearch_dive->setSelectionColumns("lastName,firstName,level,diveType",{"Nom de famille","Prénom","Niveau","Type"});
+//    ui->diverSearch_dive->setSqlJoins(" INNER JOIN %0 ON %1.id = %0.diverId",{global::table_divesMembers,global::table_divers});
+    //note that we select two times level to create a column that will be used for DiveType's combobox
+    ui->diverSearch_dive->setSelectionColumns("lastName,firstName,level,level",{"Nom de famille","Prénom","Niveau","Type"});
 
     lambdaConfigureDiverSearch(ui->diverSearch_dive);
     lambdaConfigureDiverSearch(ui->diverSearch_global);
@@ -86,6 +87,7 @@ void DiveEdit::refreshDiverSearchFilters_dive()
         idList += QString::number(e.id)+',';
     }
     idList.chop(1);//remove last ','
+    qDebug() << "   " << __func__ << "      " << idList;
     ui->diverSearch_dive->setFilter("%0.id IN (%1)",{global::table_divers,idList},{});//global::table_divesMembers
 }
 
@@ -161,7 +163,10 @@ void DiveEdit::resetDive(){
     setDive(std::move(m_tempDive));
 }
 
-
+/*
+ * Function called when a list of diver is required to move from the global
+ * listing to the dive listing
+*/
 void DiveEdit::on_pb_diverToDive_clicked()
 {
     auto diversIds{ui->diverSearch_global->getSelectedDiversId()};
@@ -170,12 +175,16 @@ void DiveEdit::on_pb_diverToDive_clicked()
 
     qDebug() << __func__ <<" ---------------------------------- ";
 //    qDebug() << ui->diverSearch_dive->getDisplayedDiversId();
+//    qDebug() << m_tempDive;
 
     for(const auto& e : diversIds)
     {
-        qDebug() << "       Selected : " << e;
+//        qDebug() << "       Selected : " << e;
         m_tempDive.divers.append({e,info::DiveType::exploration});
     }
+
+//    qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~";
+//    qDebug() << m_tempDive;
 
     refreshDiversList();
 }

@@ -43,7 +43,20 @@ struct Dive
 //return the id of the element added. -1 if failed
 int addToDB(Dive &dive, QSqlDatabase db, QString table);
 
+//This function may change diver.address.id
+bool updateDB(Dive &dive, QSqlDatabase db, QString table, bool checkExistence = false);
+
 Dive readDiveFromDB(int id, QSqlDatabase db, QString table);
+
+//search if the diver already exists and return id if true, -1 otherwise
+int exists(const Dive& a, QSqlDatabase db, const QString &table);
+
+//alter data if existing
+//add data if not
+//return data id
+//this function may change diver.id and diver.address.id
+//int storeInDB(Dive& diver, QSqlDatabase db, const QString &table);
+
 
 void removeDiversFromDive(Dive& dive,QVector<int> idList);
 DiveType getDiveTypeForDiver(const Dive& dive,int diverId);

@@ -161,26 +161,26 @@ int exists(const Address& a,QSqlDatabase db,const QString& table)
     return -1;
 }
 
-int storeInDB(Address& a, QSqlDatabase db, const QString &table)
-{
-    auto id{exists(a,db,table)};
-    if(id == -1 && a.id == -1)//if the address doesn't exist by id
-    {
-        id = addToDB(a,db,table);
-        a.id = id;
+//int storeInDB(Address& a, QSqlDatabase db, const QString &table)
+//{
+//    auto id{exists(a,db,table)};
+//    if(id == -1 && a.id == -1)//if the address doesn't exist by id
+//    {
+//        id = addToDB(a,db,table);
+//        a.id = id;
 
-        return id;
-    }
-    else
-    {
-        if(a.id == -1)
-            a.id = id;
+//        return id;
+//    }
+//    else
+//    {
+//        if(a.id == -1)
+//            a.id = id;
 
-        if(!updateDB(a,db,table))
-            return -1;
-        return id;
-    }
-}
+//        if(!updateDB(a,db,table))
+//            return -1;
+//        return id;
+//    }
+//}
 
 QString to_string(const Address& address)
 {

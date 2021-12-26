@@ -49,6 +49,7 @@ HEADERS += \
     Info/Address.h \
     Info/Dive.h \
     Info/Diver.h \
+    Info/Generic.hpp \
     Info/User.h \
     Info/global.hpp \
     global.hpp

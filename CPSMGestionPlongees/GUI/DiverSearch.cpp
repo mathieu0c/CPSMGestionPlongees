@@ -77,6 +77,13 @@ QModelIndex DiverSearch::indexAt(int x, int y) const
 
 void DiverSearch::refreshDiverList()
 {
+    //diveEdit full request old example :
+    //SELECT lastName,firstName,level,diveType,Divers.id FROM Divers
+//        INNER JOIN DiverLevel ON Divers.diverLevelId = DiverLevel.id
+//        INNER JOIN DiversAddresses ON Divers.memberAddressId = DiversAddresses.id
+//        INNER JOIN DivesMembers ON Divers.id = DivesMembers.diverId
+//        WHERE Divers.id IN (1,4) GROUP BY Divers.id ORDER BY lastName ASC
+
     if(ui->tv_divers->model() == nullptr) //if there is no model set in the view
     {
         ui->tv_divers->setModel(new QSqlQueryModel(this));//create it
@@ -143,7 +150,7 @@ void DiverSearch::refreshDiverList()
 
     querStr += QString{" GROUP BY %0.id ORDER BY lastName ASC"}.arg(global::table_divers);
 
-    if(enableDebug)
+    if(enableDebug || true)
         qDebug() << "Diver search query : " << querStr;
     query.prepare(querStr);
 
