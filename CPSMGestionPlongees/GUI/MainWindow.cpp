@@ -202,7 +202,7 @@ void MainWindow::divesSelected(QVector<int> idList)
 
 void MainWindow::diveChangeAccepted(info::Dive dive)
 {
-//    info::storeInDB(diver,QSqlDatabase::database(),global::table_divers);
+    info::storeInDB(dive,QSqlDatabase::database(),global::table_dives);
 
     qDebug() << "Dive accepted : " << dive;
     ui->tab_dives->setCurrentIndex(1);//switch to search dive page

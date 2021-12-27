@@ -176,4 +176,29 @@ int queryCount(QSqlDatabase& db,QString request,const QStringList& argList,const
     return out;
 }
 
+bool queryExist(QSqlDatabase& db,QString request,const QStringList& argList,const QVector<QVariant>& valList)
+{
+    QSqlQuery query{db};
+
+    for(const auto& e : argList)//match argument list
+    {
+        request = request.arg(e);
+    }
+
+    query.prepare(request);//prepare sql query
+
+    for(const auto& e : valList) //bind all values (this way add some injection protection)
+    {
+        query.addBindValue(e);
+    }
+
+    query.exec();
+
+    if(query.next())//if the query returned something
+        return true;
+
+    //else
+    return false;
+}
+
 }//namespace dta

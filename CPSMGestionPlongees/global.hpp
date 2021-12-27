@@ -19,6 +19,16 @@ static const QString table_divesMembers{"DivesMembers"};
 
 static const QString format_date{"yyyy-MM-dd"};
 
+#ifndef __LINE__
+#error "Line macro used for debugging purpose is not defined"
+#endif
+
+#ifndef __FILE__
+#error "File macro used for debugging purpose is not defined"
+#else
+#define _LINE_ QString::number(__LINE__)
+#endif
+
 }
 
 #endif // GLOBAL_HPP

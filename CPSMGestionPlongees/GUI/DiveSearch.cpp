@@ -27,9 +27,9 @@ DiveSearch::DiveSearch(QWidget *parent) :
     ui->de_endDate->setDate(QDate::currentDate());
 
     //nullif(COUNT(DivesMembers.diverId),0)
-    setSelectionColumns(QString{"date,%0.name,COUNT(%1.id)"}.arg(//nullif(COUNT(%1.id),0)"}.arg(
+    setSelectionColumns(QString{"date,%0.name,COUNT(%1.diverId)"}.arg(//nullif(COUNT(%1.id),0)"}.arg(
                             global::table_divingSites,
-                            global::table_dives
+                            global::table_divesMembers
                             ),
                         {"Date","Site","Nombre de plongeurs"});
 
@@ -88,7 +88,7 @@ void DiveSearch::refreshDivesList()
 
     //SELECT date,DivingSites.name,COUNT(DivesMembers.diverId) FROM Dives INNER JOIN DivingSites
     //ON Dives.diveSiteId = DivingSites.id INNER JOIN DivesMembers on DivesMembers.diveId = Dives.id
-    QString querStr{"SELECT %0 FROM %1 INNER JOIN %2 ON %1.diveSiteId = %2.id INNER JOIN "
+    QString querStr{"SELECT %0 FROM %1 INNER JOIN %2 ON %1.diveSiteId = %2.id LEFT JOIN "
                     "%3 ON %3.diveId = %1.id"};
     querStr = querStr.arg(m_sql_divesColumns,
                           global::table_dives,
@@ -124,7 +124,7 @@ void DiveSearch::refreshDivesList()
 //        }
 //        else if(ui->cb_search_firstName->isChecked())
 //        {
-//            filter = "firstName LIKE ?||'%' "+QString(hasFilter?"AND ":"");
+//            filter = "firstName FULLLIKE ?||'%' "+QString(hasFilter?"AND ":"");
 //            valList.append(ui->le_search->text());
 //        }
 //        else if(ui->cb_search_lastName->isChecked())
@@ -148,7 +148,7 @@ void DiveSearch::refreshDivesList()
     //group by to avoid duplicate and sort by date displaying newest at the top
     querStr += QString{" GROUP BY %0.id ORDER BY %0.date DESC"}.arg(global::table_dives);
 
-    if(enableDebug)
+    if(enableDebug || true)
         qDebug() << "Dive search query : " << querStr;
     query.prepare(querStr);
 

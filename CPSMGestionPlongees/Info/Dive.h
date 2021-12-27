@@ -49,7 +49,7 @@ bool updateDB(Dive &dive, QSqlDatabase db, QString table, bool checkExistence = 
 Dive readDiveFromDB(int id, QSqlDatabase db, QString table);
 
 //search if the diver already exists and return id if true, -1 otherwise
-int exists(const Dive& a, QSqlDatabase db, const QString &table);
+bool exists(const Dive& a, QSqlDatabase db, const QString &table);
 
 //alter data if existing
 //add data if not
@@ -66,7 +66,34 @@ QString to_string(DiveType diveType);
 DiveType diveTypefrom_string(const QString& diveType);
 
 QDebug operator<<(QDebug debug, const Dive& m);
+
+//-------------------------------------------------------------------------------------
+//------------------------  MinimalDiver funcs  ---------------------------------------
+//-------------------------------------------------------------------------------------
+
 QDebug operator<<(QDebug debug, const Dive::MinimalDiver& d);
+
+bool addToDB(const Dive::MinimalDiver& diver, int diveId, QSqlDatabase db, QString table);
+
+bool updateDB(const Dive::MinimalDiver &diver, int diveId, QSqlDatabase db, QString table, bool checkExistence = false);
+
+Dive::MinimalDiver readMinimalDiverFromDB(int diverId, int diveId, QSqlDatabase db, QString table);
+
+//search if the minimalDive exist
+bool exists(const Dive::MinimalDiver& diver, int diveId, QSqlDatabase db, const QString &table);
+
+bool storeInDB(const Dive::MinimalDiver& diver,int diveId, QSqlDatabase db, const QString &table);
+
+/*!
+ * \brief removeFromDBNotIn : remove MinimalDivers participating to the dive with id=diveId from DB
+ *                            and that are not in the given list
+ * \param listOfDiversToKeep : list of divers not to remove from the dive with id "diveId"
+ * \param diveId : the dive aimed
+ * \param db
+ * \param table
+ * \return
+ */
+bool removeFromDBNotIn(const QVector<Dive::MinimalDiver>& listOfDiversToKeep,int diveId,QSqlDatabase db,const QString& table);
 
 } // namespace info
 

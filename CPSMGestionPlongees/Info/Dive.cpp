@@ -49,6 +49,7 @@ int addToDB(Dive &dive, QSqlDatabase db, QString table)
     auto temp{db::querySelect(db,"SELECT last_insert_rowid()",{},{})};
     if(temp.size() > 0)
         lastId = temp[0][0].toInt();
+    dive.id = lastId;
 
 
     //--- DiveMembers
@@ -56,16 +57,11 @@ int addToDB(Dive &dive, QSqlDatabase db, QString table)
     {
         if(enableDebug)
             qDebug() << "INSERT INTO : " << global::table_divesMembers;
-        query.prepare(QString{"INSERT INTO %1(diveId,diverId,diveType) VALUES (?,?,?)"}.arg(global::table_divesMembers));
-        query.addBindValue(lastId);
-        query.addBindValue(diver.id);
-        query.addBindValue(to_string(diver.type));
-        query.exec();
+        auto minDiverSuccess{addToDB(diver,dive.id,db,global::table_divesMembers)};
 
-        err = query.lastError();
-        if(err.type() != QSqlError::ErrorType::NoError)
+        if(!minDiverSuccess)
         {
-            QString errStr{QString{"%0 : SQL error : %1"}.arg(__func__,err.text())};
+            QString errStr{QString{"%0 : SQL error : %1"}.arg(__func__,"Minimal Dive addition")};
             qCritical() << errStr;
             QSqlQuery{"ROLLBACK;",db};
             return -1;
@@ -85,50 +81,56 @@ bool updateDB(Dive& dive,QSqlDatabase db,QString table,bool checkExistence)
 {
     if(checkExistence)
     {
-        if(exists(dive,db,table) == -1)//if the diver doesn't exist
+        if(!exists(dive,db,table))//if the dive doesn't exist
             return false;
     }
 
+    QSqlQuery{"BEGIN TRANSACTION;",db};
+
     static const QString queryStr{"UPDATE %1 SET "
-                                  "firstName = ?,"
-                                  "lastName = ?,"
-                                  "email = ?,"
-                                  "phoneNumber = ?,"
-                                  "memberAddressId = ?,"
-                                  "licenseNumber = ?,"
-                                  "certifDate = ?,"
-                                  "diverLevelId = ?,"
-                                  "member = ?,"
-                                  "diveCount = ?,"
-                                  "paidDives = ?,"
-                                  "gear_regulator = ?,"
-                                  "gear_suit = ?,"
-                                  "gear_computer = ?,"
-                                  "gear_jacket = ? "
+                                  "date = ?,"
+                                  "diveSiteId = ? "
                                   "WHERE %1.id = ?"};
 
-//    int addressId{storeInDB(dive.address,db,global::table_diversAddresses)};
-//    diver.address.id = addressId;
+    QSqlQuery query{db};
+    query.prepare(queryStr.arg(table));
+    query.addBindValue(dive.date.toString(global::format_date));
+    query.addBindValue(dive.diveSiteId);
+    query.addBindValue(dive.id);
+    query.exec();
 
-//    QSqlQuery query{db};
-//    query.prepare(queryStr.arg(table));
-//    query.addBindValue(diver.firstName);
-//    query.addBindValue(diver.lastName);
-//    query.addBindValue(diver.email);
-//    query.addBindValue(diver.phoneNumber);
-//    query.addBindValue(addressId);
-//    query.addBindValue(diver.licenseNumber);
-//    query.addBindValue(diver.certifDate.toString(global::format_date));
-//    query.addBindValue(diver.diverLevelId);
-//    query.addBindValue(diver.member);
-//    query.addBindValue(diver.diveCount);
-//    query.addBindValue(diver.paidDives);
-//    query.addBindValue(diver.gear_regulator);
-//    query.addBindValue(diver.gear_suit);
-//    query.addBindValue(diver.gear_computer);
-//    query.addBindValue(diver.gear_jacket);
-//    query.addBindValue(diver.id);
-//    query.exec();
+    auto err = query.lastError();
+    if(err.type() != QSqlError::ErrorType::NoError)
+    {
+        QString errStr{QString{"info::Dive : %0 : SQL error : %1 :"}.arg(__func__,err.text())};
+        qCritical() << errStr;
+        qCritical() << query.lastQuery();
+        QSqlQuery{"ROLLBACK;",db};
+        return -1;
+    }
+
+    for(const auto& diver : dive.divers)
+    {
+        auto minDiverSuccess{storeInDB(diver,dive.id,db,global::table_divesMembers)};
+
+        if(!minDiverSuccess)
+        {
+            QString errStr{QString{"%0 : SQL error : %1"}.arg(__func__,"Minimal Dive addition")};
+            qCritical() << errStr;
+            QSqlQuery{"ROLLBACK;",db};
+            return false;
+        }
+    }
+
+    if(!removeFromDBNotIn(dive.divers,dive.id,db,global::table_divesMembers))
+    {
+        QString errStr{QString{"%0:%1:%2 : SQL error : %3"}.arg(__FILE__,_LINE_,__func__,"Minimal Dive addition")};
+        qCritical() << errStr;
+        QSqlQuery{"ROLLBACK;",db};
+        return false;
+    }
+
+    QSqlQuery{"COMMIT;",db};
 
     return true;
 }
@@ -196,43 +198,10 @@ Dive readDiveFromDB(int id, QSqlDatabase db, QString table)
     return out;
 }
 
-int exists(const Dive& a,QSqlDatabase db,const QString& table)
+bool exists(const Dive& a,QSqlDatabase db,const QString& table)
 {
-    auto temp{db::querySelect(db,"SELECT id FROM %1 WHERE %1.id = ?",{table},{a.id})};
-
-    if(temp.size() > 0)
-    {
-        return temp[0][0].toInt();
-    }
-    return -1;
+    return db::queryExist(db,"SELECT id FROM %1 WHERE %1.id = ?",{table},{a.id});
 }
-
-//int storeInDB(Dive &dive, QSqlDatabase db, const QString &table)
-//{
-//    auto id{exists(dive,db,table)};
-//    if(id == -1)//if the address doesn't exist
-//    {
-//        id = addToDB(dive,db,table);
-//        dive.id = id;
-//        return id;
-//    }
-//    else
-//    {
-//        if(dive.id == -1)
-//            dive.id = id;
-
-//        if(!updateDB(dive,db,table))
-//            return -1;
-//        return id;
-//    }
-
-//    return -1;
-//}
-
-
-
-
-
 
 void removeDiversFromDive(Dive& dive,QVector<int> idList)
 {
@@ -307,6 +276,11 @@ QDebug operator<<(QDebug debug, const Dive& m)
     return debug;
 }
 
+
+//-------------------------------------------------------------------------------------
+//------------------------  MinimalDiver funcs  ---------------------------------------
+//-------------------------------------------------------------------------------------
+
 QDebug operator<<(QDebug debug, const Dive::MinimalDiver& d)
 {
     QDebugStateSaver saver(debug);
@@ -315,6 +289,154 @@ QDebug operator<<(QDebug debug, const Dive::MinimalDiver& d)
     debug.nospace() << "};";
 
     return debug;
+}
+
+bool addToDB(const Dive::MinimalDiver& diver, int diveId, QSqlDatabase db, QString table)
+{
+//    if(!db.isOpen())
+//    {
+//        QString errMsg{QString{"info::Dive::addToDB(MinimalDiver) : %1 : database must be opened before being accessed"}.arg(__func__)};
+
+//        qCritical() << errMsg;
+//        throw std::runtime_error(errMsg.toStdString());
+//        return false;
+//    }%0:%1:%2
+
+    QString strQuery{"INSERT INTO %1(diveId,diverId,diveType) VALUES (?,?,?)"};
+    QSqlQuery query{db};
+    query.prepare(strQuery.arg(table));
+    query.addBindValue(diveId);
+    query.addBindValue(diver.id);
+    query.addBindValue(to_string(diver.type));
+    query.exec();
+
+    auto err = query.lastError();
+    if(err.type() != QSqlError::ErrorType::NoError)
+    {
+        qDebug() << diver;
+        QString errStr{QString{"%0:%1:%2 : SQL error : %3 :"}.arg(__FILE__,__func__,QString::number(__LINE__),err.text())};
+        qCritical() << errStr;
+        qCritical() << query.lastQuery();
+        return false;
+    }
+
+    return true;
+}
+
+bool updateDB(const Dive::MinimalDiver &diver, int diveId, QSqlDatabase db, QString table, bool checkExistence)
+{
+    if(checkExistence)
+    {
+        if(!exists(diver,diveId,db,table))//if the dive doesn't exist
+            return false;
+    }
+
+    static const QString queryStr{"UPDATE %1 SET "
+                                  "diveType = ? "
+                                  "WHERE %1.diveId = ? AND %1.diverId = ?"};
+
+    QSqlQuery query{db};
+    query.prepare(queryStr.arg(table));
+    query.addBindValue(to_string(diver.type));
+    query.addBindValue(diveId);
+    query.addBindValue(diver.id);
+    query.exec();
+
+    auto err{query.lastError()};
+    if(err.type() != QSqlError::ErrorType::NoError)
+    {
+        QString errStr{QString{"%0 : SQL error : %1"}.arg(__func__,err.text())};
+        qCritical() << errStr;
+        return false;
+    }
+
+    return true;
+}
+
+
+Dive::MinimalDiver readMinimalDiverFromDB(int diverId, int diveId, QSqlDatabase db, QString table)
+{
+    static const QString queryStr{"SELECT * FROM %1 WHERE diveId=? AND diverId=?"};
+    QSqlQuery query{db};
+    query.prepare(queryStr.arg(table));
+    query.addBindValue(diveId);
+    query.addBindValue(diverId);
+    query.exec();
+
+    Dive::MinimalDiver out{};
+
+    if(!query.next())//if nothing was found
+    {
+        if(enableDebug)
+        {
+            qDebug() << __func__ << " : No MiniMalDive found with diveId : " << diveId << "  and  diverId : " << diverId;
+        }
+        return out;
+    }
+
+    if(enableDebug)
+    {
+        qDebug() << "----------- " << __func__ << " -----------";
+        qDebug() << "Query column count : " << query.record().count();
+    }
+
+    auto err{query.lastError()};
+    if(err.type() != QSqlError::ErrorType::NoError)
+    {
+        QString errStr{QString{"%0 : SQL error : %1"}.arg(__func__,err.text())};
+        qCritical() << errStr;
+        return out;
+    }
+
+    int currentIndex{1};//skip diveId value which will not be used
+
+//    diveId = query.value(currentIndex++).value<int>();
+    out.id = query.value(currentIndex++).value<int>();
+    out.type = diveTypefrom_string(query.value(currentIndex++).toString());
+
+    return out;
+}
+
+bool exists(const Dive::MinimalDiver& diver, int diveId, QSqlDatabase db, const QString &table)
+{
+    return db::queryExist(db,"SELECT * FROM %0 WHERE diveId=? AND diverId=?",{table},{diveId,diver.id});
+}
+
+bool storeInDB(const Dive::MinimalDiver& diver,int diveId, QSqlDatabase db, const QString &table)
+{
+    auto exist{exists(diver,diveId,db,table)};
+    if(!exist)//if the object doesn't exist
+    {
+        auto success = addToDB(diver,diveId,db,table);
+        return success;
+    }
+    //if the diver exists
+    return updateDB(diver,diveId,db,table);
+}
+
+bool removeFromDBNotIn(const QVector<Dive::MinimalDiver>& listOfDiversToKeep,int diveId,QSqlDatabase db,const QString& table)
+{
+    QString idList{};
+    for(const auto& e : listOfDiversToKeep)
+    {
+        idList += QString::number(e.id)+',';
+    }
+    idList.chop(1);//remove last ','
+
+    static const QString queryStr{"DELETE FROM %0 WHERE diveId=? AND diverId NOT IN (%1)"};
+    QSqlQuery query{db};
+    query.prepare(queryStr.arg(table,std::move(idList)));
+    query.addBindValue(diveId);
+    query.exec();
+
+    auto err{query.lastError()};
+    if(err.type() != QSqlError::ErrorType::NoError)
+    {
+        QString errStr{QString{"%0:%1:%2 : SQL error : %3"}.arg(__FILE__,_LINE_,__func__,err.text())};
+        qCritical() << errStr;
+        return false;
+    }
+    return true;
 }
 
 } // namespace info

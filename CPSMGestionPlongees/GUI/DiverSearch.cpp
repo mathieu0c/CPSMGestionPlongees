@@ -150,13 +150,12 @@ void DiverSearch::refreshDiverList()
 
     querStr += QString{" GROUP BY %0.id ORDER BY lastName ASC"}.arg(global::table_divers);
 
-    if(enableDebug || true)
+    if(enableDebug)
         qDebug() << "Diver search query : " << querStr;
     query.prepare(querStr);
 
     for(const auto& val : valList)
     {
-        qDebug() << "    BIND : " << val;
         query.addBindValue(val);
     }
 

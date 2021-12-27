@@ -32,6 +32,8 @@ QVector<QVector<QVariant>> querySelect(QSqlDatabase& db,QString request,const QS
  */
 int queryCount(QSqlDatabase& db,QString request,const QStringList& argList,const QVector<QVariant>& valList);
 
+bool queryExist(QSqlDatabase& db,QString request,const QStringList& argList,const QVector<QVariant>& valList);
+
 //----------------- Local
 
 bool createDB(QSqlDatabase db = QSqlDatabase::database());
