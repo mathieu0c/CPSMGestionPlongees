@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>648</width>
-    <height>591</height>
+    <width>671</width>
+    <height>593</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -570,6 +570,9 @@
      </property>
     </widget>
    </item>
+   <item row="2" column="2">
+    <widget class="gui::DiveSearch" name="diveSearch" native="true"/>
+   </item>
   </layout>
   <zorder>gb_contact</zorder>
   <zorder>gb_personal</zorder>
@@ -578,7 +581,16 @@
   <zorder>gb_dive</zorder>
   <zorder>pb_family</zorder>
   <zorder>line_6</zorder>
+  <zorder>diveSearch</zorder>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>gui::DiveSearch</class>
+   <extends>QWidget</extends>
+   <header>GUI/DiveSearch.hpp</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

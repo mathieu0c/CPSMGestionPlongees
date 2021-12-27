@@ -68,6 +68,8 @@ void DiveSearch::setFilter(QString newFilter,const QStringList& argList,QVector<
     {
         m_filter = m_filter.arg(e);
     }
+
+    qDebug() << "    ->->->->->->->->->" << m_filter;
 }
 
 int DiveSearch::getRowCount(){
@@ -103,7 +105,7 @@ void DiveSearch::refreshDivesList()
     QString filter{};
     QVector<QVariant> valList{};
 
-    setFilter("date >= date(?) AND date <= date(?)",{},{ui->de_beginDate->date().toString(global::format_date),
+    addFilter("date >= date(?) AND date <= date(?)",{},{ui->de_beginDate->date().toString(global::format_date),
                                          ui->de_endDate->date().toString(global::format_date)});
 
 

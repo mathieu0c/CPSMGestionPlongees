@@ -66,6 +66,13 @@ DiverEdit::DiverEdit(QWidget *parent) :
             ui->sb_payment->setValue(ui->sb_payment->value()+1);});
     connect(ui->pb_paymentMinus,&QPushButton::clicked,[&](){
             ui->sb_payment->setValue(ui->sb_payment->value()-1);});
+
+    ui->diveSearch->setHiddenButton(true);
+    ui->diveSearch->setSelectionColumns(QString{"date,%0.name"}.arg(
+                            global::table_divingSites,
+                            global::table_divesMembers
+                            ),
+                        {"Date","Site","Nombre de plongeurs"});
 }
 
 DiverEdit::~DiverEdit()
@@ -122,6 +129,9 @@ void DiverEdit::setDiver(info::Diver diver){
 
 
     computeDivingCount();
+
+    ui->diveSearch->setFilter("%0.diverId = ?",{global::table_divesMembers},{diver.id});
+    ui->diveSearch->refreshDivesList();
 
 //    ui->le_address->setText(m_tempDiver.address);
 }

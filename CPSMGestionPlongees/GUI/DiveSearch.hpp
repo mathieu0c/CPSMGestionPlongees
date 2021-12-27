@@ -31,6 +31,10 @@ public:
     void setSelectionMode(QAbstractItemView::SelectionMode mode);
 
     void setFilter(QString newFilter,const QStringList& argList = {},QVector<QVariant> filterValues = {});
+    void addFilter(const QString& newFilter,const QStringList& argList = {},const QVector<QVariant>& filterValues = {})
+    {
+        setFilter(m_filter+(m_filter.isEmpty()?"":" AND ")+newFilter,argList,m_filterValues+filterValues);
+    }
 
     void setSelectionColumns(QString sqlColumns,QStringList columnsNames = {}){
         m_sql_divesColumns = std::move(sqlColumns);

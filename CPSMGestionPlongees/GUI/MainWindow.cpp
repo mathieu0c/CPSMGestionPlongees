@@ -109,6 +109,7 @@ void MainWindow::diversSelected(QVector<int> idList)
     auto tempDiver{info::readDiverFromDB(id,QSqlDatabase::database(),global::table_divers)};
 
     ui->pg_editDiver->setDiver(std::move(tempDiver));
+
     ui->tab_divers->setCurrentIndex(1);
 }
 
