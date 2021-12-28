@@ -219,10 +219,6 @@ Dive readDiveFromDB(int id, QSqlDatabase db, QString table)
     }
 
     int currentIndex{};
-    qDebug() << "-------------------------------------";
-    qDebug() << query.value(currentIndex);
-    qDebug() << query.value(currentIndex+1);
-    qDebug() << query.value(currentIndex+2);
 
     out.id = query.value(currentIndex++).value<int>();
     out.date = QDate::fromString(query.value(currentIndex++).value<QString>(),global::format_date);

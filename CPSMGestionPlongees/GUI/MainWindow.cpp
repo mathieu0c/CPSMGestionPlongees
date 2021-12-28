@@ -233,7 +233,6 @@ void MainWindow::on_pb_deleteDive_clicked()
 
     for(const auto& id : divesIds)
     {
-        qDebug() << "ID : " << id;
         auto dive{info::readDiveFromDB(id,db,global::table_dives)};
         auto dbDiveSite{db::querySelect(db,"SELECT name FROM %0 WHERE id=?",{global::table_divingSites},{dive.diveSiteId})};
         diveListConfirmation.append(QString{"%0 - %1 (%2 "}.arg(dive.date.toString(global::format_date),
@@ -249,7 +248,6 @@ void MainWindow::on_pb_deleteDive_clicked()
 
     for(const auto& e : diveList)
     {
-        qDebug() <<"Removing : " << e;
         auto success{info::removeAllFromDB(e,QSqlDatabase::database(),global::table_dives)};
         if(!success)
             ui->statusbar->showMessage("Cannot delete asked dives");
