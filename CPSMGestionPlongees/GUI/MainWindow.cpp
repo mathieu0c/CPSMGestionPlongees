@@ -221,6 +221,9 @@ void MainWindow::diveChangeRejected()
 void MainWindow::on_pb_deleteDive_clicked()
 {
     auto divesIds{ui->mainDiveSearch->getSelectedDivesId()};
+    if(!divesIds.size())
+        return;
+
     QVector<info::Dive> diveList{};
     diveList.reserve(divesIds.size());
 
