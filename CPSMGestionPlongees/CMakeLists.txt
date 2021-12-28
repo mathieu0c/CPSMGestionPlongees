@@ -23,7 +23,7 @@ find_package(Qt6 COMPONENTS Gui REQUIRED)
 find_package(Qt6 COMPONENTS Widgets REQUIRED)
 find_package(Qt6 COMPONENTS Sql REQUIRED)
 
-add_executable(CPSMGestionPlongees #WIN32 MACOSX_BUNDLE
+qt_add_executable(CPSMGestionPlongees WIN32 MACOSX_BUNDLE
     Data/Database.cpp Data/Database.hpp
     Data/global.cpp
     Data/local.cpp

@@ -177,7 +177,7 @@ void DiveSearch::refreshDivesList()
             ui->tv_dives->model()->setHeaderData(i,Qt::Horizontal,m_gui_divesColumnsNames[i]);
         }
         //hide the last column
-//        ui->tv_dives->setColumnHidden(ui->tv_dives->model()->columnCount()-1,true);
+        ui->tv_dives->setColumnHidden(ui->tv_dives->model()->columnCount()-1,true);
         m_initGui = true;
     }
     ui->tv_dives->resizeColumnsToContents();

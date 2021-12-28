@@ -169,7 +169,7 @@ void DiverSearch::refreshDiverList()
     }
 
 
-    qobject_cast<QSqlQueryModel*>(ui->tv_divers->model())->setQuery(query);
+    qobject_cast<QSqlQueryModel*>(ui->tv_divers->model())->setQuery(std::move(query));
 
     if(db().isOpen() && !m_initGui)
     {
