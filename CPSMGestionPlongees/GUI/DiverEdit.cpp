@@ -69,8 +69,7 @@ DiverEdit::DiverEdit(QWidget *parent) :
 
     ui->diveSearch->setHiddenButton(true);
     ui->diveSearch->setSelectionColumns(QString{"date,%0.name"}.arg(
-                            global::table_divingSites,
-                            global::table_divesMembers
+                            global::table_divingSites
                             ),
                         {"Date","Site","Nombre de plongeurs"});
 }

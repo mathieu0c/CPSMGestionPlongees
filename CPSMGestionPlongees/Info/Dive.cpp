@@ -13,6 +13,55 @@
 namespace info
 {
 
+bool removeAllFromDB(const Dive& dive,QSqlDatabase db, const QString& table)
+{
+    QSqlQuery{"BEGIN TRANSACTION;",db};
+
+    //------------------------- Delete from DivesMembers table
+    QString idList{};
+    for(const auto& e : dive.divers)
+    {
+        idList += QString::number(e.id)+',';
+    }
+    idList.chop(1);//remove last ','
+
+    static const QString queryStr{"DELETE FROM %0 WHERE diveId=? AND diverId IN (%1)"};
+    QSqlQuery query{db};
+    query.prepare(queryStr.arg(global::table_divesMembers,std::move(idList)));
+    query.addBindValue(dive.id);
+    query.exec();
+
+    auto err{query.lastError()};
+    if(err.type() != QSqlError::ErrorType::NoError)
+    {
+        QString errStr{QString{"%0:%1:%2 : SQL error : %3"}.arg(__FILE__,_LINE_,__func__,err.text())};
+        qCritical() << errStr;
+        QSqlQuery{"ROLLBACK;",db};
+        return false;
+    }
+
+    //------------------------- Delete from Dives table
+
+    static const QString queryStr2{"DELETE FROM %0 WHERE id=?"};
+    QSqlQuery query2{db};
+    query2.prepare(queryStr2.arg(table));
+    query2.addBindValue(dive.id);
+    query2.exec();
+
+    auto err2{query2.lastError()};
+    if(err2.type() != QSqlError::ErrorType::NoError)
+    {
+        QString errStr{QString{"%0:%1:%2 : SQL error : %3"}.arg(__FILE__,_LINE_,__func__,err.text())};
+        qCritical() << errStr;
+        QSqlQuery{"ROLLBACK;",db};
+        return false;
+    }
+
+    QSqlQuery{"COMMIT;",db};
+
+    return true;
+}
+
 //return the id of the element added. -1 if failed
 int addToDB(Dive &dive, QSqlDatabase db, QString table)
 {
@@ -170,6 +219,10 @@ Dive readDiveFromDB(int id, QSqlDatabase db, QString table)
     }
 
     int currentIndex{};
+    qDebug() << "-------------------------------------";
+    qDebug() << query.value(currentIndex);
+    qDebug() << query.value(currentIndex+1);
+    qDebug() << query.value(currentIndex+2);
 
     out.id = query.value(currentIndex++).value<int>();
     out.date = QDate::fromString(query.value(currentIndex++).value<QString>(),global::format_date);

@@ -68,8 +68,6 @@ void DiveSearch::setFilter(QString newFilter,const QStringList& argList,QVector<
     {
         m_filter = m_filter.arg(e);
     }
-
-    qDebug() << "    ->->->->->->->->->" << m_filter;
 }
 
 int DiveSearch::getRowCount(){
@@ -150,7 +148,7 @@ void DiveSearch::refreshDivesList()
     //group by to avoid duplicate and sort by date displaying newest at the top
     querStr += QString{" GROUP BY %0.id ORDER BY %0.date DESC"}.arg(global::table_dives);
 
-    if(enableDebug || true)
+    if(enableDebug)
         qDebug() << "Dive search query : " << querStr;
     query.prepare(querStr);
 
@@ -179,7 +177,7 @@ void DiveSearch::refreshDivesList()
             ui->tv_dives->model()->setHeaderData(i,Qt::Horizontal,m_gui_divesColumnsNames[i]);
         }
         //hide the last column
-        ui->tv_dives->setColumnHidden(ui->tv_dives->model()->columnCount()-1,true);
+//        ui->tv_dives->setColumnHidden(ui->tv_dives->model()->columnCount()-1,true);
         m_initGui = true;
     }
     ui->tv_dives->resizeColumnsToContents();

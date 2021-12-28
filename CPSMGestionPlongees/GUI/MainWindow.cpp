@@ -216,4 +216,27 @@ void MainWindow::diveChangeRejected()
     ui->mainDiveSearch->refreshDivesList();
 }
 
+
+void MainWindow::on_pb_deleteDive_clicked()
+{
+    auto divesIds{ui->mainDiveSearch->getSelectedDivesId()};
+    QVector<info::Dive> diveList{};
+    diveList.reserve(divesIds.size());
+    for(const auto& id : divesIds)
+    {
+        qDebug() << "ID : " << id;
+        diveList.append(info::readDiveFromDB(id,QSqlDatabase::database(),global::table_dives));
+    }
+
+    for(const auto& e : diveList)
+    {
+        qDebug() <<"Removing : " << e;
+        auto success{info::removeAllFromDB(e,QSqlDatabase::database(),global::table_dives)};
+        if(!success)
+            ui->statusbar->showMessage("Cannot delete asked dives");
+    }
+
+    ui->mainDiveSearch->refreshDivesList();
+}
+
 }//namespace gui

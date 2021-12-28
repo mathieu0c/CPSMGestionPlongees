@@ -40,6 +40,14 @@ struct Dive
 
 };
 
+/*!
+ * \brief removeAllFromDB : Remove all component in all tables linked to dive
+ * \param dive
+ * \param db
+ * \param table
+ */
+bool removeAllFromDB(const Dive& dive,QSqlDatabase db, const QString& table);
+
 //return the id of the element added. -1 if failed
 int addToDB(Dive &dive, QSqlDatabase db, QString table);
 

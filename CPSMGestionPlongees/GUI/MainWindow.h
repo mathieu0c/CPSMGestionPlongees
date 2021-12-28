@@ -41,6 +41,8 @@ private slots:
     void diveChangeAccepted(info::Dive dive);
     void diveChangeRejected();
 
+    void on_pb_deleteDive_clicked();
+
 private:
     Ui::MainWindow *ui;
 };
