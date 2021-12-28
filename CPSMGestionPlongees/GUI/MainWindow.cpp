@@ -4,6 +4,7 @@
 
 #include "GUI/DiverEdit.h"
 #include "GUI/Dialog_ConfirmDiverDeletion.h"
+#include "GUI/Dialog_ConfirmDiveDeletion.hpp"
 
 #include "../global.hpp"
 #include "GUI/global.hpp"
@@ -222,11 +223,26 @@ void MainWindow::on_pb_deleteDive_clicked()
     auto divesIds{ui->mainDiveSearch->getSelectedDivesId()};
     QVector<info::Dive> diveList{};
     diveList.reserve(divesIds.size());
+
+    QStringList diveListConfirmation{diveList.size()};
+
+    auto db{QSqlDatabase::database()};
+
     for(const auto& id : divesIds)
     {
         qDebug() << "ID : " << id;
-        diveList.append(info::readDiveFromDB(id,QSqlDatabase::database(),global::table_dives));
+        auto dive{info::readDiveFromDB(id,db,global::table_dives)};
+        auto dbDiveSite{db::querySelect(db,"SELECT name FROM %0 WHERE id=?",{global::table_divingSites},{dive.diveSiteId})};
+        diveListConfirmation.append(QString{"%0 - %1 (%2 "}.arg(dive.date.toString(global::format_date),
+                                                                dbDiveSite[0][0].toString()).arg(dive.divers.size())+tr("plongeurs")+")");
+        diveList.append(std::move(dive));
     }
+
+
+    auto confirmed{gui::Dialog_ConfirmDiveDeletion::confirmDeletion(diveListConfirmation,this)};
+
+    if(!confirmed)
+        return;
 
     for(const auto& e : diveList)
     {

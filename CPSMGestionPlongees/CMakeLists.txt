@@ -31,6 +31,7 @@ add_executable(CPSMGestionPlongees #WIN32 MACOSX_BUNDLE
     Debug/LogFile.cpp Debug/LogFile.hpp
     Debug/Utils.cpp Debug/Utils.h
     Debug/global.cpp Debug/global.hpp
+    GUI/Dialog_ConfirmDiveDeletion.hpp GUI/Dialog_ConfirmDiveDeletion.cpp GUI/Dialog_ConfirmDiveDeletion.ui
     GUI/Dialog_ConfirmDiverDeletion.cpp GUI/Dialog_ConfirmDiverDeletion.h GUI/Dialog_ConfirmDiverDeletion.ui
     GUI/Dialog_EditFamily.cpp GUI/Dialog_EditFamily.h GUI/Dialog_EditFamily.ui
     GUI/DiveEdit.cpp GUI/DiveEdit.h GUI/DiveEdit.ui
