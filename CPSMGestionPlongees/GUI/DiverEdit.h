@@ -39,7 +39,6 @@ public:
 
     void resetDiver();
 
-
 signals:
     void endEditing(const info::Diver& diver);
     void rejectedEditing();

@@ -5,6 +5,8 @@
 
 #include "GUI/global.hpp"
 #include "GUI/Dialog_EditFamily.h"
+#include "GUI/DiveEdit.h"
+#include "Info/Dive.h"
 
 namespace gui
 {
@@ -72,6 +74,11 @@ DiverEdit::DiverEdit(QWidget *parent) :
                             global::table_divingSites
                             ),
                         {"Date","Site","Type"});
+
+    connect(ui->diveSearch,&gui::DiveSearch::divesSelected,[&](QVector<int> idList){
+        auto dive{info::readDiveFromDB(idList[0],QSqlDatabase::database(),global::table_dives)};
+        gui::DiveEdit::displayDive(dive,this);
+    });
 }
 
 DiverEdit::~DiverEdit()

@@ -13,6 +13,8 @@
 #include "Info/Diver.h"
 
 #include <QLineEdit>
+#include <QCheckBox>
+#include <QPushButton>
 
 namespace gui
 {
@@ -67,10 +69,40 @@ void DiveEdit::refreshSiteList(const QString& siteTable)
 
     auto divingSites{db::querySelect(QSqlDatabase::database(),"SELECT id,name FROM %0 ORDER BY name",{siteTable},{})};
 
+    qDebug() << "______________" <<__func__;
     for(const auto& line : divingSites)
     {
-        ui->cb_diveSite->addItem(line[1].toString(),line[0].toInt());
+        ui->cb_diveSite->addItem(line[1].toString(),line[0]);
+        qDebug()<< __CURRENT_PLACE__ << "    ----> " << line[0];
     }
+}
+
+void DiveEdit::setEditable(bool enable)
+{
+    m_isEditable = enable;
+    global::tools::applyToChildren<QComboBox*>(this,[&](QComboBox* box){box->setEnabled(false);});
+    global::tools::applyToChildren<QDateEdit*>(this,[&](QDateEdit* box){box->setReadOnly(true);});
+    global::tools::applyToChildren<QTimeEdit*>(this,[&](QTimeEdit* box){box->setReadOnly(true);});
+
+    //disable combo box for type selection
+    auto rowCount{ui->diverSearch_dive->getRowCount()};
+    auto columnCount{ui->diverSearch_dive->getColumnCount()-1};//one column is hidden by default
+    auto table{ui->diverSearch_dive->table()};
+
+    for(int i{}; i < rowCount;++i)
+    {
+        auto index{ui->diverSearch_dive->indexAt(columnCount-1,i)};//modify pre-last column (comboboxes for type)
+            //the last one is the diver id
+
+        auto cb{qobject_cast<QComboBox*>(table->indexWidget(index))};
+        if(cb != nullptr)
+            cb->setEnabled(enable);
+    }
+
+    //hide/show (un)necessary widgets
+    //hide/show buttons
+    global::tools::applyToChildren<QPushButton*>(this,[&](QPushButton* pb){pb->setVisible(enable);});
+    ui->diverSearch_global->setVisible(enable);
 }
 
 void DiveEdit::refreshDiverSearchFilters_global()
@@ -109,6 +141,7 @@ void DiveEdit::refreshDiversList()
 
 void DiveEdit::refreshDiversListComboBox()
 {
+    return;
     auto rowCount{ui->diverSearch_dive->getRowCount()};
     auto columnCount{ui->diverSearch_dive->getColumnCount()-1};//one column is hidden by default
     auto table{ui->diverSearch_dive->table()};
@@ -126,6 +159,9 @@ void DiveEdit::refreshDiversListComboBox()
         tempCb->setCurrentIndex(0);
         auto diveType{info::getDiveTypeForDiver(m_tempDive,diverId)};
         tempCb->setCurrentIndex((diveType == info::DiveType::exploration)?0:1);
+        if(!m_isEditable)//if the widget isn't in editable mode
+            tempCb->setEnabled(false);
+        //it's enabled by default
 
         table->setIndexWidget(index,tempCb);//ownership of tempCb is given to table
         connect(qobject_cast<QComboBox*>(table->indexWidget(index)),&QComboBox::currentIndexChanged,
@@ -151,6 +187,14 @@ void DiveEdit::setDive(info::Dive diver){
 
     ui->de_diveDate->setDate(m_tempDive.date);
     ui->te_diveTime->setTime(m_tempDive.time);
+
+    auto cbIndex{ui->cb_diveSite->findData(QVariant(m_tempDive.diveSiteId))};
+    if(cbIndex != -1)
+    {
+        ui->cb_diveSite->setCurrentIndex(cbIndex);
+    }
+    else
+        ui->cb_diveSite->setCurrentIndex(0);
 
     refreshDiversList();
 }

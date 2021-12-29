@@ -2,6 +2,7 @@
 #define GLOBAL_GLOBAL_HPP
 
 #include <QString>
+#include <QObject>
 
 namespace global
 {
@@ -36,6 +37,22 @@ static const QString format_time{"HH:mm:ss"};
 
 #define __CURRENT_PLACE__ QString{"%0 : <%1> : %2"}.arg(__FILENAME__,__func__,_LINE_)
 
+
+//------------- Tools
+
+namespace tools
+{
+template<typename T,typename UnaryFunction>
+void applyToChildren(QObject* parent,UnaryFunction lambda)
+{
+    auto objList{parent->findChildren<T>()};
+    for(const auto& e : objList)
+    {
+        lambda(e);
+    }
 }
+}//namespace tools
+
+}//namespace global
 
 #endif // GLOBAL_HPP

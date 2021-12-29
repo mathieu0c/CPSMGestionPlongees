@@ -83,6 +83,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->mainDiveSearch->setHiddenButton(true);
     ui->mainDiveSearch->refreshDivesList();
+
+//    debugging purpose
+//    ui->pg_editDive->setEditable(false);
 }
 
 MainWindow::~MainWindow()

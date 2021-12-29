@@ -5,7 +5,9 @@
 #include <QStringList>
 
 #include "Info/Dive.h"
+#include "../global.hpp"
 
+#include <QDialog>
 
 namespace Ui {
 class DiveEdit;
@@ -24,6 +26,8 @@ public:
 
     void refreshSiteList(const QString &siteTable);
 
+    void setEditable(bool isEditable);
+
     void refreshDiversList();
     void refreshDiverSearchFilters_global();
     void refreshDiverSearchFilters_dive();
@@ -39,6 +43,18 @@ public:
 
     void resetDive();
 
+public:
+static void displayDive(const info::Dive& dive,QWidget* parent)
+{
+    QDialog dial(parent);
+
+    DiveEdit de{&dial};
+    de.refreshSiteList(global::table_divingSites);
+    de.setEditable(false);
+    de.setDive(dive);
+
+    dial.exec();
+}
 
 signals:
     void endEditing(const info::Dive& dive);
@@ -61,6 +77,7 @@ private slots:
 private:
     Ui::DiveEdit *ui;
 
+    bool m_isEditable{true};
     info::Dive m_tempDive{};
 };
 

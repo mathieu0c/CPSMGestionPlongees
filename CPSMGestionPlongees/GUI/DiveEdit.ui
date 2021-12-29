@@ -98,6 +98,21 @@
       <string>Plongeurs</string>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
+       <number>0</number>
+      </property>
       <item>
        <widget class="gui::DiverSearch" name="diverSearch_global" native="true">
         <property name="sizePolicy">
@@ -118,7 +133,7 @@
        </widget>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="hlay_pb_selectDiver">
+       <layout class="QVBoxLayout" name="vlay_pb_selectDiver">
         <property name="sizeConstraint">
          <enum>QLayout::SetDefaultConstraint</enum>
         </property>
