@@ -49,6 +49,8 @@ static void displayDive(const info::Dive& dive,QWidget* parent)
 {
     QDialog dial(parent);
 
+    qDebug() << "    " << __CURRENT_PLACE__;
+
     DiveEdit de{&dial};
     de.refreshSiteList(global::table_divingSites);
     de.setEditable(false);

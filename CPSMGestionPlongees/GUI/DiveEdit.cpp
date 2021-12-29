@@ -139,13 +139,15 @@ void DiveEdit::refreshDiversList()
 
 void DiveEdit::refreshDiversListComboBox()
 {
-    return;
+//    return;
     auto rowCount{ui->diverSearch_dive->getRowCount()};
     auto columnCount{ui->diverSearch_dive->getColumnCount()-1};//one column is hidden by default
     auto table{ui->diverSearch_dive->table()};
 
+    qDebug() << __CURRENT_PLACE__;
     for(int i{}; i < rowCount;++i)
     {
+        qDebug() << i;
         auto index{ui->diverSearch_dive->indexAt(columnCount-1,i)};//modify pre-last column
             //the last one is the diver id
 //        qDebug() << __func__ << "  " << index;
@@ -161,9 +163,12 @@ void DiveEdit::refreshDiversListComboBox()
             tempCb->setEnabled(false);
         //it's enabled by default
 
+        auto oldCb{qobject_cast<QComboBox*>(table->indexWidget(index))};
+
         table->setIndexWidget(index,tempCb);//ownership of tempCb is given to table
         connect(qobject_cast<QComboBox*>(table->indexWidget(index)),&QComboBox::currentIndexChanged,
             this,&DiveEdit::slot_diveComboBox);
+        delete oldCb;//free no more used objects
     }
 }
 

@@ -134,6 +134,9 @@
       </item>
       <item>
        <layout class="QVBoxLayout" name="vlay_pb_selectDiver">
+        <property name="spacing">
+         <number>10</number>
+        </property>
         <property name="sizeConstraint">
          <enum>QLayout::SetDefaultConstraint</enum>
         </property>

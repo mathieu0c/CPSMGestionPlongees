@@ -164,7 +164,7 @@ void DiverSearch::refreshDiverList()
     auto err = query.lastError();
     if(err.type() != QSqlError::ErrorType::NoError)
     {
-        QString errStr{QString{"%0 : SQL error : %1"}.arg(__func__,err.text())};
+        QString errStr{QString{"%0 : SQL error : %1"}.arg(__CURRENT_PLACE__,err.text())};
         qCritical() << errStr;
     }
 
