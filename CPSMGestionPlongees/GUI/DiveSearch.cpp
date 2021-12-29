@@ -95,23 +95,17 @@ void DiveSearch::refreshDivesList()
                           global::table_divingSites,
                           global::table_divesMembers);
 
-    //auto querStrFirstName{querStr+" WHERE firstName LIKE ?||'%'"};
-    //auto querStrLastName{querStr+" WHERE lastName LIKE ?||'%'"};
     QSqlQuery query{db()};
 
-    bool hasFilter{!m_filter.isEmpty()};
-    QString filter{};
-    QVector<QVariant> valList{};
+    QString filter{"date >= date(?) AND date <= date(?)"};
+    QVector<QVariant> valList{
+                                ui->de_beginDate->date().toString(global::format_date),
+                                ui->de_endDate->date().toString(global::format_date)
+                             };
 
-    addFilter("date >= date(?) AND date <= date(?)",{},{ui->de_beginDate->date().toString(global::format_date),
-                                         ui->de_endDate->date().toString(global::format_date)});
 
-
-    filter += m_filter;
+    filter += (m_filter.isEmpty()?"":" AND ") + m_filter;
     valList += m_filterValues;
-
-//    qDebug() << "Member filter : " << m_filter;
-//    qDebug() << "Filter : " << filter;
 
     if(!filter.isEmpty())
     {
@@ -121,8 +115,6 @@ void DiveSearch::refreshDivesList()
     //group by to avoid duplicate and sort by date displaying newest at the top
     querStr += QString{" GROUP BY %0.id ORDER BY %0.date DESC"}.arg(global::table_dives);
 
-//    if(enableDebug)
-//        qDebug() << "Dive search query : " << querStr;
     query.prepare(querStr);
 
     for(const auto& val : valList)
@@ -132,7 +124,7 @@ void DiveSearch::refreshDivesList()
 
     query.exec();
 
-    if(enableDebug || true)
+    if(enableDebug)
     {
         qDebug() << __CURRENT_PLACE__ << " : Refresh list query : ";
         qDebug() << query.executedQuery();
