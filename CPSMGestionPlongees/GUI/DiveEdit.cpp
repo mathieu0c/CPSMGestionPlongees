@@ -69,11 +69,9 @@ void DiveEdit::refreshSiteList(const QString& siteTable)
 
     auto divingSites{db::querySelect(QSqlDatabase::database(),"SELECT id,name FROM %0 ORDER BY name",{siteTable},{})};
 
-    qDebug() << "______________" <<__func__;
     for(const auto& line : divingSites)
     {
         ui->cb_diveSite->addItem(line[1].toString(),line[0]);
-        qDebug()<< __CURRENT_PLACE__ << "    ----> " << line[0];
     }
 }
 

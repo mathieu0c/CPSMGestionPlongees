@@ -8,6 +8,7 @@
 #include "../global.hpp"
 
 #include <QDialog>
+#include <QDialogButtonBox>
 
 namespace Ui {
 class DiveEdit;
