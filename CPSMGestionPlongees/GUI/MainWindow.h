@@ -43,6 +43,8 @@ private slots:
 
     void on_pb_deleteDive_clicked();
 
+    void on_pb_newDive_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

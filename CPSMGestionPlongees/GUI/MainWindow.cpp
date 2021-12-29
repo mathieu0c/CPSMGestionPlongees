@@ -102,7 +102,7 @@ void MainWindow::on_tabw_main_currentChanged(int i)
 
 void MainWindow::diversSelected(QVector<int> idList)
 {
-    qDebug() << "   DIVERS IDs : " << idList;
+//    qDebug() << "   DIVERS IDs : " << idList;
     if(idList.size() == 0)
         return;
 
@@ -254,6 +254,13 @@ void MainWindow::on_pb_deleteDive_clicked()
     }
 
     ui->mainDiveSearch->refreshDivesList();
+}
+
+
+void MainWindow::on_pb_newDive_clicked()
+{
+    auto divesIds{ui->mainDiveSearch->getSelectedDivesId()};
+    divesSelected(divesIds);
 }
 
 }//namespace gui
