@@ -75,10 +75,11 @@ int addToDB(Dive &dive, QSqlDatabase db, QString table)
     }
     QSqlQuery{"BEGIN TRANSACTION;",db};
 
-    QString strQuery{"INSERT INTO %1(date,diveSiteId) VALUES (?,?)"};
+    QString strQuery{"INSERT INTO %1(date,time,diveSiteId) VALUES (?,?,?)"};
     QSqlQuery query{db};
     query.prepare(strQuery.arg(table));
     query.addBindValue(dive.date.toString(global::format_date));
+    query.addBindValue(dive.time.toString(global::format_time));
     query.addBindValue(dive.diveSiteId);
     query.exec();
 
@@ -138,12 +139,14 @@ bool updateDB(Dive& dive,QSqlDatabase db,QString table,bool checkExistence)
 
     static const QString queryStr{"UPDATE %1 SET "
                                   "date = ?,"
+                                  "time = ?,"
                                   "diveSiteId = ? "
                                   "WHERE %1.id = ?"};
 
     QSqlQuery query{db};
     query.prepare(queryStr.arg(table));
     query.addBindValue(dive.date.toString(global::format_date));
+    query.addBindValue(dive.time.toString(global::format_time));
     query.addBindValue(dive.diveSiteId);
     query.addBindValue(dive.id);
     query.exec();
@@ -222,6 +225,7 @@ Dive readDiveFromDB(int id, QSqlDatabase db, QString table)
 
     out.id = query.value(currentIndex++).value<int>();
     out.date = QDate::fromString(query.value(currentIndex++).value<QString>(),global::format_date);
+    out.time = QTime::fromString(query.value(currentIndex++).value<QString>(),global::format_time);
     out.diveSiteId = query.value(currentIndex++).value<int>();
 
     //count how many diverId there is
@@ -320,6 +324,7 @@ QDebug operator<<(QDebug debug, const Dive& m)
     QDebugStateSaver saver(debug);
     debug.nospace() << "Dive{\nid : " << m.id << "\n";
     debug.nospace() << "Date : " << m.date.toString(global::format_date) << "\n";
+    debug.nospace() << "Time : " << m.time.toString(global::format_time) << "\n";
     debug.nospace() << "diveSiteId : " << m.diveSiteId << "\n";
     debug.nospace() << "Divers :" << "\n";
     for(const auto& e : m.divers)

@@ -3,6 +3,8 @@
 
 #include "../global.hpp"
 
+#include "Data/Database.hpp"
+
 #include "GUI/global.hpp"
 #include "GUI/Dialog_EditFamily.h"
 
@@ -44,9 +46,12 @@ DiveEdit::DiveEdit(QWidget *parent) :
 
     connect(ui->diverSearch_dive,&DiverSearch::refreshedDiverList,this,&DiveEdit::refreshDiversListComboBox);
 
-//    connect(ui->le_lastName,&QLineEdit::textChanged,[&](const auto& in){
-//            ui->le_lastName->setText(in.toUpper());
-//            m_tempDiver.lastName = ui->le_lastName->text();});
+    connect(ui->de_diveDate,&QDateEdit::dateChanged,[&](const auto& in){
+            m_tempDive.date = in;});
+    connect(ui->te_diveTime,&QTimeEdit::timeChanged,[&](const auto& in){
+            m_tempDive.time = in;});
+    connect(ui->cb_diveSite,&QComboBox::currentIndexChanged,[&](const auto& in){
+            m_tempDive.diveSiteId = ui->cb_diveSite->currentData().toInt();});
 
 }
 
@@ -56,13 +61,15 @@ DiveEdit::~DiveEdit()
 }
 
 
-void DiveEdit::refreshSiteList(const
-                               QStringList& list)
+void DiveEdit::refreshSiteList(const QString& siteTable)
 {
     ui->cb_diveSite->clear();
-    for(const auto& e : list)
+
+    auto divingSites{db::querySelect(QSqlDatabase::database(),"SELECT id,name FROM %0 ORDER BY name",{siteTable},{})};
+
+    for(const auto& line : divingSites)
     {
-        ui->cb_diveSite->addItem(e);
+        ui->cb_diveSite->addItem(line[1].toString(),line[0].toInt());
     }
 }
 
@@ -143,17 +150,15 @@ void DiveEdit::setDive(info::Dive diver){
     }
 
     ui->de_diveDate->setDate(m_tempDive.date);
+    ui->te_diveTime->setTime(m_tempDive.time);
 
     refreshDiversList();
-
-//    ui->diverSearch_global->setFilterValues({m_tempDive.id});//refresh filter value (dive ID) for divers search
-//    ui->diverSearch_dive->setFilterValues({m_tempDive.id});
-//    ui->le_address->setText(m_tempDiver.address);
 }
 
 void DiveEdit::resetDive(){
     m_tempDive = info::Dive{};
     m_tempDive.date = QDate::currentDate();
+    m_tempDive.time = QTime::currentTime();
     setDive(std::move(m_tempDive));
 }
 

@@ -65,7 +65,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tab_debug->setTableIndex(1);
 
     ui->pg_editDiver->refreshLevelList(db::getDiverLevels());
-    ui->pg_editDive->refreshSiteList(db::getDiveSites());
+    ui->pg_editDive->refreshSiteList(global::table_divingSites);
 
     connect(ui->mainDiverSearch,&gui::DiverSearch::diversSelected,this,&MainWindow::diversSelected);
 

@@ -3,7 +3,7 @@
 
 #include <QVector>
 #include <QDate>
-#include <tuple>
+#include <QTime>
 
 #include <QSqlDatabase>
 
@@ -35,6 +35,7 @@ struct Dive
 
     int id{-1};
     QDate date{};
+    QTime time{};
     int diveSiteId{1};
     QVector<MinimalDiver> divers{};//diver id and type
 

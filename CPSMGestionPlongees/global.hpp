@@ -18,6 +18,7 @@ static const QString table_divesMembers{"DivesMembers"};
 //-- format
 
 static const QString format_date{"yyyy-MM-dd"};
+static const QString format_time{"HH:mm:ss"};
 
 #ifndef __LINE__
 #error "Line macro used for debugging purpose is not defined"

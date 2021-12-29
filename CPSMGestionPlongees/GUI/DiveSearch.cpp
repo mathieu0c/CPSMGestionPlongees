@@ -27,11 +27,11 @@ DiveSearch::DiveSearch(QWidget *parent) :
     ui->de_endDate->setDate(QDate::currentDate());
 
     //nullif(COUNT(DivesMembers.diverId),0)
-    setSelectionColumns(QString{"date,%0.name,COUNT(%1.diverId)"}.arg(//nullif(COUNT(%1.id),0)"}.arg(
+    setSelectionColumns(QString{"date,time,%0.name,COUNT(%1.diverId)"}.arg(//nullif(COUNT(%1.id),0)"}.arg(
                             global::table_divingSites,
                             global::table_divesMembers
                             ),
-                        {"Date","Site","Nombre de plongeurs"});
+                        {"Date","Heure","Site","Nombre de plongeurs"});
 
     ui->tv_dives->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 
@@ -113,7 +113,7 @@ void DiveSearch::refreshDivesList()
     }
 
     //group by to avoid duplicate and sort by date displaying newest at the top
-    querStr += QString{" GROUP BY %0.id ORDER BY %0.date DESC"}.arg(global::table_dives);
+    querStr += QString{" GROUP BY %0.id ORDER BY date(%0.date) DESC,time(%0.time) DESC"}.arg(global::table_dives);
 
     query.prepare(querStr);
 

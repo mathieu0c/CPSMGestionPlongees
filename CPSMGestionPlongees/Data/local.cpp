@@ -163,7 +163,10 @@ bool createDB(QSqlDatabase db)
 
     // Dives
 
-    queryStr = "CREATE TABLE IF NOT EXISTS %1(id INTEGER PRIMARY KEY AUTOINCREMENT, date TEXT, diveSiteId INTEGER)";
+    queryStr = "CREATE TABLE IF NOT EXISTS %1(id INTEGER PRIMARY KEY AUTOINCREMENT,"
+               "date TEXT,"
+               "time TEXT,"
+               "diveSiteId INTEGER)";
     err = QSqlQuery{queryStr.arg(table_dives),db}.lastError();
     if(err.type() != QSqlError::ErrorType::NoError)
     {
@@ -289,13 +292,13 @@ bool initDB(QSqlDatabase db)
 
     //table Dives
 
-    info::Dive tempDive{-1,QDate::currentDate(),2,{{1,info::DiveType::exploration},{2,info::DiveType::technical}}};
-    info::Dive tempDive2{-1,QDate::currentDate().addDays(-1),1,{{1,info::DiveType::technical}}};
+    info::Dive tempDive{-1,QDate::currentDate(),QTime::currentTime(),2,{{1,info::DiveType::exploration},{2,info::DiveType::technical}}};
+    info::Dive tempDive2{-1,QDate::currentDate().addDays(-1),QTime::currentTime(),1,{{1,info::DiveType::technical}}};
 //    info::Dive tempDive3{-1,QDate::currentDate().addDays(1),1,{}};
 
 
-    auto firstId{info::addToDB(tempDive,db,table_dives)};
-    auto secondId{info::addToDB(tempDive2,db,table_dives)};
+    auto firstId{info::storeInDB(tempDive,db,table_dives)};
+    auto secondId{info::storeInDB(tempDive2,db,table_dives)};
 //    auto thirdId{info::addToDB(tempDive3,db,table_dives)};
     if(firstId < 0)
     {

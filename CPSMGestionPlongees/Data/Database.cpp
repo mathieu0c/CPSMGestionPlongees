@@ -70,7 +70,7 @@ int countField(QSqlDatabase& db,const QString& table,const QString& field,QVaria
     return 0;
 }
 
-QVector<QVector<QVariant>> querySelect(QSqlDatabase& db,QString request,const QStringList& argList,const QVector<QVariant>& valList)
+QVector<QVector<QVariant>> querySelect(QSqlDatabase db,QString request,const QStringList& argList,const QVector<QVariant>& valList)
 {
     QSqlQuery query{db};
 

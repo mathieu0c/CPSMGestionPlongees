@@ -22,7 +22,7 @@ public:
     explicit DiveEdit(QWidget *parent = nullptr);
     ~DiveEdit();
 
-    void refreshSiteList(const QStringList& list);
+    void refreshSiteList(const QString &siteTable);
 
     void refreshDiversList();
     void refreshDiverSearchFilters_global();

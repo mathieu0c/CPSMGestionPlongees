@@ -18,7 +18,7 @@ bool openLocal(const QString &fileName, const QString &connectionName = "");
 
 int countField(QSqlDatabase& db,const QString& table,const QString& field,QVariant value);
 
-QVector<QVector<QVariant>> querySelect(QSqlDatabase& db,QString request,const QStringList& argList,const QVector<QVariant>& valList);
+QVector<QVector<QVariant>> querySelect(QSqlDatabase db, QString request, const QStringList& argList, const QVector<QVariant>& valList);
 
 //return the number of row matching the query result
 /*!
