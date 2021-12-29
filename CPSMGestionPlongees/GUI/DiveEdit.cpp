@@ -30,9 +30,9 @@ DiveEdit::DiveEdit(QWidget *parent) :
         }
     };
 
-    ui->diverSearch_global->setSelectionColumns("lastName,firstName,level",{"Nom de famille","Prénom","Niveau"});
+    ui->diverSearch_global->setSelectionColumns("lastName,firstName,level",{"Nom de famille","Prénom","Niv."});
     //note that we select two times level to create a column that will be used for DiveType's combobox
-    ui->diverSearch_dive->setSelectionColumns("lastName,firstName,level,level",{"Nom de famille","Prénom","Niveau","Type"});
+    ui->diverSearch_dive->setSelectionColumns("lastName,firstName,level,level",{"Nom de famille","Prénom","Niv.","Type"});
 
     lambdaConfigureDiverSearch(ui->diverSearch_dive);
     lambdaConfigureDiverSearch(ui->diverSearch_global);

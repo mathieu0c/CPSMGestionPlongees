@@ -68,10 +68,10 @@ DiverEdit::DiverEdit(QWidget *parent) :
             ui->sb_payment->setValue(ui->sb_payment->value()-1);});
 
     ui->diveSearch->setHiddenButton(true);
-    ui->diveSearch->setSelectionColumns(QString{"date,%0.name"}.arg(
+    ui->diveSearch->setSelectionColumns(QString{"date,%0.name,diveType"}.arg(
                             global::table_divingSites
                             ),
-                        {"Date","Site","Nombre de plongeurs"});
+                        {"Date","Site","Type"});
 }
 
 DiverEdit::~DiverEdit()

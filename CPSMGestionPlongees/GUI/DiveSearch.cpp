@@ -33,9 +33,9 @@ DiveSearch::DiveSearch(QWidget *parent) :
                             ),
                         {"Date","Heure","Site","Nombre de plongeurs"});
 
-    ui->tv_dives->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
+    ui->tv_dives->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
-//    refreshDivesList();
+    ui->tv_dives->setAlternatingRowColors(true);
 
     //refreshing diver list
     connect(ui->de_beginDate,&QDateEdit::dateChanged,[&](){refreshDivesList();});
@@ -155,7 +155,6 @@ void DiveSearch::refreshDivesList()
         ui->tv_dives->setColumnHidden(ui->tv_dives->model()->columnCount()-1,true);
         m_initGui = true;
     }
-    ui->tv_dives->resizeColumnsToContents();
     return;
 }
 

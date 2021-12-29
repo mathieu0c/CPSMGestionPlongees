@@ -7,6 +7,15 @@
 
 #include "../global.hpp"
 
+/*!
+ *  SQL joins used to search through dives :
+ *  SELECT * FROM global::table_dives
+ *  INNER JOIN global::table_divingSites ON
+ *      global::table_dives.diveSiteId = global::table_divingSites.id
+ *  LEFT JOIN global::table_divesMembers ON
+ *      global::table_divesMembers.diveId = global::table_dives.id"
+ */
+
 namespace Ui {
 class DiveSearch;
 }
