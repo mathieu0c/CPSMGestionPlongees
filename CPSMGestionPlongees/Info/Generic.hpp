@@ -7,6 +7,9 @@
 
 #include <QSqlDatabase>
 
+#include <type_traits>//debugging purpose
+#include <QDebug>
+
 namespace info
 {
 
@@ -19,12 +22,26 @@ namespace info
  *  This function may alter object "id" and subobjects "id" as well
  */
 
+struct Dive;
+
 template<typename T>
 int storeInDB(T &object, QSqlDatabase db, const QString &table)
 {
+
+    auto lambdaDebug{
+        [&](const QString& str)
+        {
+            if constexpr (std::is_same_v<T, Dive>)
+            {
+                qDebug() << __FILE__ << ":" << __func__ << ":" << __LINE__ << ": " << str;
+            }
+        }
+    };
+
     auto id{exists(object,db,table)};
     if(id == -1)//if the object doesn't exist
     {
+
         id = addToDB(object,db,table);
         object.id = id;
         return id;

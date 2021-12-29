@@ -247,9 +247,15 @@ Dive readDiveFromDB(int id, QSqlDatabase db, QString table)
     return out;
 }
 
-bool exists(const Dive& a,QSqlDatabase db,const QString& table)
+int exists(const Dive& a,QSqlDatabase db,const QString& table)
 {
-    return db::queryExist(db,"SELECT id FROM %1 WHERE %1.id = ?",{table},{a.id});
+    auto temp{db::querySelect(db,"SELECT id FROM %1 WHERE %1.id = ?",{table},{a.id})};
+
+    if(temp.size() > 0)
+    {
+        return temp[0][0].toInt();
+    }
+    return -1;
 }
 
 void removeDiversFromDive(Dive& dive,QVector<int> idList)

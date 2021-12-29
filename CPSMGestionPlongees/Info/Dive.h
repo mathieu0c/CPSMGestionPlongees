@@ -57,7 +57,7 @@ bool updateDB(Dive &dive, QSqlDatabase db, QString table, bool checkExistence = 
 Dive readDiveFromDB(int id, QSqlDatabase db, QString table);
 
 //search if the diver already exists and return id if true, -1 otherwise
-bool exists(const Dive& a, QSqlDatabase db, const QString &table);
+int exists(const Dive& a, QSqlDatabase db, const QString &table);
 
 //alter data if existing
 //add data if not

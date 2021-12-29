@@ -206,7 +206,7 @@ void MainWindow::diveChangeAccepted(info::Dive dive)
 {
     info::storeInDB(dive,QSqlDatabase::database(),global::table_dives);
 
-    qDebug() << "Dive accepted : " << dive;
+//    qDebug() << "Dive accepted : " << dive;
     ui->tab_dives->setCurrentIndex(1);//switch to search dive page
     ui->mainDiveSearch->refreshDivesList();
 }
@@ -236,7 +236,7 @@ void MainWindow::on_pb_deleteDive_clicked()
         auto dive{info::readDiveFromDB(id,db,global::table_dives)};
         auto dbDiveSite{db::querySelect(db,"SELECT name FROM %0 WHERE id=?",{global::table_divingSites},{dive.diveSiteId})};
         diveListConfirmation.append(QString{"%0 - %1 (%2 "}.arg(dive.date.toString(global::format_date),
-                                                                dbDiveSite[0][0].toString()).arg(dive.divers.size())+tr("plongeurs")+")");
+                                                                dbDiveSite[0][0].toString()).arg(dive.divers.size())+tr("plongeur(s)")+")");
         diveList.append(std::move(dive));
     }
 
@@ -250,7 +250,7 @@ void MainWindow::on_pb_deleteDive_clicked()
     {
         auto success{info::removeAllFromDB(e,QSqlDatabase::database(),global::table_dives)};
         if(!success)
-            ui->statusbar->showMessage("Cannot delete asked dives");
+            ui->statusbar->showMessage(tr("Impossible de supprimer les plongées sélectionnées"));
     }
 
     ui->mainDiveSearch->refreshDivesList();
@@ -258,6 +258,14 @@ void MainWindow::on_pb_deleteDive_clicked()
 
 
 void MainWindow::on_pb_newDive_clicked()
+{
+    ui->pg_editDive->resetDive();
+
+    ui->tab_dives->setCurrentIndex(0);//switch to edit dive tab
+}
+
+
+void MainWindow::on_pb_editDive_clicked()
 {
     auto divesIds{ui->mainDiveSearch->getSelectedDivesId()};
     divesSelected(divesIds);

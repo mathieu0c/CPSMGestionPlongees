@@ -144,6 +144,8 @@ void DiveEdit::setDive(info::Dive diver){
 
     ui->de_diveDate->setDate(m_tempDive.date);
 
+    refreshDiversList();
+
 //    ui->diverSearch_global->setFilterValues({m_tempDive.id});//refresh filter value (dive ID) for divers search
 //    ui->diverSearch_dive->setFilterValues({m_tempDive.id});
 //    ui->le_address->setText(m_tempDiver.address);
@@ -151,6 +153,7 @@ void DiveEdit::setDive(info::Dive diver){
 
 void DiveEdit::resetDive(){
     m_tempDive = info::Dive{};
+    m_tempDive.date = QDate::currentDate();
     setDive(std::move(m_tempDive));
 }
 

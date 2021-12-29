@@ -45,6 +45,8 @@ private slots:
 
     void on_pb_newDive_clicked();
 
+    void on_pb_editDive_clicked();
+
 private:
     Ui::MainWindow *ui;
 };

@@ -147,14 +147,14 @@
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pb_editDive">
+            <widget class="QPushButton" name="pb_newDive">
              <property name="text">
               <string>Nouvelle plongée</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QPushButton" name="pb_newDive">
+            <widget class="QPushButton" name="pb_editDive">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                <horstretch>0</horstretch>
