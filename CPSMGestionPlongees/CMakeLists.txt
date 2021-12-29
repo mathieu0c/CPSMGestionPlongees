@@ -57,6 +57,14 @@ target_link_libraries(CPSMGestionPlongees PUBLIC
     Qt6::Widgets
 )
 
+#----- Used to get the current filename
+
+# The additional / is important to remove the last character from the path.
+# Note that it does not matter if the OS uses / or \, because we are only
+# saving the path size.
+string(LENGTH "${CMAKE_SOURCE_DIR}/" SOURCE_PATH_SIZE)
+add_definitions("-DSOURCE_PATH_SIZE=${SOURCE_PATH_SIZE}")
+
 #if((QT_MAJOR_VERSION GREATER 4))
 #    target_link_libraries(CPSMGestionPlongees PRIVATE
 #        Qt6::Widgets

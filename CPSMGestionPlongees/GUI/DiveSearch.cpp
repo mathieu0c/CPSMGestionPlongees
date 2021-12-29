@@ -107,33 +107,6 @@ void DiveSearch::refreshDivesList()
                                          ui->de_endDate->date().toString(global::format_date)});
 
 
-    //if nothing is searched or there no search option selected
-//    if(ui->le_search->text().isEmpty() || (!ui->cb_search_firstName->isChecked() && !ui->cb_search_lastName->isChecked()))
-//    {
-//        //no filter
-//        //querStr += " ORDER BY lastName";
-//    }
-//    else
-//    {
-//        //querStr += " WHERE ";
-//        if(ui->cb_search_firstName->isChecked() && ui->cb_search_lastName->isChecked())
-//        {
-//            filter = "firstName LIKE ?||'%' OR lastName LIKE ?||'%' "+QString(hasFilter?"AND ":"");
-//            valList.append(ui->le_search->text());
-//            valList.append(ui->le_search->text());
-//        }
-//        else if(ui->cb_search_firstName->isChecked())
-//        {
-//            filter = "firstName FULLLIKE ?||'%' "+QString(hasFilter?"AND ":"");
-//            valList.append(ui->le_search->text());
-//        }
-//        else if(ui->cb_search_lastName->isChecked())
-//        {
-//            filter = "lastName LIKE ?||'%' "+QString(hasFilter?"AND ":"");
-//            valList.append(ui->le_search->text());
-//        }
-//    }
-
     filter += m_filter;
     valList += m_filterValues;
 
@@ -148,8 +121,8 @@ void DiveSearch::refreshDivesList()
     //group by to avoid duplicate and sort by date displaying newest at the top
     querStr += QString{" GROUP BY %0.id ORDER BY %0.date DESC"}.arg(global::table_dives);
 
-    if(enableDebug)
-        qDebug() << "Dive search query : " << querStr;
+//    if(enableDebug)
+//        qDebug() << "Dive search query : " << querStr;
     query.prepare(querStr);
 
     for(const auto& val : valList)
@@ -158,6 +131,16 @@ void DiveSearch::refreshDivesList()
     }
 
     query.exec();
+
+    if(enableDebug || true)
+    {
+        qDebug() << __CURRENT_PLACE__ << " : Refresh list query : ";
+        qDebug() << query.executedQuery();
+        for(const auto& e : query.boundValues())
+        {
+            qDebug() << "  bound : " << e;
+        }
+    }
 
     auto err = query.lastError();
     if(err.type() != QSqlError::ErrorType::NoError)

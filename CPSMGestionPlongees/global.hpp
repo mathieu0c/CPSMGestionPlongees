@@ -29,6 +29,12 @@ static const QString format_date{"yyyy-MM-dd"};
 #define _LINE_ QString::number(__LINE__)
 #endif
 
+//the use of this macro may generate a warning because we're adding an int
+//to a char*
+#define __FILENAME__ (__FILE__ + SOURCE_PATH_SIZE)
+
+#define __CURRENT_PLACE__ QString{"%0 : <%1> : %2"}.arg(__FILENAME__,__func__,_LINE_)
+
 }
 
 #endif // GLOBAL_HPP
