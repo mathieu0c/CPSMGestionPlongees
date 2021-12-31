@@ -93,7 +93,7 @@ MainWindow::MainWindow(QWidget *parent)
     for(const auto& dbLine : existingDivesIds)
     {
         auto dive{info::readDiveFromDB(dbLine[0].toInt(),db(),global::table_dives)};
-//        db_syncDiversWithDives(dive.divers);
+        db_syncDiversWithDives(dive.divers);
     }
 }
 

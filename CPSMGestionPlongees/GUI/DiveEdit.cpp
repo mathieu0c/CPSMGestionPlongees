@@ -73,6 +73,8 @@ void DiveEdit::refreshSiteList(const QString& siteTable)
     {
         ui->cb_diveSite->addItem(line[1].toString(),line[0]);
     }
+
+    ui->cb_diveSite->setCurrentIndex(0);
 }
 
 void DiveEdit::setEditable(bool enable)
