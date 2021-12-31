@@ -35,7 +35,7 @@ static const QString format_time{"HH:mm:ss"};
 //to a char*
 #define __FILENAME__ (__FILE__ + SOURCE_PATH_SIZE)
 
-#define __CURRENT_PLACE__ QString{"%0 : <%1> : %2"}.arg(__FILENAME__,__func__,_LINE_)
+#define __CURRENT_PLACE__ QString{"%0 : <%1> : l.%2"}.arg(__FILENAME__,__func__,_LINE_)
 
 
 //------------- Tools

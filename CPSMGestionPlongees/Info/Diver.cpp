@@ -162,6 +162,14 @@ bool updateDB(Diver& diver,QSqlDatabase db,QString table,bool checkExistence)
     query.addBindValue(diver.id);
     query.exec();
 
+    auto err{query.lastError()};
+    if(err.type() != QSqlError::ErrorType::NoError)
+    {
+        QString errStr{QString{"%0 : SQL error : %1"}.arg(__CURRENT_PLACE__,err.text())};
+        qCritical() << errStr;
+        return false;
+    }
+
     return true;
 }
 
@@ -194,7 +202,7 @@ Diver readDiverFromDB(int id, QSqlDatabase db, QString table)
     auto err{query.lastError()};
     if(err.type() != QSqlError::ErrorType::NoError)
     {
-        QString errStr{QString{"%0 : SQL error : %1"}.arg(__func__,err.text())};
+        QString errStr{QString{"%0 : SQL error : %1"}.arg(__CURRENT_PLACE__,err.text())};
         qCritical() << errStr;
         return out;
     }

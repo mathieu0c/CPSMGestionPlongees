@@ -55,6 +55,7 @@ int addToDB(Diver &diver, QSqlDatabase db, QString table);
 //This function may change diver.address.id
 bool updateDB(Diver &diver, QSqlDatabase db, QString table, bool checkExistence = false);
 
+
 Diver readDiverFromDB(int id, QSqlDatabase db, QString table);
 
 //search if the diver already exists and return id if true, -1 otherwise

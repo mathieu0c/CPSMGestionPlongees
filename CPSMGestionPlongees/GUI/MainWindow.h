@@ -25,6 +25,8 @@ public:
     ~MainWindow();
 
 private slots:
+    void db_syncDiversWithDives(const QVector<info::Dive::MinimalDiver>& diversList);
+
     void diversSelected(QVector<int> idList);
     void diverChangeAccepted(info::Diver diver);
     void diverChangeRejected();
@@ -48,8 +50,14 @@ private slots:
     void on_pb_editDive_clicked();
 
 private:
+    QSqlDatabase db(){
+        return QSqlDatabase::database();
+    }
+
+private:
     Ui::MainWindow *ui;
 };
+
 
 }//namespace gui
 #endif // MAINWINDOW_H
