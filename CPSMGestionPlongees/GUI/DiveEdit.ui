@@ -168,7 +168,7 @@
            </size>
           </property>
           <property name="text">
-           <string>-&gt;</string>
+           <string>►</string>
           </property>
           <property name="shortcut">
            <string>Right</string>
@@ -190,7 +190,7 @@
            </size>
           </property>
           <property name="text">
-           <string>&lt;-</string>
+           <string>◄</string>
           </property>
           <property name="shortcut">
            <string>Left</string>
