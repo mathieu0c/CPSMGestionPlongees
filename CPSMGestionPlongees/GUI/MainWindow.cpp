@@ -13,11 +13,11 @@
 #include "DataStruct/Dive.h"
 #include "DataStruct/Address.h"
 #include "DataStruct/global.hpp"
-#include "DataStruct/Generic.hpp"
 
 #include <QFile>
 
 #include "DBApi/Database.hpp"
+#include "DBApi/Generic.hpp"
 #include <QSqlQueryModel>
 #include <QSqlQuery>
 #include <QSqlError>
@@ -32,7 +32,7 @@ namespace gui
 void setEnableDebug(bool state,bool enableLog = false){
     db::enableDebug = state;
     gui::enableDebug = state;
-    info::enableDebug = state;
+    data::enableDebug = state;
 
     if(enableLog)
     {
@@ -89,10 +89,10 @@ MainWindow::MainWindow(QWidget *parent)
 // -- -- -- -- -- -- debugging purpose
 //    ui->pg_editDive->setEditable(false);
     auto existingDivesIds{db::querySelect(db(),"SELECT id FROM %0",{global::table_dives},{})};
-    QVector<info::Dive> existingDives{existingDivesIds.size()};
+    QVector<data::Dive> existingDives{existingDivesIds.size()};
     for(const auto& dbLine : existingDivesIds)
     {
-        auto dive{info::readDiveFromDB(dbLine[0].toInt(),db(),global::table_dives)};
+        auto dive{data::readDiveFromDB(dbLine[0].toInt(),db(),global::table_dives)};
         db_syncDiversWithDives(dive.divers);
     }
 }
@@ -113,15 +113,15 @@ void MainWindow::on_tabw_main_currentChanged(int i)
 }
 
 
-void MainWindow::db_syncDiversWithDives(const QVector<info::Dive::MinimalDiver>& diversList)
+void MainWindow::db_syncDiversWithDives(const QVector<data::Dive::MinimalDiver>& diversList)
 {
     for(const auto& diver : diversList)
     {
-        auto fullDiver{info::readDiverFromDB(diver.id,db(),global::table_divers)};
+        auto fullDiver{data::readDiverFromDB(diver.id,db(),global::table_divers)};
         auto diveCount{db::querySelect(db(),"SELECT COUNT(diverId) FROM %0 WHERE diverId=?",
                                             {global::table_divesMembers},
                                             {diver.id})[0][0].toInt()};
-        info::updateDBField(diver.id,"diveCount",diveCount,db(),global::table_divers);
+        db::updateDBField(diver.id,"diveCount",diveCount,db(),global::table_divers);
 //        qDebug() << __CURRENT_PLACE__ << " : " << fullDiver.firstName << "  " << fullDiver.lastName;
 //        qDebug() << diveCount;
     }
@@ -134,16 +134,17 @@ void MainWindow::diversSelected(QVector<int> idList)
         return;
 
     auto id{idList[0]};
-    auto tempDiver{info::readDiverFromDB(id,db(),global::table_divers)};
+    auto tempDiver{data::readDiverFromDB(id,db(),global::table_divers)};
 
     ui->pg_editDiver->setDiver(std::move(tempDiver));
 
     ui->tab_divers->setCurrentIndex(1);
 }
 
-void MainWindow::diverChangeAccepted(info::Diver diver)
+void MainWindow::diverChangeAccepted(data::Diver diver)
 {
-    info::storeInDB(diver,db(),global::table_divers);
+    using db::storeInDB;
+    storeInDB(diver,db(),global::table_divers);
 
     ui->tab_divers->setCurrentIndex(0);
     ui->mainDiverSearch->refreshDiverList();
@@ -191,7 +192,7 @@ void MainWindow::on_pb_deleteDiver_clicked()
 
     for(const auto& id : idList)
     {
-        info::removeAllFromDiver(id.toInt(),db,global::table_divers);//delete the diver from the DB
+        data::removeAllFromDiver(id.toInt(),db,global::table_divers);//delete the diver from the DB
     }
 
     ui->mainDiverSearch->refreshDiverList();
@@ -220,7 +221,7 @@ void MainWindow::divesSelected(QVector<int> idList)
         return;
 
     auto id{idList[0]};
-    auto tempDive{info::readDiveFromDB(id,db(),global::table_dives)};
+    auto tempDive{data::readDiveFromDB(id,db(),global::table_dives)};
 
 //    ui->pg_editDiver->setDiver(std::move(tempDiver));
 //    ui->tab_divers->setCurrentIndex(1);
@@ -229,9 +230,10 @@ void MainWindow::divesSelected(QVector<int> idList)
     ui->tab_dives->setCurrentIndex(0);//switch to edit page
 }
 
-void MainWindow::diveChangeAccepted(info::Dive dive)
+void MainWindow::diveChangeAccepted(data::Dive dive)
 {
-    info::storeInDB(dive,db(),global::table_dives);
+    using db::storeInDB;
+    storeInDB(dive,db(),global::table_dives);
 
 //    qDebug() << "Dive accepted : " << dive;
     ui->tab_dives->setCurrentIndex(1);//switch to search dive page
@@ -253,7 +255,7 @@ void MainWindow::on_pb_deleteDive_clicked()
     if(!divesIds.size())
         return;
 
-    QVector<info::Dive> diveList{};
+    QVector<data::Dive> diveList{};
     diveList.reserve(divesIds.size());
 
     QStringList diveListConfirmation{diveList.size()};
@@ -262,7 +264,7 @@ void MainWindow::on_pb_deleteDive_clicked()
 
     for(const auto& id : divesIds)
     {
-        auto dive{info::readDiveFromDB(id,db,global::table_dives)};
+        auto dive{data::readDiveFromDB(id,db,global::table_dives)};
         auto dbDiveSite{db::querySelect(db,"SELECT name FROM %0 WHERE id=?",{global::table_divingSites},{dive.diveSiteId})};
         diveListConfirmation.append(QString{"%0 - %1 (%2 "}.arg(dive.date.toString(global::format_date),
                                                                 dbDiveSite[0][0].toString()).arg(dive.divers.size())+tr("plongeur(s)")+")");
@@ -277,7 +279,7 @@ void MainWindow::on_pb_deleteDive_clicked()
 
     for(const auto& dive : diveList)
     {
-        auto success{info::removeAllFromDB(dive,db,global::table_dives)};
+        auto success{data::removeAllFromDB(dive,db,global::table_dives)};
         if(!success)
             ui->statusbar->showMessage(tr("Impossible de supprimer les plongées sélectionnées"));
 

@@ -5,7 +5,7 @@
 
 #include <QDebug>
 
-namespace info
+namespace data
 {
 
 struct User
@@ -19,6 +19,6 @@ struct User
 
 QDebug operator<<(QDebug debug, const User& u);
 
-}//namespace info
+}//namespace data
 
 #endif // USER_H

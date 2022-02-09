@@ -12,7 +12,7 @@
 
 #include <QDebug>
 
-namespace info
+namespace data
 {
 
 struct Diver

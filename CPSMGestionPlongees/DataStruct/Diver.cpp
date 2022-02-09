@@ -2,9 +2,10 @@
 
 #include "DataStruct/global.hpp"
 #include "../global.hpp"
-#include "DataStruct/Generic.hpp"
 
 #include "DBApi/Database.hpp"
+#include "DBApi/DBAddress.hpp"
+#include "DBApi/Generic.hpp"
 
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -15,7 +16,7 @@
 
 #include <QDebug>
 
-namespace info
+namespace data
 {
 
 QDebug operator<<(QDebug debug, const Diver& m)
@@ -47,9 +48,10 @@ QDebug operator<<(QDebug debug, const Diver& m)
 
 int addToDB(Diver& diver, QSqlDatabase db, QString table)
 {
+    using db::storeInDB;
     if(!db.isOpen())
     {
-        QString errMsg{QString{"info::Members : %1 : database must be opened before being accessed"}.arg(__func__)};
+        QString errMsg{QString{"data::Members : %1 : database must be opened before being accessed"}.arg(__func__)};
 
         if(enableDebug)
             qCritical() << errMsg;
@@ -115,6 +117,7 @@ int addToDB(Diver& diver, QSqlDatabase db, QString table)
 
 bool updateDB(Diver& diver,QSqlDatabase db,QString table,bool checkExistence)
 {
+    using db::storeInDB;
     if(checkExistence)
     {
         if(exists(diver,db,table) == -1)//if the diver doesn't exist
@@ -215,7 +218,7 @@ Diver readDiverFromDB(int id, QSqlDatabase db, QString table)
     out.birthDate = QDate::fromString(query.value(currentIndex++).value<QString>(),global::format_date);
     out.email = query.value(currentIndex++).value<QString>();
     out.phoneNumber = query.value(currentIndex++).value<QString>();
-    out.address = info::readAddressFromDB(query.value(currentIndex++).value<int>(),db,global::table_diversAddresses);
+    out.address = db::readAddressFromDB(query.value(currentIndex++).value<int>(),db,global::table_diversAddresses);
     out.licenseNumber = query.value(currentIndex++).value<QString>();
     out.certifDate = QDate::fromString(query.value(currentIndex++).value<QString>(),global::format_date);
     out.diverLevelId = query.value(currentIndex++).value<int>();
@@ -305,4 +308,4 @@ QString to_string(const Diver& diver)
     return str;
 }
 
-}//namespace info
+}//namespace data

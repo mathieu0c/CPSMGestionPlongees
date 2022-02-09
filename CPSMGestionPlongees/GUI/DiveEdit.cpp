@@ -154,11 +154,11 @@ void DiveEdit::refreshDiversListComboBox()
 //        qDebug() << index.data();
         auto tempCb{new QComboBox()};
         auto diverId{ui->diverSearch_dive->getDiverIdAt(index)};
-        tempCb->addItem(to_string(info::DiveType::exploration),diverId);//set the diver id as meta data
-        tempCb->addItem(to_string(info::DiveType::technical),diverId);
+        tempCb->addItem(to_string(data::DiveType::exploration),diverId);//set the diver id as meta data
+        tempCb->addItem(to_string(data::DiveType::technical),diverId);
         tempCb->setCurrentIndex(0);
-        auto diveType{info::getDiveTypeForDiver(m_tempDive,diverId)};
-        tempCb->setCurrentIndex((diveType == info::DiveType::exploration)?0:1);
+        auto diveType{data::getDiveTypeForDiver(m_tempDive,diverId)};
+        tempCb->setCurrentIndex((diveType == data::DiveType::exploration)?0:1);
         if(!m_isEditable)//if the widget isn't in editable mode
             tempCb->setEnabled(false);
         //it's enabled by default
@@ -176,10 +176,10 @@ void DiveEdit::slot_diveComboBox(int index)
 {
     QComboBox* box{qobject_cast<QComboBox*>(QObject::sender())};
     auto diverId{box->itemData(index).value<int>()};
-    setDiveTypeForDiver(m_tempDive,diverId,info::diveTypefrom_string(box->currentText()));
+    setDiveTypeForDiver(m_tempDive,diverId,data::diveTypefrom_string(box->currentText()));
 }
 
-void DiveEdit::setDive(info::Dive diver){
+void DiveEdit::setDive(data::Dive diver){
     m_tempDive = std::move(diver);
 
     if(enableDebug)
@@ -203,7 +203,7 @@ void DiveEdit::setDive(info::Dive diver){
 }
 
 void DiveEdit::resetDive(){
-    m_tempDive = info::Dive{};
+    m_tempDive = data::Dive{};
     m_tempDive.date = QDate::currentDate();
     m_tempDive.time = QTime::currentTime();
     setDive(std::move(m_tempDive));
@@ -226,7 +226,7 @@ void DiveEdit::on_pb_diverToDive_clicked()
     for(const auto& e : diversIds)
     {
 //        qDebug() << "       Selected : " << e;
-        m_tempDive.divers.append({e,info::DiveType::exploration});
+        m_tempDive.divers.append({e,data::DiveType::exploration});
     }
 
 //    qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~";
@@ -245,7 +245,7 @@ void DiveEdit::on_pb_diveToDiver_clicked()
 //    qDebug() << __func__ <<" ---------------------------------- ";
 //    qDebug() << m_tempDive;
 
-    info::removeDiversFromDive(m_tempDive,diversIds);
+    data::removeDiversFromDive(m_tempDive,diversIds);
 //    qDebug() << m_tempDive;
 
     refreshDiversList();

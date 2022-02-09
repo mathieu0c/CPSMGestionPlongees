@@ -1,12 +1,9 @@
-#ifndef INFO_GENERIC_HPP
-#define INFO_GENERIC_HPP
-
-/*!
- * This file contains generic functions common to info::Types
-*/
+#ifndef DB_GENERIC_HPP
+#define DB_GENERIC_HPP
 
 #include <QSqlDatabase>
 #include <QVariant>
+#include <QString>
 #include <QSqlQuery>
 #include <QSqlError>
 
@@ -15,19 +12,8 @@
 
 #include "../global.hpp"
 
-namespace info
+namespace db
 {
-
-/*  This function modify an existing object in the DB or create it if not existing
- *  It requires the type T to :
- *      - Have an "id" attribute
- *      - Have a function defined : "exists(T object,QSqlDatabase db, const QString& table)"
- *      - Have a function defined : "addToDB(T& object,QSqlDatabase db, const QString& table)"
- *      - Have a function defined : "updateDB(T& object,QSqlDatabase db, const QString& table)"
- *  This function may alter object "id" and subobjects "id" as well
- */
-
-//struct Dive;
 
 template<typename T>
 int storeInDB(T &object, QSqlDatabase db, const QString &table)
@@ -92,6 +78,6 @@ bool updateDBField(int id, const QString& field, QVariant value, QSqlDatabase db
     return true;
 }
 
-}//namespace info
+}//namespace db
 
-#endif // INFO_GENERIC_HPP
+#endif // DB_GENERIC_HPP

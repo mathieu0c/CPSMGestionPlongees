@@ -2,7 +2,7 @@
 
 #include <QDebug>
 
-namespace info
+namespace data
 {
 
 QDebug operator<<(QDebug debug, const User& u)

@@ -10,7 +10,7 @@
 
 #include <algorithm>
 
-namespace info
+namespace data
 {
 
 bool removeAllFromDB(const Dive& dive,QSqlDatabase db, const QString& table)
@@ -67,7 +67,7 @@ int addToDB(Dive &dive, QSqlDatabase db, QString table)
 {
     if(!db.isOpen())
     {
-        QString errMsg{QString{"info::Dive : %1 : database must be opened before being accessed"}.arg(__func__)};
+        QString errMsg{QString{"data::Dive : %1 : database must be opened before being accessed"}.arg(__func__)};
 
         qCritical() << errMsg;
         throw std::runtime_error(errMsg.toStdString());
@@ -86,7 +86,7 @@ int addToDB(Dive &dive, QSqlDatabase db, QString table)
     auto err = query.lastError();
     if(err.type() != QSqlError::ErrorType::NoError)
     {
-        QString errStr{QString{"info::Dive : %0 : SQL error : %1 :"}.arg(__func__,err.text())};
+        QString errStr{QString{"data::Dive : %0 : SQL error : %1 :"}.arg(__func__,err.text())};
         qCritical() << errStr;
         qCritical() << query.lastQuery();
         QSqlQuery{"ROLLBACK;",db};
@@ -154,7 +154,7 @@ bool updateDB(Dive& dive,QSqlDatabase db,QString table,bool checkExistence)
     auto err = query.lastError();
     if(err.type() != QSqlError::ErrorType::NoError)
     {
-        QString errStr{QString{"info::Dive : %0 : SQL error : %1 :"}.arg(__func__,err.text())};
+        QString errStr{QString{"data::Dive : %0 : SQL error : %1 :"}.arg(__func__,err.text())};
         qCritical() << errStr;
         qCritical() << query.lastQuery();
         QSqlQuery{"ROLLBACK;",db};
@@ -355,7 +355,7 @@ bool addToDB(const Dive::MinimalDiver& diver, int diveId, QSqlDatabase db, QStri
 {
 //    if(!db.isOpen())
 //    {
-//        QString errMsg{QString{"info::Dive::addToDB(MinimalDiver) : %1 : database must be opened before being accessed"}.arg(__func__)};
+//        QString errMsg{QString{"data::Dive::addToDB(MinimalDiver) : %1 : database must be opened before being accessed"}.arg(__func__)};
 
 //        qCritical() << errMsg;
 //        throw std::runtime_error(errMsg.toStdString());
@@ -499,4 +499,4 @@ bool removeFromDBNotIn(const QVector<Dive::MinimalDiver>& listOfDiversToKeep,int
     return true;
 }
 
-} // namespace info
+} // namespace data

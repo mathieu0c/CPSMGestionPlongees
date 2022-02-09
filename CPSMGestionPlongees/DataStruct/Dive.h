@@ -18,7 +18,7 @@ INNER JOIN DivingSites ON Dives.diveSiteId=DivingSites.id
 
 */
 
-namespace info {
+namespace data {
 
 enum DiveType{
     undefined=-1,
@@ -104,6 +104,6 @@ bool storeInDB(const Dive::MinimalDiver& diver,int diveId, QSqlDatabase db, cons
  */
 bool removeFromDBNotIn(const QVector<Dive::MinimalDiver>& listOfDiversToKeep,int diveId,QSqlDatabase db,const QString& table);
 
-} // namespace info
+} // namespace data
 
 #endif // INFO_DIVE_H

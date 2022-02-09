@@ -4,7 +4,8 @@
 
 #include "DataStruct/Diver.h"
 #include "DataStruct/Dive.h"
-#include "DataStruct/Generic.hpp"
+
+#include "DBApi/Generic.hpp"
 
 #include <tuple>
 
@@ -255,7 +256,7 @@ bool initDB(QSqlDatabase db)
     createDB(db);
 
 
-//    auto tempAdd{info::Address{-1,"15 rue de Sauvigney","70000","Pusy et Épenoux"}};
+//    auto tempAdd{data::Address{-1,"15 rue de Sauvigney","70000","Pusy et Épenoux"}};
 //    tempAdd.id = addToDB(tempAdd,db,table_diversAddresses);
 //    qDebug() << tempAdd;
 
@@ -267,12 +268,12 @@ bool initDB(QSqlDatabase db)
     //table members
 
 
-    /*if(!info::addToDB({"Maaurice","SOL","momo@fr.fr",2,true,84},db,table_members))
+    /*if(!data::addToDB({"Maaurice","SOL","momo@fr.fr",2,true,84},db,table_members))
     {
         return false;
     }*/
 
-    info::Diver tempDiver{-1,"Mathieu","CHARS",
+    data::Diver tempDiver{-1,"Mathieu","CHARS",
                           QDate::fromString("1998-10-28",global::format_date),
                           "mathieu@free.fr","0136984125",
                           {-1,"15 rue des miolis","14000","Juin"},
@@ -286,33 +287,33 @@ bool initDB(QSqlDatabase db)
                           false,//
                           true,//
                           false};//
-    info::Diver tempDiver2{-1,"Bidule","TRUX",QDate::fromString("1975-01-14",global::format_date),"trux@free.fr","0136984125",{-1,"12 rue des miolis","14000","Juin"},"AE-258-54",QDate::fromString("2021-08-01",global::format_date),8,0,0,10,1,0,1,0};
-    info::Diver tempDiver3{-1,"Nouveau","PLONGEUR",QDate::fromString("1975-01-14",global::format_date),"nouveau@free.fr","0136984125",{-1,"1360 Route","14000","Juillet"},"AE-258-54",QDate::fromString("2021-08-01",global::format_date),8,0,0,20,1,0,1,0};
-    info::Diver tempDiver4{-1,"Machin","TEST",QDate::fromString("1975-01-14",global::format_date),"test@free.fr","0136984125",{-1,"23 route de Sainte Anne","29280","Août"},"AE-258-54",QDate::fromString("2021-08-01",global::format_date),8,0,0,3,1,0,1,0};
+    data::Diver tempDiver2{-1,"Bidule","TRUX",QDate::fromString("1975-01-14",global::format_date),"trux@free.fr","0136984125",{-1,"12 rue des miolis","14000","Juin"},"AE-258-54",QDate::fromString("2021-08-01",global::format_date),8,0,0,10,1,0,1,0};
+    data::Diver tempDiver3{-1,"Nouveau","PLONGEUR",QDate::fromString("1975-01-14",global::format_date),"nouveau@free.fr","0136984125",{-1,"1360 Route","14000","Juillet"},"AE-258-54",QDate::fromString("2021-08-01",global::format_date),8,0,0,20,1,0,1,0};
+    data::Diver tempDiver4{-1,"Machin","TEST",QDate::fromString("1975-01-14",global::format_date),"test@free.fr","0136984125",{-1,"23 route de Sainte Anne","29280","Août"},"AE-258-54",QDate::fromString("2021-08-01",global::format_date),8,0,0,3,1,0,1,0};
 
-    if(!info::storeInDB(tempDiver,db,table_divers))
+    if(!storeInDB(tempDiver,db,table_divers))
         return false;
 
-    if(!info::storeInDB(tempDiver2,db,table_divers))
+    if(!storeInDB(tempDiver2,db,table_divers))
         return false;
 
-    if(!info::storeInDB(tempDiver3,db,table_divers))
+    if(!storeInDB(tempDiver3,db,table_divers))
         return false;
 
-    if(!info::storeInDB(tempDiver4,db,table_divers))
+    if(!storeInDB(tempDiver4,db,table_divers))
         return false;
 
 
     //table Dives
 
-    info::Dive tempDive{-1,QDate::currentDate(),QTime::currentTime(),2,{{1,info::DiveType::exploration},{2,info::DiveType::technical}}};
-    info::Dive tempDive2{-1,QDate::currentDate().addDays(-1),QTime::currentTime(),1,{{1,info::DiveType::technical}}};
-//    info::Dive tempDive3{-1,QDate::currentDate().addDays(1),1,{}};
+    data::Dive tempDive{-1,QDate::currentDate(),QTime::currentTime(),2,{{1,data::DiveType::exploration},{2,data::DiveType::technical}}};
+    data::Dive tempDive2{-1,QDate::currentDate().addDays(-1),QTime::currentTime(),1,{{1,data::DiveType::technical}}};
+//    data::Dive tempDive3{-1,QDate::currentDate().addDays(1),1,{}};
 
 
-    auto firstId{info::storeInDB(tempDive,db,table_dives)};
-    auto secondId{info::storeInDB(tempDive2,db,table_dives)};
-//    auto thirdId{info::addToDB(tempDive3,db,table_dives)};
+    auto firstId{storeInDB(tempDive,db,table_dives)};
+    auto secondId{storeInDB(tempDive2,db,table_dives)};
+//    auto thirdId{data::addToDB(tempDive3,db,table_dives)};
     if(firstId < 0)
     {
         return false;

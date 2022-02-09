@@ -25,10 +25,10 @@ public:
     ~MainWindow();
 
 private slots:
-    void db_syncDiversWithDives(const QVector<info::Dive::MinimalDiver>& diversList);
+    void db_syncDiversWithDives(const QVector<data::Dive::MinimalDiver>& diversList);
 
     void diversSelected(QVector<int> idList);
-    void diverChangeAccepted(info::Diver diver);
+    void diverChangeAccepted(data::Diver diver);
     void diverChangeRejected();
 
     void on_tabw_main_currentChanged(int index);
@@ -40,7 +40,7 @@ private slots:
     void on_pb_editDiver_clicked();
 
     void divesSelected(QVector<int> idList);
-    void diveChangeAccepted(info::Dive dive);
+    void diveChangeAccepted(data::Dive dive);
     void diveChangeRejected();
 
     void on_pb_deleteDive_clicked();

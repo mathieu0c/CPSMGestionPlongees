@@ -233,7 +233,7 @@ int DiverSearch::getDiverIdAt(const QModelIndex& index) const
 //void gui::MainWindow::on_tv_divers_doubleClicked(const QModelIndex &index)
 //{
 //    auto id{index.row()+1};
-//    auto tempDiver{info::readDiverFromDB(id,QSqlDatabase::database(),global::table_divers)};
+//    auto tempDiver{data::readDiverFromDB(id,QSqlDatabase::database(),global::table_divers)};
 
 //    qDebug() << " ------ Read DIVER :";
 //    qDebug() << tempDiver;

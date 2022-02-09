@@ -33,19 +33,19 @@ public:
     void refreshDiverSearchFilters_global();
     void refreshDiverSearchFilters_dive();
 
-    const info::Dive& dive() const{
+    const data::Dive& dive() const{
         return m_tempDive;
     }
-    info::Dive dive(){
+    data::Dive dive(){
         return m_tempDive;
     }
 
-    void setDive(info::Dive dive);
+    void setDive(data::Dive dive);
 
     void resetDive();
 
 public:
-static void displayDive(const info::Dive& dive,QWidget* parent)
+static void displayDive(const data::Dive& dive,QWidget* parent)
 {
     QDialog dial(parent);
 
@@ -60,7 +60,7 @@ static void displayDive(const info::Dive& dive,QWidget* parent)
 }
 
 signals:
-    void endEditing(const info::Dive& dive);
+    void endEditing(const data::Dive& dive);
     void rejectedEditing();
 
 private slots:
@@ -81,7 +81,7 @@ private:
     Ui::DiveEdit *ui;
 
     bool m_isEditable{true};
-    info::Dive m_tempDive{};
+    data::Dive m_tempDive{};
 };
 
 }//namespace gui

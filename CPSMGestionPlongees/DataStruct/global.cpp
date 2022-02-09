@@ -1,8 +1,8 @@
 #include "DataStruct/global.hpp"
 
-namespace info
+namespace data
 {
 
 bool enableDebug{false};
 
-}//namespace info
+}//namespace data

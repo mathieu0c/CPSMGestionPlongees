@@ -3,11 +3,11 @@
 
 #include <QString>
 
-namespace info
+namespace data
 {
 
 extern bool enableDebug/*{false}*/;
 
-}//namespace info
+}//namespace data
 
 #endif // INFO_GLOBAL_HPP

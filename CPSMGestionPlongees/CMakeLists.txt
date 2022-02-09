@@ -27,6 +27,8 @@ qt_add_executable(CPSMGestionPlongees WIN32 MACOSX_BUNDLE
     DBApi/Database.cpp DBApi/Database.hpp
     DBApi/global.cpp
     DBApi/local.cpp
+    DBApi/Generic.hpp
+    DBApi/DBAddress.hpp DBApi/DBAddress.cpp
     Debug/DbVisualizer.cpp Debug/DbVisualizer.h Debug/DbVisualizer.ui
     Debug/LogFile.cpp Debug/LogFile.hpp
     Debug/Utils.cpp Debug/Utils.h
@@ -44,7 +46,6 @@ qt_add_executable(CPSMGestionPlongees WIN32 MACOSX_BUNDLE
     DataStruct/Address.cpp DataStruct/Address.h
     DataStruct/Dive.cpp DataStruct/Dive.h
     DataStruct/Diver.cpp DataStruct/Diver.h
-    DataStruct/Generic.hpp
     DataStruct/User.cpp DataStruct/User.h
     DataStruct/global.cpp DataStruct/global.hpp
     global.hpp
