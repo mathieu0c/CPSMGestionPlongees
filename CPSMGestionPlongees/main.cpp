@@ -2,7 +2,6 @@
 
 #include <QApplication>
 
-//define global var
 //#include "Info/global.cpp"
 //#include "GUI/global.cpp"
 //#include "Data/global.cpp"
