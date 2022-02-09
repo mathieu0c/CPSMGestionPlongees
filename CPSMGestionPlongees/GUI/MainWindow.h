@@ -3,8 +3,8 @@
 
 #include <QMainWindow>
 
-#include "Info/Diver.h"
-#include "Info/Dive.h"
+#include "DataStruct/Diver.h"
+#include "DataStruct/Dive.h"
 
 #include <QSqlQuery>
 

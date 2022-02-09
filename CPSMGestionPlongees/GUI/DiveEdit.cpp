@@ -3,14 +3,14 @@
 
 #include "../global.hpp"
 
-#include "Data/Database.hpp"
+#include "DBApi/Database.hpp"
 
 #include "GUI/global.hpp"
 #include "GUI/Dialog_EditFamily.h"
 
 #include "GUI/DiverSearch.hpp"
 
-#include "Info/Diver.h"
+#include "DataStruct/Diver.h"
 
 #include <QLineEdit>
 #include <QCheckBox>

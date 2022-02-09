@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QStringList>
 
-#include "Info/Dive.h"
+#include "DataStruct/Dive.h"
 #include "../global.hpp"
 
 #include <QDialog>

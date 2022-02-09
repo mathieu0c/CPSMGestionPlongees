@@ -3,7 +3,7 @@
 
 #include "../global.hpp"
 
-#include "Data/Database.hpp"
+#include "DBApi/Database.hpp"
 
 #include <QSqlDatabase>
 #include <QWidget>

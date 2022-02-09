@@ -4,7 +4,7 @@
 #include <QWidget>
 #include <QStringList>
 
-#include "Info/Diver.h"
+#include "DataStruct/Diver.h"
 
 #include "GUI/Dialog_EditFamily.h"
 

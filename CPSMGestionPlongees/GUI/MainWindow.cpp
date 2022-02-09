@@ -9,15 +9,15 @@
 #include "../global.hpp"
 #include "GUI/global.hpp"
 
-#include "Info/Diver.h"
-#include "Info/Dive.h"
-#include "Info/Address.h"
-#include "Info/global.hpp"
-#include "Info/Generic.hpp"
+#include "DataStruct/Diver.h"
+#include "DataStruct/Dive.h"
+#include "DataStruct/Address.h"
+#include "DataStruct/global.hpp"
+#include "DataStruct/Generic.hpp"
 
 #include <QFile>
 
-#include "Data/Database.hpp"
+#include "DBApi/Database.hpp"
 #include <QSqlQueryModel>
 #include <QSqlQuery>
 #include <QSqlError>

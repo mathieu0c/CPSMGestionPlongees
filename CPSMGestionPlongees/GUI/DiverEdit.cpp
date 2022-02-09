@@ -6,7 +6,7 @@
 #include "GUI/global.hpp"
 #include "GUI/Dialog_EditFamily.h"
 #include "GUI/DiveEdit.h"
-#include "Info/Dive.h"
+#include "DataStruct/Dive.h"
 
 namespace gui
 {

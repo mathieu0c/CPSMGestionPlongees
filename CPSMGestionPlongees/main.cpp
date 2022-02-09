@@ -2,9 +2,9 @@
 
 #include <QApplication>
 
-//#include "Info/global.cpp"
+//#include "DataStruct/global.cpp"
 //#include "GUI/global.cpp"
-//#include "Data/global.cpp"
+//#include "DBApi/global.cpp"
 //#include "Debug/global.cpp"
 
 int main(int argc, char *argv[])

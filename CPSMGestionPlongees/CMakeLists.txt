@@ -24,9 +24,9 @@ find_package(Qt6 COMPONENTS Widgets REQUIRED)
 find_package(Qt6 COMPONENTS Sql REQUIRED)
 
 qt_add_executable(CPSMGestionPlongees WIN32 MACOSX_BUNDLE
-    Data/Database.cpp Data/Database.hpp
-    Data/global.cpp
-    Data/local.cpp
+    DBApi/Database.cpp DBApi/Database.hpp
+    DBApi/global.cpp
+    DBApi/local.cpp
     Debug/DbVisualizer.cpp Debug/DbVisualizer.h Debug/DbVisualizer.ui
     Debug/LogFile.cpp Debug/LogFile.hpp
     Debug/Utils.cpp Debug/Utils.h
@@ -41,12 +41,12 @@ qt_add_executable(CPSMGestionPlongees WIN32 MACOSX_BUNDLE
     GUI/MainWindow.cpp GUI/MainWindow.h GUI/MainWindow.ui
     GUI/constSettings.hpp
     GUI/global.cpp GUI/global.hpp
-    Info/Address.cpp Info/Address.h
-    Info/Dive.cpp Info/Dive.h
-    Info/Diver.cpp Info/Diver.h
-    Info/Generic.hpp
-    Info/User.cpp Info/User.h
-    Info/global.cpp Info/global.hpp
+    DataStruct/Address.cpp DataStruct/Address.h
+    DataStruct/Dive.cpp DataStruct/Dive.h
+    DataStruct/Diver.cpp DataStruct/Diver.h
+    DataStruct/Generic.hpp
+    DataStruct/User.cpp DataStruct/User.h
+    DataStruct/global.cpp DataStruct/global.hpp
     global.hpp
     main.cpp
 )
