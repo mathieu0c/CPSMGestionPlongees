@@ -141,7 +141,7 @@ void DiveEdit::refreshDiversList()
 
 void DiveEdit::refreshDiversListComboBox()
 {
-    using db::to_string;
+    using db::data::to_string;
 //    return;
     auto rowCount{ui->diverSearch_dive->getRowCount()};
     auto columnCount{ui->diverSearch_dive->getColumnCount()-1};//one column is hidden by default
@@ -158,7 +158,7 @@ void DiveEdit::refreshDiversListComboBox()
         tempCb->addItem(to_string(db::data::DiveType::exploration),diverId);//set the diver id as meta data
         tempCb->addItem(to_string(db::data::DiveType::technical),diverId);
         tempCb->setCurrentIndex(0);
-        auto diveType{db::getDiveTypeForDiver(m_tempDive,diverId)};
+        auto diveType{db::data::getDiveTypeForDiver(m_tempDive,diverId)};
         tempCb->setCurrentIndex((diveType == db::data::DiveType::exploration)?0:1);
         if(!m_isEditable)//if the widget isn't in editable mode
             tempCb->setEnabled(false);
@@ -177,7 +177,7 @@ void DiveEdit::slot_diveComboBox(int index)
 {
     QComboBox* box{qobject_cast<QComboBox*>(QObject::sender())};
     auto diverId{box->itemData(index).value<int>()};
-    db::setDiveTypeForDiver(m_tempDive,diverId,db::diveTypefrom_string(box->currentText()));
+    db::data::setDiveTypeForDiver(m_tempDive,diverId,db::data::diveTypefrom_string(box->currentText()));
 }
 
 void DiveEdit::setDive(db::data::Dive diver){
@@ -247,7 +247,7 @@ void DiveEdit::on_pb_diveToDiver_clicked()
 //    qDebug() << __func__ <<" ---------------------------------- ";
 //    qDebug() << m_tempDive;
 
-    db::removeDiversFromDive(m_tempDive,diversIds);
+    db::data::removeDiversFromDive(m_tempDive,diversIds);
 //    qDebug() << m_tempDive;
 
     refreshDiversList();

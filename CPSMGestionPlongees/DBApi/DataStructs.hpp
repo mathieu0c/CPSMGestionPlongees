@@ -57,8 +57,16 @@ struct Dive
     QTime time{};
     int diveSiteId{1};
     QVector<MinimalDiver> divers{};//diver id and type
-
 };
+
+void removeDiversFromDive(data::Dive& dive,QVector<int> idList);
+data::DiveType getDiveTypeForDiver(const data::Dive& dive,int diverId);
+bool setDiveTypeForDiver(data::Dive& dive, int diverId, data::DiveType type);
+
+QString to_string(data::DiveType diveType);
+data::DiveType diveTypefrom_string(const QString& diveType);
+
+QDebug operator<<(QDebug debug, const data::Dive& m);
 
 //###########################################
 //############               ################
