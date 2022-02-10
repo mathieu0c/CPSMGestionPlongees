@@ -101,7 +101,7 @@ void DiverEdit::refreshLevelList(const QStringList& list)
     }
 }
 
-void DiverEdit::setAddress(db::data::Address address)
+void DiverEdit::setAddress(data::Address address)
 {
     m_tempDiver.address = std::move(address);
 
@@ -110,7 +110,7 @@ void DiverEdit::setAddress(db::data::Address address)
     ui->le_city->setText(m_tempDiver.address.city);
 }
 
-void DiverEdit::setDiver(db::data::Diver diver){
+void DiverEdit::setDiver(data::Diver diver){
     m_tempDiver = std::move(diver);
 
     using db::operator<<;
@@ -158,7 +158,7 @@ void DiverEdit::computeDivingCount()
 }
 
 void DiverEdit::resetDiver(){
-    m_tempDiver = db::data::Diver{};
+    m_tempDiver = data::Diver{};
     setDiver(std::move(m_tempDiver));
 }
 

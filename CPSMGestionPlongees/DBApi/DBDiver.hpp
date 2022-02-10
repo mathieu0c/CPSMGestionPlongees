@@ -10,8 +10,6 @@
 namespace db
 {
 
-QDebug operator<<(QDebug debug, const data::Diver& m);
-
 //return the id of the element added. -1 if failed
 int addToDB(data::Diver &diver, QSqlDatabase db, QString table);
 
@@ -37,8 +35,6 @@ int exists(const data::Diver& a, QSqlDatabase db, const QString &table);
  * \param table
  */
 void removeAllFromDiver(int id, QSqlDatabase db, const QString& table);
-
-QString to_string(const data::Diver& diver);
 
 } // namespace db
 

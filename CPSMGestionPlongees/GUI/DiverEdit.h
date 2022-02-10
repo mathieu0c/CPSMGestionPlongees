@@ -26,22 +26,22 @@ public:
 
     void refreshLevelList(const QStringList& list);
 
-    const db::data::Diver& diver() const{
+    const data::Diver& diver() const{
         return m_tempDiver;
     }
-    db::data::Diver diver(){
+    data::Diver diver(){
         return m_tempDiver;
     }
 
-    void setAddress(db::data::Address address);
-    void setDiver(db::data::Diver diver);
+    void setAddress(data::Address address);
+    void setDiver(data::Diver diver);
 
     void computeDivingCount();
 
     void resetDiver();
 
 signals:
-    void endEditing(const db::data::Diver& diver);
+    void endEditing(const data::Diver& diver);
     void rejectedEditing();
 
 private slots:
@@ -56,7 +56,7 @@ private slots:
 private:
     Ui::DiverEdit *ui;
 
-    db::data::Diver m_tempDiver{};
+    data::Diver m_tempDiver{};
     int m_tempDiverOriginalPaidDives{};
 };
 

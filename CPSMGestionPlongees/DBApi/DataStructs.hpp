@@ -6,8 +6,8 @@
 #include <QDate>
 #include <QTime>
 
-namespace db
-{
+//namespace db
+//{
 
 namespace data
 {
@@ -103,9 +103,11 @@ struct Diver
     int sold(){return paidDives-diveCount;}
 };
 
+QDebug operator<<(QDebug debug, const data::Diver& m);
+QString to_string(const data::Diver& diver);
 
 }//namespace data
 
-}//namespace db
+//}//namespace db
 
 #endif // DB_DATASTRUCTS_HPP

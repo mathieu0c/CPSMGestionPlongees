@@ -33,7 +33,7 @@ namespace gui
 void setEnableDebug(bool state,bool enableLog = false){
     db::enableDebug = state;
     gui::enableDebug = state;
-    db::data::enableDebug = state;
+    data::enableDebug = state;
 
     if(enableLog)
     {
@@ -90,7 +90,7 @@ MainWindow::MainWindow(QWidget *parent)
 // -- -- -- -- -- -- debugging purpose
 //    ui->pg_editDive->setEditable(false);
     auto existingDivesIds{db::querySelect(db(),"SELECT id FROM %0",{global::table_dives},{})};
-    QVector<db::data::Dive> existingDives{existingDivesIds.size()};
+    QVector<data::Dive> existingDives{existingDivesIds.size()};
     for(const auto& dbLine : existingDivesIds)
     {
         auto dive{db::readDiveFromDB(dbLine[0].toInt(),db(),global::table_dives)};
@@ -114,7 +114,7 @@ void MainWindow::on_tabw_main_currentChanged(int i)
 }
 
 
-void MainWindow::db_syncDiversWithDives(const QVector<db::data::Dive::MinimalDiver>& diversList)
+void MainWindow::db_syncDiversWithDives(const QVector<data::Dive::MinimalDiver> &diversList)
 {
     for(const auto& diver : diversList)
     {
@@ -142,7 +142,7 @@ void MainWindow::diversSelected(QVector<int> idList)
     ui->tab_divers->setCurrentIndex(1);
 }
 
-void MainWindow::diverChangeAccepted(db::data::Diver diver)
+void MainWindow::diverChangeAccepted(data::Diver diver)
 {
     using db::storeInDB;
     storeInDB(diver,db(),global::table_divers);
@@ -231,7 +231,7 @@ void MainWindow::divesSelected(QVector<int> idList)
     ui->tab_dives->setCurrentIndex(0);//switch to edit page
 }
 
-void MainWindow::diveChangeAccepted(db::data::Dive dive)
+void MainWindow::diveChangeAccepted(data::Dive dive)
 {
     using db::storeInDB;
     storeInDB(dive,db(),global::table_dives);
@@ -256,7 +256,7 @@ void MainWindow::on_pb_deleteDive_clicked()
     if(!divesIds.size())
         return;
 
-    QVector<db::data::Dive> diveList{};
+    QVector<data::Dive> diveList{};
     diveList.reserve(divesIds.size());
 
     QStringList diveListConfirmation{diveList.size()};
