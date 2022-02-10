@@ -1,11 +1,11 @@
-#include "Diver.h"
+#include "DBDiver.hpp"
 
-#include "DataStruct/global.hpp"
 #include "../global.hpp"
 
+#include "DBApi/DataStructs.hpp"
 #include "DBApi/Database.hpp"
-#include "DBApi/DBAddress.hpp"
 #include "DBApi/Generic.hpp"
+#include "DBApi/DBAddress.hpp"
 
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -16,10 +16,10 @@
 
 #include <QDebug>
 
-namespace data
+namespace db
 {
 
-QDebug operator<<(QDebug debug, const Diver& m)
+QDebug operator<<(QDebug debug, const data::Diver& m)
 {
     QDebugStateSaver saver(debug);
     debug.nospace() << "Member{\nid : " << m.id << "\n";
@@ -46,14 +46,14 @@ QDebug operator<<(QDebug debug, const Diver& m)
 }
 
 
-int addToDB(Diver& diver, QSqlDatabase db, QString table)
+int addToDB(data::Diver& diver, QSqlDatabase db, QString table)
 {
     using db::storeInDB;
     if(!db.isOpen())
     {
         QString errMsg{QString{"data::Members : %1 : database must be opened before being accessed"}.arg(__func__)};
 
-        if(enableDebug)
+        if(db::enableDebug)
             qCritical() << errMsg;
         throw std::runtime_error(errMsg.toStdString());
         return false;
@@ -115,7 +115,7 @@ int addToDB(Diver& diver, QSqlDatabase db, QString table)
     return -1;
 }
 
-bool updateDB(Diver& diver,QSqlDatabase db,QString table,bool checkExistence)
+bool updateDB(data::Diver& diver,QSqlDatabase db,QString table,bool checkExistence)
 {
     using db::storeInDB;
     if(checkExistence)
@@ -176,7 +176,7 @@ bool updateDB(Diver& diver,QSqlDatabase db,QString table,bool checkExistence)
     return true;
 }
 
-Diver readDiverFromDB(int id, QSqlDatabase db, QString table)
+data::Diver readDiverFromDB(int id, QSqlDatabase db, QString table)
 {
     static const QString queryStr{"SELECT * FROM %1 WHERE id=?"};
     QSqlQuery query{db};
@@ -184,7 +184,7 @@ Diver readDiverFromDB(int id, QSqlDatabase db, QString table)
     query.addBindValue(id);
     query.exec();
 
-    Diver out{};
+    data::Diver out{};
 
 
     if(!query.next())//if nothing was found
@@ -234,7 +234,7 @@ Diver readDiverFromDB(int id, QSqlDatabase db, QString table)
     return out;
 }
 
-int exists(const Diver& a,QSqlDatabase db,const QString& table)
+int exists(const data::Diver& a,QSqlDatabase db,const QString& table)
 {
     auto temp{db::querySelect(db,"SELECT id FROM %1 WHERE %1.id = ?",{table},{a.id})};
 
@@ -285,7 +285,7 @@ void removeAllFromDiver(int id, QSqlDatabase db, const QString& table)
     db::querySelect(db,"DELETE FROM %0 WHERE id=?",{table},{id});
 }
 
-QString to_string(const Diver& diver)
+QString to_string(const data::Diver& diver)
 {
     QString str{};
     QTextStream{&str} << "{" << diver.id << "," <<
@@ -308,4 +308,4 @@ QString to_string(const Diver& diver)
     return str;
 }
 
-}//namespace data
+} // namespace db

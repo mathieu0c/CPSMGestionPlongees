@@ -4,7 +4,8 @@
 #include <QWidget>
 #include <QStringList>
 
-#include "DataStruct/Diver.h"
+//#include "DataStruct/Diver.h"
+#include "DBApi/DataStructs.hpp"
 
 #include "GUI/Dialog_EditFamily.h"
 
@@ -25,22 +26,22 @@ public:
 
     void refreshLevelList(const QStringList& list);
 
-    const data::Diver& diver() const{
+    const db::data::Diver& diver() const{
         return m_tempDiver;
     }
-    data::Diver diver(){
+    db::data::Diver diver(){
         return m_tempDiver;
     }
 
-    void setAddress(data::Address address);
-    void setDiver(data::Diver diver);
+    void setAddress(db::data::Address address);
+    void setDiver(db::data::Diver diver);
 
     void computeDivingCount();
 
     void resetDiver();
 
 signals:
-    void endEditing(const data::Diver& diver);
+    void endEditing(const db::data::Diver& diver);
     void rejectedEditing();
 
 private slots:
@@ -55,7 +56,7 @@ private slots:
 private:
     Ui::DiverEdit *ui;
 
-    data::Diver m_tempDiver{};
+    db::data::Diver m_tempDiver{};
     int m_tempDiverOriginalPaidDives{};
 };
 

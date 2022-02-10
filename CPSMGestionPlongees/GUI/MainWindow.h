@@ -3,8 +3,9 @@
 
 #include <QMainWindow>
 
-#include "DataStruct/Diver.h"
-#include "DataStruct/Dive.h"
+//#include "DataStruct/Diver.h"
+//#include "DataStruct/Dive.h"
+#include "DBApi/DataStructs.hpp"
 
 #include <QSqlQuery>
 
@@ -25,10 +26,10 @@ public:
     ~MainWindow();
 
 private slots:
-    void db_syncDiversWithDives(const QVector<data::Dive::MinimalDiver>& diversList);
+    void db_syncDiversWithDives(const QVector<db::data::Dive::MinimalDiver>& diversList);
 
     void diversSelected(QVector<int> idList);
-    void diverChangeAccepted(data::Diver diver);
+    void diverChangeAccepted(db::data::Diver diver);
     void diverChangeRejected();
 
     void on_tabw_main_currentChanged(int index);
@@ -40,7 +41,7 @@ private slots:
     void on_pb_editDiver_clicked();
 
     void divesSelected(QVector<int> idList);
-    void diveChangeAccepted(data::Dive dive);
+    void diveChangeAccepted(db::data::Dive dive);
     void diveChangeRejected();
 
     void on_pb_deleteDive_clicked();

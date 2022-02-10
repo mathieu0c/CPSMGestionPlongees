@@ -55,4 +55,16 @@ void applyToChildren(QObject* parent,UnaryFunction lambda)
 
 }//namespace global
 
+namespace db
+{
+extern bool enableDebug/*{false}*/;
+
+namespace data
+{
+
+extern bool enableDebug/*{false}*/;
+
+}//namespace data
+}
+
 #endif // GLOBAL_HPP

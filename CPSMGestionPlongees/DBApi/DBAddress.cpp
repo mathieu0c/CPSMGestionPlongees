@@ -1,10 +1,12 @@
 #include "DBAddress.hpp"
 
-#include "DataStruct/global.hpp"
+//#include "DataStruct/global.hpp"
 
 #include "../global.hpp"
 
 #include "DBApi/Database.hpp"
+
+#include "DBApi/DataStructs.hpp"
 
 #include <QSqlQuery>
 #include <QSqlError>

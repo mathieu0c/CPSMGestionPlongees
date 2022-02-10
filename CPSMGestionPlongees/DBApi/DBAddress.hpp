@@ -1,7 +1,9 @@
 #ifndef DB_ADDRESS_HPP
 #define DB_ADDRESS_HPP
 
-#include "DataStruct/Address.h"
+//#include "DataStruct/Address.h"
+
+#include "DBApi/DataStructs.hpp"
 
 #include <QSqlDatabase>
 

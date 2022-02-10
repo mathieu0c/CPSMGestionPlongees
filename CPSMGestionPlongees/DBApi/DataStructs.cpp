@@ -1,7 +1,8 @@
-#include "Address.h"
+#include "DBApi/DataStructs.hpp"
 
 #include <QDebug>
 
+namespace db{
 namespace data
 {
 
@@ -27,3 +28,4 @@ QString to_string(const Address& address)
 }
 
 }//namespace data
+}//namespace db

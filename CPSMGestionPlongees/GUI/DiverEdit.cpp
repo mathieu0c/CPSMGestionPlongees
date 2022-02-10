@@ -6,7 +6,11 @@
 #include "GUI/global.hpp"
 #include "GUI/Dialog_EditFamily.h"
 #include "GUI/DiveEdit.h"
-#include "DataStruct/Dive.h"
+//#include "DataStruct/Dive.h"
+
+#include "DBApi/DataStructs.hpp"
+#include "DBApi/DBDive.hpp"
+#include "DBApi/DBAddress.hpp"
 
 #include "DBApi/DBAddress.hpp"
 
@@ -78,7 +82,7 @@ DiverEdit::DiverEdit(QWidget *parent) :
                         {"Date","Site","Type"});
 
     connect(ui->diveSearch,&gui::DiveSearch::divesSelected,[&](QVector<int> idList){
-        auto dive{data::readDiveFromDB(idList[0],QSqlDatabase::database(),global::table_dives)};
+        auto dive{db::readDiveFromDB(idList[0],QSqlDatabase::database(),global::table_dives)};
         gui::DiveEdit::displayDive(dive,this);
     });
 }
@@ -97,7 +101,7 @@ void DiverEdit::refreshLevelList(const QStringList& list)
     }
 }
 
-void DiverEdit::setAddress(data::Address address)
+void DiverEdit::setAddress(db::data::Address address)
 {
     m_tempDiver.address = std::move(address);
 
@@ -106,13 +110,15 @@ void DiverEdit::setAddress(data::Address address)
     ui->le_city->setText(m_tempDiver.address.city);
 }
 
-void DiverEdit::setDiver(data::Diver diver){
+void DiverEdit::setDiver(db::data::Diver diver){
     m_tempDiver = std::move(diver);
+
+    using db::operator<<;
 
     if(enableDebug)
     {
         qDebug() << "Setup diver in edition mode : ";
-        qDebug() << m_tempDiver;
+//        qDebug() << m_tempDiver;
     }
 
     ui->le_firstname->setText(m_tempDiver.firstName);
@@ -152,7 +158,7 @@ void DiverEdit::computeDivingCount()
 }
 
 void DiverEdit::resetDiver(){
-    m_tempDiver = data::Diver{};
+    m_tempDiver = db::data::Diver{};
     setDiver(std::move(m_tempDiver));
 }
 

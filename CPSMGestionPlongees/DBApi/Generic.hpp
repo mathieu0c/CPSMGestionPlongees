@@ -12,6 +12,11 @@
 
 #include "../global.hpp"
 
+#include "DBApi/DataStructs.hpp"
+#include "DBApi/DBAddress.hpp"
+#include "DBApi/DBDive.hpp"
+#include "DBApi/DBDiver.hpp"
+
 namespace db
 {
 

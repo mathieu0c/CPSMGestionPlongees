@@ -1,7 +1,5 @@
-#include "Dive.h"
+#include "DBDive.hpp"
 #include "../global.hpp"
-
-#include "DataStruct/global.hpp"
 
 #include "DBApi/Database.hpp"
 #include <QSqlQuery>
@@ -10,10 +8,9 @@
 
 #include <algorithm>
 
-namespace data
-{
+namespace db {
 
-bool removeAllFromDB(const Dive& dive,QSqlDatabase db, const QString& table)
+bool removeAllFromDB(const data::Dive& dive,QSqlDatabase db, const QString& table)
 {
     QSqlQuery{"BEGIN TRANSACTION;",db};
 
@@ -63,7 +60,7 @@ bool removeAllFromDB(const Dive& dive,QSqlDatabase db, const QString& table)
 }
 
 //return the id of the element added. -1 if failed
-int addToDB(Dive &dive, QSqlDatabase db, QString table)
+int addToDB(data::Dive &dive, QSqlDatabase db, QString table)
 {
     if(!db.isOpen())
     {
@@ -127,7 +124,7 @@ int addToDB(Dive &dive, QSqlDatabase db, QString table)
     return lastId;
 }
 
-bool updateDB(Dive& dive,QSqlDatabase db,QString table,bool checkExistence)
+bool updateDB(data::Dive& dive,QSqlDatabase db,QString table,bool checkExistence)
 {
     if(checkExistence)
     {
@@ -187,7 +184,7 @@ bool updateDB(Dive& dive,QSqlDatabase db,QString table,bool checkExistence)
     return true;
 }
 
-Dive readDiveFromDB(int id, QSqlDatabase db, QString table)
+data::Dive readDiveFromDB(int id, QSqlDatabase db, QString table)
 {
 //    qDebug() << "##### " << __func__ << " #####";
     static const QString queryStr{"SELECT * FROM %1 WHERE id=?"};
@@ -196,7 +193,7 @@ Dive readDiveFromDB(int id, QSqlDatabase db, QString table)
     query.addBindValue(id);
     query.exec();
 
-    Dive out{};
+    data::Dive out{};
 
     if(!query.next())//if nothing was found
     {
@@ -240,7 +237,7 @@ Dive readDiveFromDB(int id, QSqlDatabase db, QString table)
         if(diverLine.size() != 2) //if we didn't get the two columns expected
             throw std::runtime_error{__func__ + std::string{" : Invalid column count : expected 2 and got "}+std::to_string(diverLine.size())};
 
-        Dive::MinimalDiver diver{};
+        data::Dive::MinimalDiver diver{};
         diver.id = diverLine[0].toInt();
         diver.type = diveTypefrom_string(diverLine[1].toString());
         out.divers.append(diver);
@@ -251,7 +248,7 @@ Dive readDiveFromDB(int id, QSqlDatabase db, QString table)
     return out;
 }
 
-int exists(const Dive& a,QSqlDatabase db,const QString& table)
+int exists(const data::Dive& a,QSqlDatabase db,const QString& table)
 {
     auto temp{db::querySelect(db,"SELECT id FROM %1 WHERE %1.id = ?",{table},{a.id})};
 
@@ -262,29 +259,29 @@ int exists(const Dive& a,QSqlDatabase db,const QString& table)
     return -1;
 }
 
-void removeDiversFromDive(Dive& dive,QVector<int> idList)
+void removeDiversFromDive(data::Dive& dive,QVector<int> idList)
 {
-    dive.divers.erase(std::remove_if(dive.divers.begin(),dive.divers.end(),[&](Dive::MinimalDiver& diver){
+    dive.divers.erase(std::remove_if(dive.divers.begin(),dive.divers.end(),[&](data::Dive::MinimalDiver& diver){
         return idList.contains(diver.id);
     }),dive.divers.end());
 }
 
-DiveType getDiveTypeForDiver(const Dive& dive,int diverId)
+data::DiveType getDiveTypeForDiver(const data::Dive& dive,int diverId)
 {
-    auto itDiver{std::find_if(dive.divers.begin(),dive.divers.end(),[&](const Dive::MinimalDiver& e){
+    auto itDiver{std::find_if(dive.divers.begin(),dive.divers.end(),[&](const data::Dive::MinimalDiver& e){
             return e.id == diverId;
         })};
     if(itDiver == dive.divers.end())
     {
-        return DiveType::undefined;
+        return data::DiveType::undefined;
     }
 
     return (*itDiver).type;
 }
 
-bool setDiveTypeForDiver(Dive& dive,int diverId,DiveType type)
+bool setDiveTypeForDiver(data::Dive& dive,int diverId,data::DiveType type)
 {
-    auto itDiver{std::find_if(dive.divers.begin(),dive.divers.end(),[&](const Dive::MinimalDiver& e){
+    auto itDiver{std::find_if(dive.divers.begin(),dive.divers.end(),[&](const data::Dive::MinimalDiver& e){
             return e.id == diverId;
         })};
     if(itDiver == dive.divers.end())
@@ -296,30 +293,30 @@ bool setDiveTypeForDiver(Dive& dive,int diverId,DiveType type)
     return true;
 }
 
-QString to_string(DiveType diveType)
+QString to_string(data::DiveType diveType)
 {
     switch (diveType)
     {
-    case DiveType::exploration:
+    case data::DiveType::exploration:
         return "Explo";
-    case DiveType::technical:
+    case data::DiveType::technical:
         return "Tech";
     default:
         return "-";
     }
 }
 
-DiveType diveTypefrom_string(const QString& diveType)
+data::DiveType diveTypefrom_string(const QString& diveType)
 {
     if(diveType == "Explo")
-        return DiveType::exploration;
+        return data::DiveType::exploration;
     else if(diveType == "Tech")
-        return DiveType::technical;
+        return data::DiveType::technical;
 
-    return DiveType::undefined;
+    return data::DiveType::undefined;
 }
 
-QDebug operator<<(QDebug debug, const Dive& m)
+QDebug operator<<(QDebug debug, const data::Dive& m)
 {
     QDebugStateSaver saver(debug);
     debug.nospace() << "Dive{\nid : " << m.id << "\n";
@@ -341,7 +338,7 @@ QDebug operator<<(QDebug debug, const Dive& m)
 //------------------------  MinimalDiver funcs  ---------------------------------------
 //-------------------------------------------------------------------------------------
 
-QDebug operator<<(QDebug debug, const Dive::MinimalDiver& d)
+QDebug operator<<(QDebug debug, const data::Dive::MinimalDiver& d)
 {
     QDebugStateSaver saver(debug);
     debug.nospace() << "MinimalDiver{\nid : " << d.id << "\n";
@@ -351,7 +348,7 @@ QDebug operator<<(QDebug debug, const Dive::MinimalDiver& d)
     return debug;
 }
 
-bool addToDB(const Dive::MinimalDiver& diver, int diveId, QSqlDatabase db, QString table)
+bool addToDB(const data::Dive::MinimalDiver& diver, int diveId, QSqlDatabase db, QString table)
 {
 //    if(!db.isOpen())
 //    {
@@ -383,7 +380,7 @@ bool addToDB(const Dive::MinimalDiver& diver, int diveId, QSqlDatabase db, QStri
     return true;
 }
 
-bool updateDB(const Dive::MinimalDiver &diver, int diveId, QSqlDatabase db, QString table, bool checkExistence)
+bool updateDB(const data::Dive::MinimalDiver &diver, int diveId, QSqlDatabase db, QString table, bool checkExistence)
 {
     if(checkExistence)
     {
@@ -414,7 +411,7 @@ bool updateDB(const Dive::MinimalDiver &diver, int diveId, QSqlDatabase db, QStr
 }
 
 
-Dive::MinimalDiver readMinimalDiverFromDB(int diverId, int diveId, QSqlDatabase db, QString table)
+data::Dive::MinimalDiver readMinimalDiverFromDB(int diverId, int diveId, QSqlDatabase db, QString table)
 {
     static const QString queryStr{"SELECT * FROM %1 WHERE diveId=? AND diverId=?"};
     QSqlQuery query{db};
@@ -423,7 +420,7 @@ Dive::MinimalDiver readMinimalDiverFromDB(int diverId, int diveId, QSqlDatabase 
     query.addBindValue(diverId);
     query.exec();
 
-    Dive::MinimalDiver out{};
+    data::Dive::MinimalDiver out{};
 
     if(!query.next())//if nothing was found
     {
@@ -457,12 +454,12 @@ Dive::MinimalDiver readMinimalDiverFromDB(int diverId, int diveId, QSqlDatabase 
     return out;
 }
 
-bool exists(const Dive::MinimalDiver& diver, int diveId, QSqlDatabase db, const QString &table)
+bool exists(const data::Dive::MinimalDiver& diver, int diveId, QSqlDatabase db, const QString &table)
 {
     return db::queryExist(db,"SELECT * FROM %0 WHERE diveId=? AND diverId=?",{table},{diveId,diver.id});
 }
 
-bool storeInDB(const Dive::MinimalDiver& diver,int diveId, QSqlDatabase db, const QString &table)
+bool storeInDB(const data::Dive::MinimalDiver& diver,int diveId, QSqlDatabase db, const QString &table)
 {
     auto exist{exists(diver,diveId,db,table)};
     if(!exist)//if the object doesn't exist
@@ -474,7 +471,7 @@ bool storeInDB(const Dive::MinimalDiver& diver,int diveId, QSqlDatabase db, cons
     return updateDB(diver,diveId,db,table);
 }
 
-bool removeFromDBNotIn(const QVector<Dive::MinimalDiver>& listOfDiversToKeep,int diveId,QSqlDatabase db,const QString& table)
+bool removeFromDBNotIn(const QVector<data::Dive::MinimalDiver>& listOfDiversToKeep,int diveId,QSqlDatabase db,const QString& table)
 {
     QString idList{};
     for(const auto& e : listOfDiversToKeep)
@@ -499,4 +496,4 @@ bool removeFromDBNotIn(const QVector<Dive::MinimalDiver>& listOfDiversToKeep,int
     return true;
 }
 
-} // namespace data
+} // namespace db

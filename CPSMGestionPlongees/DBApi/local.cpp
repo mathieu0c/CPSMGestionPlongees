@@ -2,8 +2,9 @@
 
 #include "../global.hpp"
 
-#include "DataStruct/Diver.h"
-#include "DataStruct/Dive.h"
+//#include "DataStruct/Diver.h"
+//#include "DataStruct/Dive.h"
+#include "DBApi/DataStructs.hpp"
 
 #include "DBApi/Generic.hpp"
 
