@@ -3,7 +3,7 @@
 cmake_minimum_required(VERSION 3.16)
 project(CPSMGestionPlongees LANGUAGES CXX)
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -32,6 +32,7 @@ qt_add_executable(CPSMGestionPlongees WIN32 MACOSX_BUNDLE
     DBApi/DBAddress.hpp DBApi/DBAddress.cpp
     DBApi/DBDive.hpp DBApi/DBDive.cpp
     DBApi/DBDiver.hpp DBApi/DBDiver.cpp
+    DBApi/DBApi.hpp DBApi/DBApi.cpp
     Debug/DbVisualizer.cpp Debug/DbVisualizer.h Debug/DbVisualizer.ui
     Debug/LogFile.cpp Debug/LogFile.hpp
     Debug/Utils.cpp Debug/Utils.h

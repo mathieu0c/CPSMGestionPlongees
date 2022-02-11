@@ -97,78 +97,20 @@ data::Address readAddressFromDB(int id, QSqlDatabase db, QString table)
     query.addBindValue(id);
     query.exec();
 
-    data::Address out{};
-
-
-    if(!query.next())//if nothing was found
-    {
-        if(enableDebug)
-        {
-            qDebug() << __func__ << " : No member found with id : " << id;
-        }
+    return readFromDB<data::Address>(db,[&](const QSqlQuery& query){
+        data::Address out{};
+        out.id = query.value(0).value<int>();
+        out.address = query.value(1).value<QString>();
+        out.postalCode = query.value(2).value<QString>();
+        out.city = query.value(3).value<QString>();
         return out;
-    }
+    },"SELECT * FROM %1 WHERE id=?",{table},{id});
 
-    if(enableDebug)
-    {
-        qDebug() << "----------- " << __func__ << " -----------";
-        qDebug() << "Query column count : " << query.record().count();
-    }
-
-    auto err{query.lastError()};
-    if(err.type() != QSqlError::ErrorType::NoError)
-    {
-        QString errStr{QString{"%0 : SQL error : %1"}.arg(__func__,err.text())};
-        qCritical() << errStr;
-        return out;
-    }
-
-    out.id = query.value(0).value<int>();
-    out.address = query.value(1).value<QString>();
-    out.postalCode = query.value(2).value<QString>();
-    out.city = query.value(3).value<QString>();
-
-
-    return out;
 }
 
 int exists(const data::Address& a,QSqlDatabase db,const QString& table)
 {
-    /*auto temp{db::querySelect(db,"SELECT id FROM %1 WHERE %1.address = ? AND %1.postalCode = ? AND %1.city = ?",{table},{a.address,a.postalCode,a.city})};
-
-    if(temp.size() > 0)
-    {
-        return temp[0][0].toInt();
-    }
-    return -1;*/
-    auto temp{db::querySelect(db,"SELECT id FROM %1 WHERE %1.id = ?",{table},{a.id})};
-
-    if(temp.size() > 0)
-    {
-        return temp[0][0].toInt();
-    }
-    return -1;
+    return (db::queryExist(db,"SELECT id FROM %1 WHERE %1.id",{table},{a.id}))?a.id:-1;
 }
-
-//int storeInDB(Address& a, QSqlDatabase db, const QString &table)
-//{
-//    auto id{exists(a,db,table)};
-//    if(id == -1 && a.id == -1)//if the address doesn't exist by id
-//    {
-//        id = addToDB(a,db,table);
-//        a.id = id;
-
-//        return id;
-//    }
-//    else
-//    {
-//        if(a.id == -1)
-//            a.id = id;
-
-//        if(!updateDB(a,db,table))
-//            return -1;
-//        return id;
-//    }
-//}
 
 } // namespace db

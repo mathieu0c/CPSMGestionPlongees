@@ -1,9 +1,16 @@
 #ifndef DB_DATABASE_HPP
 #define DB_DATABASE_HPP
 
+#include "../global.hpp"
+
 #include <QStringList>
+#include <QVector>
 
 #include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
+
+#include <concepts>
 
 namespace db
 {
@@ -33,6 +40,110 @@ QVector<QVector<QVariant>> querySelect(QSqlDatabase db, QString request, const Q
 int queryCount(QSqlDatabase& db,QString request,const QStringList& argList,const QVector<QVariant>& valList);
 
 bool queryExist(QSqlDatabase& db,QString request,const QStringList& argList,const QVector<QVariant>& valList);
+
+//----------------------------------------------------------------
+
+template<typename T,typename UnaryFunction>
+concept ReadFromDBExtractor = requires(UnaryFunction f){
+    std::invocable<UnaryFunction&,const QSqlQuery&>;
+    {f(QSqlQuery())} -> std::convertible_to<T>;
+};
+
+/*
+Example of lambda for "extractValue":
+[&](QSqlDatabase& db) -> int
+{
+    int out{};
+    out.id = query.value(0).value<int>();
+    return out;
+}
+
+Example call :
+auto results{db::readFromDB<int>(db,[&](const QSqlQuery& q)->int{return q.value(0).value<int>();},"SELECT id FROM %0",{global::table_dives},{})};
+
+*/
+
+template<typename T,typename UnaryFunction>
+requires ReadFromDBExtractor<T, UnaryFunction>
+inline
+QVector<T> readLFromDB(const QSqlDatabase& db,UnaryFunction extractValue,QString request,const QStringList& argList,const QVector<QVariant>& valList)
+{
+    QVector<T> out{};
+
+    QSqlQuery query{db};
+
+    for(const auto& e : argList)//match argument list
+    {
+        request = request.arg(e);
+    }
+
+    query.prepare(request);//prepare sql query
+
+    for(const auto& e : valList) //bind all values (this way add some injection protection)
+    {
+        query.addBindValue(e);
+    }
+
+    query.exec();
+
+    auto err{query.lastError()};
+    if(err.type() != QSqlError::ErrorType::NoError)
+    {
+        QString errStr{QString{"%0 : SQL error : %1"}.arg(__CURRENT_PLACE__,err.text())};
+        qCritical() << errStr;
+        return out;
+    }
+
+    out.reserve(1000);
+
+    while(query.next())//while there is results
+    {
+        out.append(extractValue(query));
+    }
+    out.shrink_to_fit();
+
+
+    return out;
+}
+
+template<typename T,typename UnaryFunction>
+requires ReadFromDBExtractor<T, UnaryFunction>
+inline
+T readFromDB(const QSqlDatabase& db,UnaryFunction extractValue,QString request,const QStringList& argList,const QVector<QVariant>& valList)
+{
+    QSqlQuery query{db};
+
+    for(const auto& e : argList)//match argument list
+    {
+        request = request.arg(e);
+    }
+
+    query.prepare(request);//prepare sql query
+
+    for(const auto& e : valList) //bind all values (this way add some injection protection)
+    {
+        query.addBindValue(e);
+    }
+
+    query.exec();
+
+    auto err{query.lastError()};
+    if(err.type() != QSqlError::ErrorType::NoError)
+    {
+        QString errStr{QString{"%0 : SQL error : %1"}.arg(__CURRENT_PLACE__,err.text())};
+        qCritical() << errStr;
+        return {};
+    }
+
+    if(!query.next())//if there is no result
+    {
+        QString errStr{QString{"%0 : SQL error : %1"}.arg(__CURRENT_PLACE__,err.text())};
+        qCritical() << errStr;
+        throw std::runtime_error{errStr.toStdString()};
+    }
+
+    return extractValue(query);
+}
 
 //----------------- Local
 

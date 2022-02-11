@@ -19,6 +19,7 @@
 
 #include "DBApi/Database.hpp"
 #include "DBApi/Generic.hpp"
+#include "DBApi/DBApi.hpp"
 #include <QSqlQueryModel>
 #include <QSqlQuery>
 #include <QSqlError>
@@ -95,6 +96,13 @@ MainWindow::MainWindow(QWidget *parent)
     {
         auto dive{db::readDiveFromDB(dbLine[0].toInt(),db(),global::table_dives)};
         db_syncDiversWithDives(dive.divers);
+    }
+
+    auto db{this->db()};
+    auto results{db::readLFromDB<int>(db,[&](const QSqlQuery& q)->int{return q.value(0).value<int>();},"SELECT id FROM %0",{global::table_dives},{})};
+    for(const auto& e : results)
+    {
+        qDebug() << __CURRENT_PLACE__ <<e;
     }
 }
 

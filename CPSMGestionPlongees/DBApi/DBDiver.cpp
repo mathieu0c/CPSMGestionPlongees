@@ -209,13 +209,7 @@ data::Diver readDiverFromDB(int id, QSqlDatabase db, QString table)
 
 int exists(const data::Diver& a,QSqlDatabase db,const QString& table)
 {
-    auto temp{db::querySelect(db,"SELECT id FROM %1 WHERE %1.id = ?",{table},{a.id})};
-
-    if(temp.size() > 0)
-    {
-        return temp[0][0].toInt();
-    }
-    return -1;
+    return (db::queryExist(db,"SELECT * FROM %0 WHERE diveId=? AND diverId=?",{table},{a.id}))?a.id:-1;
 }
 
 //int storeInDB(Diver &diver, QSqlDatabase db, const QString &table)
