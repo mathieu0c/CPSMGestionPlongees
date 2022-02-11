@@ -41,6 +41,8 @@ int queryCount(QSqlDatabase& db,QString request,const QStringList& argList,const
 
 bool queryExist(QSqlDatabase& db,QString request,const QStringList& argList,const QVector<QVariant>& valList);
 
+int getLastInsertId(const QSqlDatabase& db, QString table);
+
 //----------------------------------------------------------------
 
 template<typename T,typename UnaryFunction>
@@ -59,7 +61,7 @@ Example of lambda for "extractValue":
 }
 
 Example call :
-auto results{db::readFromDB<int>(db,[&](const QSqlQuery& q)->int{return q.value(0).value<int>();},"SELECT id FROM %0",{global::table_dives},{})};
+auto results{db::readLFromDB<int>(db,[&](const QSqlQuery& q)->int{return q.value(0).value<int>();},"SELECT id FROM %0",{global::table_dives},{})};
 
 */
 

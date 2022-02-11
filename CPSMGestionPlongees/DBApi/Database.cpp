@@ -201,4 +201,15 @@ bool queryExist(QSqlDatabase& db,QString request,const QStringList& argList,cons
     return false;
 }
 
+int getLastInsertId(const QSqlDatabase& db, QString table)
+{
+    auto id{readFromDB<int>(db,[&](const QSqlQuery& q)->int{
+        if(q.size() == 0)
+            return -1;
+        else
+            return q.value(0).toInt();
+    },"SELECT last_insert_rowid() FROM %1",{table},{})};
+    return id;
+}
+
 }//namespace dta

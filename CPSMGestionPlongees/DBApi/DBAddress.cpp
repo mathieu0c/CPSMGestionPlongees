@@ -48,12 +48,7 @@ int addToDB(const data::Address& a,QSqlDatabase db,QString table)
         return -1;
     }
 
-    query.prepare(QString{"SELECT last_insert_rowid() FROM %1"}.arg(table));
-    auto temp{db::querySelect(db,"SELECT last_insert_rowid()",{},{})};
-    if(temp.size() > 0)
-        return temp[0][0].toInt();
-
-    return -1;
+    return getLastInsertId(db,table);
 }
 
 bool updateDB(const data::Address& a,QSqlDatabase db,QString table,bool checkExistence)
@@ -111,6 +106,28 @@ data::Address readAddressFromDB(int id, QSqlDatabase db, QString table)
 int exists(const data::Address& a,QSqlDatabase db,const QString& table)
 {
     return (db::queryExist(db,"SELECT id FROM %1 WHERE %1.id",{table},{a.id}))?a.id:-1;
+}
+
+int storeInDB(data::Address &a, QSqlDatabase db, const QString &table)
+{
+    auto existBefore{exists(a,db,table)};
+
+    //cf https://stackoverflow.com/questions/3634984/insert-if-not-exists-else-update;
+    static QString queryStr{"INSERT INTO %0()"};
+
+    QSqlQuery query{db};
+    query.prepare(queryStr.arg(table));
+    query.addBindValue(a.address);
+    query.addBindValue(a.postalCode);
+    query.addBindValue(a.city);
+    query.addBindValue(a.id);
+    query.exec();
+
+    if(!existBefore)
+    {
+        return getLastInsertId(db,table);
+    }
+    return a.id;
 }
 
 } // namespace db

@@ -23,8 +23,8 @@ int exists(const data::Address& a, QSqlDatabase db, const QString &table);
 //alter data if existing
 //add data if not
 //return data id
-//this function may change a.id
-//int storeInDB(Address &a, QSqlDatabase db, const QString &table);
+//this function may change a.id if it inserts the value in the table
+int storeInDB(data::Address &a, QSqlDatabase db, const QString &table);
 
 } // namespace db
 
