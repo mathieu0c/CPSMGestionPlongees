@@ -10,11 +10,6 @@
 namespace db
 {
 
-//return the id of the element added. -1 if failed
-int addToDB(const data::Address& a,QSqlDatabase db,QString table);
-
-bool updateDB(const data::Address& a,QSqlDatabase db,QString table,bool checkExistence = false);
-
 data::Address readAddressFromDB(int id, QSqlDatabase db, QString table);
 
 //search if the address already exists and return id if true, -1 otherwise
