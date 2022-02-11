@@ -99,11 +99,14 @@ MainWindow::MainWindow(QWidget *parent)
     }
 
     auto db{this->db()};
-    auto results{db::readLFromDB<int>(db,[&](const QSqlQuery& q)->int{return q.value(0).value<int>();},"SELECT id FROM %0",{global::table_dives},{})};
-    for(const auto& e : results)
-    {
-        qDebug() << __CURRENT_PLACE__ <<e;
-    }
+//    auto results{db::readLFromDB<int>(db,[&](const QSqlQuery& q)->int{return q.value(0).value<int>();},"SELECT id FROM %0",{global::table_dives},{})};
+//    for(const auto& e : results)
+//    {
+//        qDebug() << __CURRENT_PLACE__ <<e;
+//    }
+
+    data::Address adrTest{-1,"BIDULE","TRUC","JSP"};
+    db::storeInDB(adrTest,db,global::table_diversAddresses);
 }
 
 MainWindow::~MainWindow()

@@ -137,11 +137,17 @@ T readFromDB(const QSqlDatabase& db,UnaryFunction extractValue,QString request,c
         return {};
     }
 
+    qDebug() << __CURRENT_PLACE__<< ": " << query.lastQuery();
+
     if(!query.next())//if there is no result
     {
-        QString errStr{QString{"%0 : SQL error : %1"}.arg(__CURRENT_PLACE__,err.text())};
-        qCritical() << errStr;
-        throw std::runtime_error{errStr.toStdString()};
+        if(enableDebug)
+        {
+            QString errStr{QString{"%0 : SQL no result found : %1"}.arg(__CURRENT_PLACE__,err.text())};
+            qCritical() << errStr;
+        }
+        return {};
+//        throw std::runtime_error{errStr.toStdString()};
     }
 
     return extractValue(query);
