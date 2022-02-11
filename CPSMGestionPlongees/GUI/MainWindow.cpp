@@ -105,7 +105,7 @@ MainWindow::MainWindow(QWidget *parent)
 //        qDebug() << __CURRENT_PLACE__ <<e;
 //    }
 
-    data::Address adrTest{-1,"BIDULE","TRUC","JSP"};
+    data::Address adrTest{1,"BIDULE","TRUC","JSP"};
     db::storeInDB(adrTest,db,global::table_diversAddresses);
 }
 

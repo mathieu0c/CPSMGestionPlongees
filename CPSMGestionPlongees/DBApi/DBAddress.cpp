@@ -140,7 +140,9 @@ int storeInDB(data::Address &a, QSqlDatabase db, const QString &addressTable)
 
     if(existBefore < 0)
     {
-        return getLastInsertId(db,addressTable);
+        auto id{getLastInsertId(db,addressTable)};
+        a.id = id;
+        return id;
     }
     return a.id;
 }

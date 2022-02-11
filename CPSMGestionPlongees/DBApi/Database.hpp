@@ -137,8 +137,6 @@ T readFromDB(const QSqlDatabase& db,UnaryFunction extractValue,QString request,c
         return {};
     }
 
-    qDebug() << __CURRENT_PLACE__<< ": " << query.lastQuery();
-
     if(!query.next())//if there is no result
     {
         if(enableDebug)
