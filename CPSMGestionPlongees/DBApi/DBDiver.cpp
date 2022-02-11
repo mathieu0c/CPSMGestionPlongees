@@ -212,28 +212,6 @@ int exists(const data::Diver& a,QSqlDatabase db,const QString& table)
     return (db::queryExist(db,"SELECT * FROM %0 WHERE diveId=? AND diverId=?",{table},{a.id}))?a.id:-1;
 }
 
-//int storeInDB(Diver &diver, QSqlDatabase db, const QString &table)
-//{
-//    auto id{exists(diver,db,table)};
-//    if(id == -1)//if the address doesn't exist
-//    {
-//        id = addToDB(diver,db,table);
-//        diver.id = id;
-//        return id;
-//    }
-//    else
-//    {
-//        if(diver.id == -1)
-//            diver.id = id;
-
-//        if(!updateDB(diver,db,table))
-//            return -1;
-//        return id;
-//    }
-
-//    return -1;
-//}
-
 void removeAllFromDiver(int id, QSqlDatabase db, const QString& table)
 {
     auto tempQueryResult{db::querySelect(db,"SELECT memberAddressId FROM %0 WHERE id=?",{table},{id})};
