@@ -14,6 +14,19 @@ namespace data
 
 //###########################################
 //############               ################
+//#########      DivingSite     #############
+//############               ################
+//###########################################
+
+struct DivingSite
+{
+    int m_id{-1};
+    QString m_name;
+};
+
+
+//###########################################
+//############               ################
 //#########       Address       #############
 //############               ################
 //###########################################
@@ -29,44 +42,6 @@ struct Address
 QDebug operator<<(QDebug debug, const Address& a);
 
 QString to_string(const Address& address);
-
-
-
-//###########################################
-//############               ################
-//#########        Dive         #############
-//############               ################
-//###########################################
-
-
-enum DiveType{
-    undefined=-1,
-    exploration=0,
-    technical=1
-};
-
-struct Dive
-{
-    struct MinimalDiver{
-        int id{-1};
-        DiveType type{};
-    };
-
-    int id{-1};
-    QDate date{};
-    QTime time{};
-    int diveSiteId{1};
-    QVector<MinimalDiver> divers{};//diver id and type
-};
-
-void removeDiversFromDive(data::Dive& dive,QVector<int> idList);
-data::DiveType getDiveTypeForDiver(const data::Dive& dive,int diverId);
-bool setDiveTypeForDiver(data::Dive& dive, int diverId, data::DiveType type);
-
-QString to_string(data::DiveType diveType);
-data::DiveType diveTypefrom_string(const QString& diveType);
-
-QDebug operator<<(QDebug debug, const data::Dive& m);
 
 //###########################################
 //############               ################
@@ -105,6 +80,58 @@ struct Diver
 
 QDebug operator<<(QDebug debug, const data::Diver& m);
 QString to_string(const data::Diver& diver);
+
+
+//###########################################
+//############               ################
+//#########        Dive         #############
+//############               ################
+//###########################################
+
+
+enum DiveType{
+    undefined=-1,
+    exploration=0,
+    technical=1
+};
+
+//###################################
+//####               ################
+//#      DiveMember     #############
+//####               ################
+//###################################
+
+struct DiveMember
+{
+    int m_diveId;
+    int m_diverId;
+    DiveType m_type;
+    Diver m_fullDiver;
+};
+
+struct Dive
+{
+    struct MinimalDiver{
+        int id{-1};
+        DiveType type{};
+    };
+
+    int id{-1};
+    QDate date{};
+    QTime time{};
+    int diveSiteId{1};
+    QVector<MinimalDiver> divers{};//diver id and type
+};
+
+void removeDiversFromDive(data::Dive& dive,QVector<int> idList);
+data::DiveType getDiveTypeForDiver(const data::Dive& dive,int diverId);
+bool setDiveTypeForDiver(data::Dive& dive, int diverId, data::DiveType type);
+
+QString to_string(data::DiveType diveType);
+data::DiveType diveTypefrom_string(const QString& diveType);
+
+QDebug operator<<(QDebug debug, const data::Dive& m);
+
 
 }//namespace data
 

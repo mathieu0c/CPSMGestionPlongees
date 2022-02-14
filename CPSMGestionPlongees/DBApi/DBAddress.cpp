@@ -19,12 +19,6 @@ namespace db
 
 data::Address readAddressFromDB(int id, QSqlDatabase db, QString table)
 {
-    static const QString queryStr{"SELECT * FROM %1 WHERE id=?"};
-    QSqlQuery query{db};
-    query.prepare(queryStr.arg(table));
-    query.addBindValue(id);
-    query.exec();
-
     return readFromDB<data::Address>(db,[&](const QSqlQuery& query){
         data::Address out{};
         out.id = query.value(0).value<int>();
@@ -33,7 +27,6 @@ data::Address readAddressFromDB(int id, QSqlDatabase db, QString table)
         out.city = query.value(3).value<QString>();
         return out;
     },"SELECT * FROM %1 WHERE id=?",{table},{id});
-
 }
 
 int exists(const data::Address& a,QSqlDatabase db,const QString& table)
@@ -63,6 +56,14 @@ int storeInDB(data::Address &a, QSqlDatabase db, const QString &addressTable)
     query.addBindValue(a.postalCode);
     query.addBindValue(a.city);
     query.exec();
+
+    auto err{query.lastError()};
+    if(err.type() != QSqlError::ErrorType::NoError)
+    {
+        QString errStr{QString{"%0 : SQL error : %1"}.arg(__CURRENT_PLACE__,err.text())};
+        qCritical() << errStr;
+        return {};
+    }
 
 //    qDebug() << "-----------------------------";
 //    qDebug() << __CURRENT_PLACE__<< ": " << query.lastQuery();

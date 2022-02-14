@@ -151,65 +151,33 @@ bool updateDB(data::Diver& diver,QSqlDatabase db,QString table,bool checkExisten
 
 data::Diver readDiverFromDB(int id, QSqlDatabase db, QString table)
 {
-    static const QString queryStr{"SELECT * FROM %1 WHERE id=?"};
-    QSqlQuery query{db};
-    query.prepare(queryStr.arg(table));
-    query.addBindValue(id);
-    query.exec();
-
-    data::Diver out{};
-
-
-    if(!query.next())//if nothing was found
-    {
-        if(enableDebug)
-        {
-            qDebug() << __func__ << " : No member found with id : " << id;
-        }
+    return readFromDB<data::Diver>(db,[&](const QSqlQuery& query){
+        data::Diver out{};
+        int currentIndex{};
+        out.id = query.value(currentIndex++).value<int>();
+        out.firstName = query.value(currentIndex++).value<QString>();
+        out.lastName = query.value(currentIndex++).value<QString>();
+        out.birthDate = QDate::fromString(query.value(currentIndex++).value<QString>(),global::format_date);
+        out.email = query.value(currentIndex++).value<QString>();
+        out.phoneNumber = query.value(currentIndex++).value<QString>();
+        out.address = db::readAddressFromDB(query.value(currentIndex++).value<int>(),db,global::table_diversAddresses);
+        out.licenseNumber = query.value(currentIndex++).value<QString>();
+        out.certifDate = QDate::fromString(query.value(currentIndex++).value<QString>(),global::format_date);
+        out.diverLevelId = query.value(currentIndex++).value<int>();
+        out.member = query.value(currentIndex++).value<bool>();
+        out.diveCount = query.value(currentIndex++).value<int>();
+        out.paidDives = query.value(currentIndex++).value<int>();
+        out.gear_regulator = query.value(currentIndex++).value<bool>();
+        out.gear_suit = query.value(currentIndex++).value<bool>();
+        out.gear_computer = query.value(currentIndex++).value<bool>();
+        out.gear_jacket = query.value(currentIndex++).value<bool>();
         return out;
-    }
-
-    if(enableDebug)
-    {
-        qDebug() << "----------- " << __func__ << " -----------";
-        qDebug() << "Query column count : " << query.record().count();
-    }
-
-    auto err{query.lastError()};
-    if(err.type() != QSqlError::ErrorType::NoError)
-    {
-        QString errStr{QString{"%0 : SQL error : %1"}.arg(__CURRENT_PLACE__,err.text())};
-        qCritical() << errStr;
-        return out;
-    }
-
-    int currentIndex{};
-
-    out.id = query.value(currentIndex++).value<int>();
-    out.firstName = query.value(currentIndex++).value<QString>();
-    out.lastName = query.value(currentIndex++).value<QString>();
-    out.birthDate = QDate::fromString(query.value(currentIndex++).value<QString>(),global::format_date);
-    out.email = query.value(currentIndex++).value<QString>();
-    out.phoneNumber = query.value(currentIndex++).value<QString>();
-    out.address = db::readAddressFromDB(query.value(currentIndex++).value<int>(),db,global::table_diversAddresses);
-    out.licenseNumber = query.value(currentIndex++).value<QString>();
-    out.certifDate = QDate::fromString(query.value(currentIndex++).value<QString>(),global::format_date);
-    out.diverLevelId = query.value(currentIndex++).value<int>();
-    out.member = query.value(currentIndex++).value<bool>();
-    out.diveCount = query.value(currentIndex++).value<int>();
-    out.paidDives = query.value(currentIndex++).value<int>();
-    out.gear_regulator = query.value(currentIndex++).value<bool>();
-    out.gear_suit = query.value(currentIndex++).value<bool>();
-    out.gear_computer = query.value(currentIndex++).value<bool>();
-    out.gear_jacket = query.value(currentIndex++).value<bool>();
-
-
-    return out;
+    },"SELECT * FROM %1 WHERE id=?",{table},{id});
 }
 
 int exists(const data::Diver& a,QSqlDatabase db,const QString& table)
 {
-    return (db::queryExist(db,"SELECT * FROM %0 WHERE diveId=? AND diverId=?",{table},{a.id}))?a.id:-1;
+    return (db::queryExist(db,"SELECT * FROM %0 WHERE id=?",{table},{a.id}))?a.id:-1;
 }
 
 void removeAllFromDiver(int id, QSqlDatabase db, const QString& table)

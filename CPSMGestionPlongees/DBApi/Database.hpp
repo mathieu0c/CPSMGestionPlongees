@@ -11,6 +11,7 @@
 #include <QSqlError>
 
 #include <concepts>
+#include <functional>
 
 namespace db
 {
@@ -106,6 +107,16 @@ QVector<T> readLFromDB(const QSqlDatabase& db,UnaryFunction extractValue,QString
 
 
     return out;
+}
+
+template<typename T>
+requires ReadFromDBExtractor<T,std::function<T(const QSqlQuery&)>>
+inline
+QVector<T> readLFromDB(const QSqlDatabase& db,std::function<T(const QSqlQuery&)> extractValue,QString request,const QStringList& argList,const QVector<QVariant>& valList)
+{
+    return readLFromDB(db,[&](const QSqlQuery& q)->T{
+        return extractValue(q);
+    },std::move(request),argList,valList);
 }
 
 template<typename T,typename UnaryFunction>
