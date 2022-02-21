@@ -34,7 +34,7 @@ int exists(const data::Address& a,QSqlDatabase db,const QString& table)
     return (db::queryExist(db,"SELECT id FROM %1 WHERE %1.id",{table},{a.id}))?a.id:-1;
 }
 
-int storeInDB(data::Address &a, QSqlDatabase db, const QString &addressTable)
+int storeInDB(const data::Address &a, QSqlDatabase db, const QString &addressTable)
 {
     auto existBefore{exists(a,db,addressTable)};
 
@@ -75,7 +75,6 @@ int storeInDB(data::Address &a, QSqlDatabase db, const QString &addressTable)
     if(existBefore < 0)
     {
         auto id{getLastInsertId(db,addressTable)};
-        a.id = id;
         return id;
     }
     return a.id;

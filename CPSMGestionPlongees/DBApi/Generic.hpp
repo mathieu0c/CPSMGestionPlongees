@@ -8,6 +8,7 @@
 #include <QSqlError>
 
 #include <type_traits>//debugging purpose
+#include <concepts>
 #include <QDebug>
 
 #include "../global.hpp"
@@ -20,7 +21,7 @@
 namespace db
 {
 
-template<typename T>
+template<typename T> requires (!std::is_same<T,data::Address>())
 int storeInDB(T &object, QSqlDatabase db, const QString &table)
 {
 
