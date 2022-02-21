@@ -19,135 +19,135 @@
 namespace db
 {
 
-int addToDB(data::Diver& diver, QSqlDatabase db, QString table)
-{
-    using db::storeInDB;
-    if(!db.isOpen())
-    {
-        QString errMsg{QString{"data::Members : %1 : database must be opened before being accessed"}.arg(__func__)};
+//int addToDB(data::Diver& diver, QSqlDatabase db, QString table)
+//{
+//    using db::storeInDB;
+//    if(!db.isOpen())
+//    {
+//        QString errMsg{QString{"data::Members : %1 : database must be opened before being accessed"}.arg(__func__)};
 
-        if(db::enableDebug)
-            qCritical() << errMsg;
-        throw std::runtime_error(errMsg.toStdString());
-        return false;
-    }
+//        if(db::enableDebug)
+//            qCritical() << errMsg;
+//        throw std::runtime_error(errMsg.toStdString());
+//        return false;
+//    }
 
-    int addressId{storeInDB(diver.address,db,global::table_diversAddresses)};
-    diver.address.id = addressId;
+//    int addressId{storeInDB(diver.address,db,global::table_diversAddresses)};
+//    diver.address.id = addressId;
 
-    QString strQuery{"INSERT INTO %1(firstName,"
-                     "lastName,"
-                     "birthDate,"
-                     "email,"
-                     "phoneNumber,"
-                     "memberAddressId,"
-                     "licenseNumber,"
-                     "certifDate,"
-                     "diverLevelId,"
-                     "member,"
-                     "diveCount,"
-                     "paidDives,"
-                     "gear_regulator,"
-                     "gear_suit,"
-                     "gear_computer,"
-                     "gear_jacket"
-                     ") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"};
-    QSqlQuery query{db};
-    query.prepare(strQuery.arg(table));
-    query.addBindValue(diver.firstName);
-    query.addBindValue(diver.lastName);
-    query.addBindValue(diver.birthDate.toString(global::format_date));
-    query.addBindValue(diver.email);
-    query.addBindValue(diver.phoneNumber);
-    query.addBindValue(diver.address.id);
-    query.addBindValue(diver.licenseNumber);
-    query.addBindValue(diver.certifDate.toString(global::format_date));
-    query.addBindValue(diver.diverLevelId);
-    query.addBindValue(diver.member);
-    query.addBindValue(diver.diveCount);
-    query.addBindValue(diver.paidDives);
-    query.addBindValue(diver.gear_regulator);
-    query.addBindValue(diver.gear_suit);
-    query.addBindValue(diver.gear_computer);
-    query.addBindValue(diver.gear_jacket);
-    query.exec();
+//    QString strQuery{"INSERT INTO %1(firstName,"
+//                     "lastName,"
+//                     "birthDate,"
+//                     "email,"
+//                     "phoneNumber,"
+//                     "memberAddressId,"
+//                     "licenseNumber,"
+//                     "certifDate,"
+//                     "diverLevelId,"
+//                     "member,"
+//                     "diveCount,"
+//                     "paidDives,"
+//                     "gear_regulator,"
+//                     "gear_suit,"
+//                     "gear_computer,"
+//                     "gear_jacket"
+//                     ") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"};
+//    QSqlQuery query{db};
+//    query.prepare(strQuery.arg(table));
+//    query.addBindValue(diver.firstName);
+//    query.addBindValue(diver.lastName);
+//    query.addBindValue(diver.birthDate.toString(global::format_date));
+//    query.addBindValue(diver.email);
+//    query.addBindValue(diver.phoneNumber);
+//    query.addBindValue(diver.address.id);
+//    query.addBindValue(diver.licenseNumber);
+//    query.addBindValue(diver.certifDate.toString(global::format_date));
+//    query.addBindValue(diver.diverLevelId);
+//    query.addBindValue(diver.member);
+//    query.addBindValue(diver.diveCount);
+//    query.addBindValue(diver.paidDives);
+//    query.addBindValue(diver.gear_regulator);
+//    query.addBindValue(diver.gear_suit);
+//    query.addBindValue(diver.gear_computer);
+//    query.addBindValue(diver.gear_jacket);
+//    query.exec();
 
-    auto err = query.lastError();
-    if(err.type() != QSqlError::ErrorType::NoError)
-    {
-        QString errStr{QString{"%0 : SQL error : %1"}.arg(__func__,err.text())};
-        qCritical() << errStr;
-        return -1;
-    }
+//    auto err = query.lastError();
+//    if(err.type() != QSqlError::ErrorType::NoError)
+//    {
+//        QString errStr{QString{"%0 : SQL error : %1"}.arg(__func__,err.text())};
+//        qCritical() << errStr;
+//        return -1;
+//    }
 
-    query.prepare(QString{"SELECT last_insert_rowid() FROM %1"}.arg(table));
-    auto temp{db::querySelect(db,"SELECT last_insert_rowid()",{},{})};
-    if(temp.size() > 0)
-        return temp[0][0].toInt();
+//    query.prepare(QString{"SELECT last_insert_rowid() FROM %1"}.arg(table));
+//    auto temp{db::querySelect(db,"SELECT last_insert_rowid()",{},{})};
+//    if(temp.size() > 0)
+//        return temp[0][0].toInt();
 
-    return -1;
-}
+//    return -1;
+//}
 
-bool updateDB(data::Diver& diver,QSqlDatabase db,QString table,bool checkExistence)
-{
-    using db::storeInDB;
-    if(checkExistence)
-    {
-        if(exists(diver,db,table) == -1)//if the diver doesn't exist
-            return false;
-    }
+//bool updateDB(data::Diver& diver,QSqlDatabase db,QString table,bool checkExistence)
+//{
+//    using db::storeInDB;
+//    if(checkExistence)
+//    {
+//        if(exists(diver,db,table) == -1)//if the diver doesn't exist
+//            return false;
+//    }
 
-    static const QString queryStr{"UPDATE %1 SET "
-                                  "firstName = ?,"
-                                  "lastName = ?,"
-                                  "email = ?,"
-                                  "phoneNumber = ?,"
-                                  "memberAddressId = ?,"
-                                  "licenseNumber = ?,"
-                                  "certifDate = ?,"
-                                  "diverLevelId = ?,"
-                                  "member = ?,"
-                                  "diveCount = ?,"
-                                  "paidDives = ?,"
-                                  "gear_regulator = ?,"
-                                  "gear_suit = ?,"
-                                  "gear_computer = ?,"
-                                  "gear_jacket = ? "
-                                  "WHERE %1.id = ?"};
+//    static const QString queryStr{"UPDATE %1 SET "
+//                                  "firstName = ?,"
+//                                  "lastName = ?,"
+//                                  "email = ?,"
+//                                  "phoneNumber = ?,"
+//                                  "memberAddressId = ?,"
+//                                  "licenseNumber = ?,"
+//                                  "certifDate = ?,"
+//                                  "diverLevelId = ?,"
+//                                  "member = ?,"
+//                                  "diveCount = ?,"
+//                                  "paidDives = ?,"
+//                                  "gear_regulator = ?,"
+//                                  "gear_suit = ?,"
+//                                  "gear_computer = ?,"
+//                                  "gear_jacket = ? "
+//                                  "WHERE %1.id = ?"};
 
-    int addressId{db::storeInDB(static_cast<const data::Address>(diver.address),db,global::table_diversAddresses)};
-    diver.address.id = addressId;
+//    int addressId{db::storeInDB(static_cast<const data::Address>(diver.address),db,global::table_diversAddresses)};
+//    diver.address.id = addressId;
 
-    QSqlQuery query{db};
-    query.prepare(queryStr.arg(table));
-    query.addBindValue(diver.firstName);
-    query.addBindValue(diver.lastName);
-    query.addBindValue(diver.email);
-    query.addBindValue(diver.phoneNumber);
-    query.addBindValue(addressId);
-    query.addBindValue(diver.licenseNumber);
-    query.addBindValue(diver.certifDate.toString(global::format_date));
-    query.addBindValue(diver.diverLevelId);
-    query.addBindValue(diver.member);
-    query.addBindValue(diver.diveCount);
-    query.addBindValue(diver.paidDives);
-    query.addBindValue(diver.gear_regulator);
-    query.addBindValue(diver.gear_suit);
-    query.addBindValue(diver.gear_computer);
-    query.addBindValue(diver.gear_jacket);
-    query.addBindValue(diver.id);
-    query.exec();
+//    QSqlQuery query{db};
+//    query.prepare(queryStr.arg(table));
+//    query.addBindValue(diver.firstName);
+//    query.addBindValue(diver.lastName);
+//    query.addBindValue(diver.email);
+//    query.addBindValue(diver.phoneNumber);
+//    query.addBindValue(addressId);
+//    query.addBindValue(diver.licenseNumber);
+//    query.addBindValue(diver.certifDate.toString(global::format_date));
+//    query.addBindValue(diver.diverLevelId);
+//    query.addBindValue(diver.member);
+//    query.addBindValue(diver.diveCount);
+//    query.addBindValue(diver.paidDives);
+//    query.addBindValue(diver.gear_regulator);
+//    query.addBindValue(diver.gear_suit);
+//    query.addBindValue(diver.gear_computer);
+//    query.addBindValue(diver.gear_jacket);
+//    query.addBindValue(diver.id);
+//    query.exec();
 
-    auto err{query.lastError()};
-    if(err.type() != QSqlError::ErrorType::NoError)
-    {
-        QString errStr{QString{"%0 : SQL error : %1"}.arg(__CURRENT_PLACE__,err.text())};
-        qCritical() << errStr;
-        return false;
-    }
+//    auto err{query.lastError()};
+//    if(err.type() != QSqlError::ErrorType::NoError)
+//    {
+//        QString errStr{QString{"%0 : SQL error : %1"}.arg(__CURRENT_PLACE__,err.text())};
+//        qCritical() << errStr;
+//        return false;
+//    }
 
-    return true;
-}
+//    return true;
+//}
 
 data::Diver readDiverFromDB(int id, QSqlDatabase db, QString table)
 {
@@ -180,12 +180,49 @@ int exists(const data::Diver& a,QSqlDatabase db,const QString& table)
     return (db::queryExist(db,"SELECT * FROM %0 WHERE id=?",{table},{a.id}))?a.id:-1;
 }
 
-int storeInDB(data::Diver &a, QSqlDatabase db, const QString &addressTable)
+int storeInDB(data::Diver &a, QSqlDatabase db, const QString &diverTable)
 {
-    auto existBefore{exists(a,db,addressTable)};
+    auto existBefore{exists(a,db,diverTable)};
 
     //cf https://stackoverflow.com/questions/3634984/insert-if-not-exists-else-update;
-    static QString queryStr{"INSERT INTO %1(id,firstName,"
+//    static QString queryStr{"INSERT INTO %1(id,"
+//                            "firstName,"
+//                            "lastName,"
+//                            "birthDate,"
+//                            "email,"
+//                            "phoneNumber,"
+//                            "memberAddressId,"
+//                            "licenseNumber,"
+//                            "certifDate,"
+//                            "diverLevelId,"
+//                            "member,"
+//                            "diveCount,"
+//                            "paidDives,"
+//                            "gear_regulator,"
+//                            "gear_suit,"
+//                            "gear_computer,"
+//                            "gear_jacket"
+//                            ") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) "
+//                            "ON CONFLICT(id) DO UPDATE SET "
+//                            "firstName=excluded.firstName,"
+//                            "lastName=excluded.lastName,"
+//                            "birthDate=excluded.birthDate"
+//                            "email=excluded.email,"
+//                            "phoneNumber=excluded.phoneNumber,"
+//                            "memberAddressId=excluded.memberAddressId,"
+//                            "licenseNumber=excluded.licenseNumber,"
+//                            "certifDate=excluded.certifDate,"
+//                            "diverLevelId=excluded.diverLevelId,"
+//                            "member=excluded.member,"
+//                            "diveCount=excluded.diveCount,"
+//                            "paidDives=excluded.paidDives,"
+//                            "gear_regulator=excluded.gear_regulator,"
+//                            "gear_suit=excluded.gear_suit,"
+//                            "gear_computer=excluded.gear_computer,"
+//                            "gear_jacket=excluded.gear_jacket;"};
+
+    static QString queryStr{"INSERT INTO %1(id,"
+                            "firstName,"
                             "lastName,"
                             "birthDate,"
                             "email,"
@@ -203,22 +240,23 @@ int storeInDB(data::Diver &a, QSqlDatabase db, const QString &addressTable)
                             "gear_jacket"
                             ") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) "
                             "ON CONFLICT(id) DO UPDATE SET "
-                            "firstName = excluded.firstName,"
-                            "lastName = excluded.lastName,"
-                            "birthDate = excluded.birthDate"
-                            "email = excluded.email,"
-                            "phoneNumber = excluded.phoneNumber,"
-                            "memberAddressId = excluded.memberAddressId,"
-                            "licenseNumber = excluded.licenseNumber,"
-                            "certifDate = excluded.certifDate,"
-                            "diverLevelId = excluded.diverLevelId,"
-                            "member = excluded.member,"
-                            "diveCount = excluded.diveCount,"
-                            "paidDives = excluded.paidDives,"
-                            "gear_regulator = excluded.gear_regulator,"
-                            "gear_suit = excluded.gear_suit,"
-                            "gear_computer = excluded.gear_computer,"
-                            "gear_jacket = excluded.gear_jacket;"};
+                            "firstName=excluded.firstName,"
+                            "lastName=excluded.lastName,"
+                            "birthDate=excluded.birthDate,"
+                            "email=excluded.email,"
+                            "phoneNumber=excluded.phoneNumber,"
+                            "memberAddressId=excluded.memberAddressId,"
+                            "licenseNumber=excluded.licenseNumber,"
+                            "certifDate=excluded.certifDate,"
+                            "diverLevelId=excluded.diverLevelId,"
+                            "member=excluded.member,"
+                            "diveCount=excluded.diveCount,"
+                            "paidDives=excluded.paidDives,"
+                            "gear_regulator=excluded.gear_regulator,"
+                            "gear_suit=excluded.gear_suit,"
+                            "gear_computer=excluded.gear_computer,"
+                            "gear_jacket=excluded.gear_jacket"
+                            ";"};
 
     int addressId{storeInDB(a.address,db,global::table_diversAddresses)};
 
@@ -232,7 +270,7 @@ int storeInDB(data::Diver &a, QSqlDatabase db, const QString &addressTable)
     a.address.id = addressId;
 
     QSqlQuery query{db};
-    query.prepare(queryStr.arg(addressTable));
+    query.prepare(queryStr.arg(diverTable));
     query.addBindValue((a.id < 0)?QVariant(QVariant::Int):a.id);
     query.addBindValue(a.firstName);
     query.addBindValue(a.lastName);
@@ -256,7 +294,10 @@ int storeInDB(data::Diver &a, QSqlDatabase db, const QString &addressTable)
     if(err.type() != QSqlError::ErrorType::NoError)
     {
         QString errStr{QString{"%0 : SQL error : %1"}.arg(__CURRENT_PLACE__,err.text())};
+        qCritical() << "-------";
         qCritical() << errStr;
+        qCritical() << query.boundValues();
+        qCritical() << query.executedQuery();
         return -1;
     }
 
@@ -269,7 +310,7 @@ int storeInDB(data::Diver &a, QSqlDatabase db, const QString &addressTable)
 
     if(existBefore < 0)
     {
-        auto id{getLastInsertId(db,addressTable)};
+        auto id{getLastInsertId(db,diverTable)};
         return id;
     }
     return a.id;
