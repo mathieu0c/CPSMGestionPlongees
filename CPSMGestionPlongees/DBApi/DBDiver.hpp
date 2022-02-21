@@ -26,7 +26,7 @@ int exists(const data::Diver& a, QSqlDatabase db, const QString &table);
 //add data if not
 //return diverId
 //this function may change diver.address.id
-int storeInDB(const data::Diver& diver, QSqlDatabase db, const QString &table);
+int storeInDB(data::Diver& diver, QSqlDatabase db, const QString &table);
 
 /*!
  * \brief removeAllFromDiver : delete a diver and it's address if not used by any other one

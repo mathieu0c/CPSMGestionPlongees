@@ -5,6 +5,7 @@
 //#include "DataStruct/Diver.h"
 //#include "DataStruct/Dive.h"
 #include "DBApi/DataStructs.hpp"
+#include "DBApi/DBDiver.hpp"
 
 #include "DBApi/Generic.hpp"
 

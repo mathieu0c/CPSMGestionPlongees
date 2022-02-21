@@ -21,7 +21,7 @@
 namespace db
 {
 
-template<typename T> requires (!std::is_same<T,data::Address>())
+template<typename T> requires (!std::is_same<T,data::Address>() && !std::is_same<T,data::Diver>())
 int storeInDB(T &object, QSqlDatabase db, const QString &table)
 {
 
