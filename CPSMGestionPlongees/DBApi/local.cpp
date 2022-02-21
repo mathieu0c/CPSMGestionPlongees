@@ -6,6 +6,7 @@
 //#include "DataStruct/Dive.h"
 #include "DBApi/DataStructs.hpp"
 #include "DBApi/DBDiver.hpp"
+#include "DBApi/DBApi.hpp"
 
 #include "DBApi/Generic.hpp"
 
@@ -154,13 +155,13 @@ bool createDB(QSqlDatabase db)
         }
     };
 
-    if(!addDivingSite("Les deux frères"))
+    if(storeInDB(data::DivingSite{-1,"Les deux frères"},db,global::table_divingSites) < 0)
         return false;
 
-    if(!addDivingSite("La sèche du pêcheur"))
+    if(storeInDB(data::DivingSite{-1,"La sèche du pêcheur"},db,global::table_divingSites) < 0)
         return false;
 
-    if(!addDivingSite("L'arroyo"))
+    if(storeInDB(data::DivingSite{-1,"L'arroyo"},db,global::table_divingSites) < 0)
         return false;
 
 

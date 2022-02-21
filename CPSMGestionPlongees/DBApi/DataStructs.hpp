@@ -20,8 +20,8 @@ namespace data
 
 struct DivingSite
 {
-    int m_id{-1};
-    QString m_name;
+    int id{-1};
+    QString name;
 };
 
 
@@ -121,6 +121,8 @@ struct Dive
     QTime time{};
     int diveSiteId{1};
     QVector<MinimalDiver> divers{};//diver id and type
+    QVector<DiveMember> diver{};
+    DivingSite site{};
 };
 
 void removeDiversFromDive(data::Dive& dive,QVector<int> idList);

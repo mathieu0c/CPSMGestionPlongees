@@ -56,7 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     constexpr auto enableDebug{false};
     setEnableDebug(enableDebug,true);
-    ui->tabw_main->setTabVisible(0,enableDebug);
+//    ui->tabw_main->setTabVisible(0,enableDebug);
 
     auto openedDB{db::openLocal("d")};
     if(!openedDB)

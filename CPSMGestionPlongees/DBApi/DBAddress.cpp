@@ -62,7 +62,7 @@ int storeInDB(const data::Address &a, QSqlDatabase db, const QString &addressTab
     {
         QString errStr{QString{"%0 : SQL error : %1"}.arg(__CURRENT_PLACE__,err.text())};
         qCritical() << errStr;
-        return {};
+        return -1;
     }
 
 //    qDebug() << "-----------------------------";
