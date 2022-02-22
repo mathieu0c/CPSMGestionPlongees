@@ -82,7 +82,8 @@ DiverEdit::DiverEdit(QWidget *parent) :
                         {"Date","Site","Type"});
 
     connect(ui->diveSearch,&gui::DiveSearch::divesSelected,[&](QVector<int> idList){
-        auto dive{db::readDiveFromDB(idList[0],QSqlDatabase::database(),global::table_dives)};
+        auto dive{db::readDiveFromDB(idList[0],QSqlDatabase::database(),global::table_dives,global::table_divingSites,
+                                    global::table_divesMembers,global::table_divers)};
         gui::DiveEdit::displayDive(dive,this);
     });
 }

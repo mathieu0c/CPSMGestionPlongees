@@ -23,7 +23,9 @@ int addToDB(data::Dive &dive, QSqlDatabase db, QString table);
 //This function may change diver.address.id
 bool updateDB(data::Dive &dive, QSqlDatabase db, QString table, bool checkExistence = false);
 
-data::Dive readDiveFromDB(int id, QSqlDatabase db, QString table);
+data::Dive readDiveFromDB(int id, QSqlDatabase db, const QString &diveTable,
+                          const QString &divingSiteTable, const QString &diveMembersTable,
+                          const QString &diversTable);
 
 //search if the diver already exists and return id if true, -1 otherwise
 int exists(const data::Dive& a, QSqlDatabase db, const QString &table);

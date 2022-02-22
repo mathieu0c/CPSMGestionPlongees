@@ -2,6 +2,7 @@
 #include "../global.hpp"
 
 #include "DBApi/Database.hpp"
+#include "DBApi/DBDiver.hpp"
 #include <QSqlQuery>
 #include <QSqlError>
 #include <QSqlRecord>
@@ -184,64 +185,96 @@ bool updateDB(data::Dive& dive,QSqlDatabase db,QString table,bool checkExistence
     return true;
 }
 
-data::Dive readDiveFromDB(int id, QSqlDatabase db, QString table)
+data::Dive readDiveFromDB(int id, QSqlDatabase db, const QString& diveTable,
+                          const QString& divingSiteTable, const QString& diveMembersTable,
+                          const QString& diversTable)
 {
 //    qDebug() << "##### " << __func__ << " #####";
-    static const QString queryStr{"SELECT * FROM %1 WHERE id=?"};
-    QSqlQuery query{db};
-    query.prepare(queryStr.arg(table));
-    query.addBindValue(id);
-    query.exec();
+//    static const QString queryStr{"SELECT * FROM %1 WHERE id=?"};
+//    QSqlQuery query{db};
+//    query.prepare(queryStr.arg(table));
+//    query.addBindValue(id);
+//    query.exec();
 
-    data::Dive out{};
+//    data::Dive out{};
 
-    if(!query.next())//if nothing was found
-    {
-        if(enableDebug)
-        {
-            qDebug() << __func__ << " : No member found with id : " << id;
-        }
+//    if(!query.next())//if nothing was found
+//    {
+//        if(enableDebug)
+//        {
+//            qDebug() << __func__ << " : No member found with id : " << id;
+//        }
+//        return out;
+//    }
+
+//    if(enableDebug)
+//    {
+//        qDebug() << "----------- " << __func__ << " -----------";
+//        qDebug() << "Query column count : " << query.record().count();
+//    }
+
+//    auto err{query.lastError()};
+//    if(err.type() != QSqlError::ErrorType::NoError)
+//    {
+//        QString errStr{QString{"%0 : SQL error : %1"}.arg(__func__,err.text())};
+//        qCritical() << errStr;
+//        return out;
+//    }
+
+//    int currentIndex{};
+
+//    out.id = query.value(currentIndex++).value<int>();
+//    out.date = QDate::fromString(query.value(currentIndex++).value<QString>(),global::format_date);
+//    out.time = QTime::fromString(query.value(currentIndex++).value<QString>(),global::format_time);
+//    out.diveSiteId = query.value(currentIndex++).value<int>();
+
+//    //count how many diverId there is
+//    auto diverCount{db::queryCount(db,"SELECT diverId FROM %0 WHERE diveId = ?",{global::table_divesMembers},{out.id})};
+
+//    out.divers.reserve(diverCount);
+
+//    auto divers{db::querySelect(db,"SELECT diverId,diveType FROM %0 WHERE diveId = ?",{global::table_divesMembers},{out.id})};
+
+//    for(const auto& diverLine : divers)
+//    {
+//        if(diverLine.size() != 2) //if we didn't get the two columns expected
+//            throw std::runtime_error{__func__ + std::string{" : Invalid column count : expected 2 and got "}+std::to_string(diverLine.size())};
+
+//        data::Dive::MinimalDiver diver{};
+//        diver.id = diverLine[0].toInt();
+//        diver.type = data::diveTypefrom_string(diverLine[1].toString());
+//        out.divers.append(diver);
+//    }
+
+    auto out{readFromDB<data::Dive>(db,[&](const QSqlQuery& query){
+        data::Dive out{};
+        out.id = query.value(0).value<int>();
+        out.date = QDate::fromString(query.value(1).value<QString>(),global::format_date);
+        out.time = QTime::fromString(query.value(2).value<QString>(),global::format_time);
+        out.diveSiteId = query.value(3).value<int>();
+        out.site.id = query.value(3).value<int>();
+        out.site.name = query.value(4).value<QString>();
         return out;
-    }
+    },"SELECT %0.id,date,time,diveSiteId,name FROM %0 INNER JOIN %1 ON %0.diveSiteId=%1.id WHERE %0.id = ?",
+      {diveTable,divingSiteTable},{id})};
 
-    if(enableDebug)
-    {
-        qDebug() << "----------- " << __func__ << " -----------";
-        qDebug() << "Query column count : " << query.record().count();
-    }
+    const auto diversTableColumnCount{
+        QSqlQuery(QString{"SELECT * FROM %1 LIMIT 1"}.arg(diversTable)).record().count()
+    };
 
-    auto err{query.lastError()};
-    if(err.type() != QSqlError::ErrorType::NoError)
-    {
-        QString errStr{QString{"%0 : SQL error : %1"}.arg(__func__,err.text())};
-        qCritical() << errStr;
-        return out;
-    }
+    //SELECT * FROM Divers INNER JOIN DivesMembers ON Divers.id = DivesMembers.diverId WHERE DivesMembers.diveId = 1
 
-    int currentIndex{};
-
-    out.id = query.value(currentIndex++).value<int>();
-    out.date = QDate::fromString(query.value(currentIndex++).value<QString>(),global::format_date);
-    out.time = QTime::fromString(query.value(currentIndex++).value<QString>(),global::format_time);
-    out.diveSiteId = query.value(currentIndex++).value<int>();
-
-    //count how many diverId there is
-    auto diverCount{db::queryCount(db,"SELECT diverId FROM %0 WHERE diveId = ?",{global::table_divesMembers},{out.id})};
-
-    out.divers.reserve(diverCount);
-
-    auto divers{db::querySelect(db,"SELECT diverId,diveType FROM %0 WHERE diveId = ?",{global::table_divesMembers},{out.id})};
-
-    for(const auto& diverLine : divers)
-    {
-        if(diverLine.size() != 2) //if we didn't get the two columns expected
-            throw std::runtime_error{__func__ + std::string{" : Invalid column count : expected 2 and got "}+std::to_string(diverLine.size())};
-
-        data::Dive::MinimalDiver diver{};
-        diver.id = diverLine[0].toInt();
-        diver.type = data::diveTypefrom_string(diverLine[1].toString());
-        out.divers.append(diver);
-    }
+    auto divesMembers{readLFromDB<data::DiveMember>(db,[&](const QSqlQuery& query){
+            data::DiveMember member{};
+            int diveMemberQueryOffset{diversTableColumnCount+1};//The number of columns in the table "Divers"
+                //because DiveMember data will be accessible after "Diver"'s data
+            member.fullDiver = extractDiverFromQuery(query);
+            member.diveId = out.id;
+            member.diverId = query.value(diveMemberQueryOffset++).value<int>();
+            member.type = data::diveTypefrom_string(query.value(diveMemberQueryOffset++).value<QString>());
+        return member;
+    },"SELECT * FROM %0 INNER JOIN %1 ON %0.id = %1.diverId WHERE %1.diveId = ?",
+    {diversTable,diveMembersTable},{out.id})};
 
 //    qDebug() << out;
 

@@ -10,6 +10,8 @@
 namespace db
 {
 
+data::Diver extractDiverFromQuery(const QSqlQuery& query);
+
 data::Diver readDiverFromDB(int id, QSqlDatabase db, QString table);
 
 //search if the diver already exists and return id if true, -1 otherwise

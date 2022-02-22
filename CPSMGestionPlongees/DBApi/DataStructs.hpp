@@ -103,10 +103,10 @@ enum DiveType{
 
 struct DiveMember
 {
-    int m_diveId;
-    int m_diverId;
-    DiveType m_type;
-    Diver m_fullDiver;
+    int diveId;
+    int diverId;
+    DiveType type;
+    Diver fullDiver;
 };
 
 struct Dive

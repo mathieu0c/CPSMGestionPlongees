@@ -94,7 +94,8 @@ MainWindow::MainWindow(QWidget *parent)
     QVector<data::Dive> existingDives{existingDivesIds.size()};
     for(const auto& dbLine : existingDivesIds)
     {
-        auto dive{db::readDiveFromDB(dbLine[0].toInt(),db(),global::table_dives)};
+        auto dive{db::readDiveFromDB(dbLine[0].toInt(),db(),global::table_dives,global::table_divingSites,
+                                    global::table_divesMembers,global::table_divers)};
         db_syncDiversWithDives(dive.divers);
     }
 
@@ -233,7 +234,8 @@ void MainWindow::divesSelected(QVector<int> idList)
         return;
 
     auto id{idList[0]};
-    auto tempDive{db::readDiveFromDB(id,db(),global::table_dives)};
+    auto tempDive{db::readDiveFromDB(id,db(),global::table_dives,global::table_divingSites,
+                                     global::table_divesMembers,global::table_divers)};
 
 //    ui->pg_editDiver->setDiver(std::move(tempDiver));
 //    ui->tab_divers->setCurrentIndex(1);
@@ -276,7 +278,8 @@ void MainWindow::on_pb_deleteDive_clicked()
 
     for(const auto& id : divesIds)
     {
-        auto dive{db::readDiveFromDB(id,db,global::table_dives)};
+        auto dive{db::readDiveFromDB(id,db,global::table_dives,global::table_divingSites,
+                                     global::table_divesMembers,global::table_divers)};
         auto dbDiveSite{db::querySelect(db,"SELECT name FROM %0 WHERE id=?",{global::table_divingSites},{dive.diveSiteId})};
         diveListConfirmation.append(QString{"%0 - %1 (%2 "}.arg(dive.date.toString(global::format_date),
                                                                 dbDiveSite[0][0].toString()).arg(dive.divers.size())+tr("plongeur(s)")+")");

@@ -19,30 +19,32 @@
 namespace db
 {
 
+data::Diver extractDiverFromQuery(const QSqlQuery& query){
+    data::Diver out{};
+    int currentIndex{};
+    out.id = query.value(currentIndex++).value<int>();
+    out.firstName = query.value(currentIndex++).value<QString>();
+    out.lastName = query.value(currentIndex++).value<QString>();
+    out.birthDate = QDate::fromString(query.value(currentIndex++).value<QString>(),global::format_date);
+    out.email = query.value(currentIndex++).value<QString>();
+    out.phoneNumber = query.value(currentIndex++).value<QString>();
+    out.address = db::readAddressFromDB(query.value(currentIndex++).value<int>(),QSqlDatabase::database(),global::table_diversAddresses);
+    out.licenseNumber = query.value(currentIndex++).value<QString>();
+    out.certifDate = QDate::fromString(query.value(currentIndex++).value<QString>(),global::format_date);
+    out.diverLevelId = query.value(currentIndex++).value<int>();
+    out.member = query.value(currentIndex++).value<bool>();
+    out.diveCount = query.value(currentIndex++).value<int>();
+    out.paidDives = query.value(currentIndex++).value<int>();
+    out.gear_regulator = query.value(currentIndex++).value<bool>();
+    out.gear_suit = query.value(currentIndex++).value<bool>();
+    out.gear_computer = query.value(currentIndex++).value<bool>();
+    out.gear_jacket = query.value(currentIndex++).value<bool>();
+    return out;
+}
+
 data::Diver readDiverFromDB(int id, QSqlDatabase db, QString table)
 {
-    return readFromDB<data::Diver>(db,[&](const QSqlQuery& query){
-        data::Diver out{};
-        int currentIndex{};
-        out.id = query.value(currentIndex++).value<int>();
-        out.firstName = query.value(currentIndex++).value<QString>();
-        out.lastName = query.value(currentIndex++).value<QString>();
-        out.birthDate = QDate::fromString(query.value(currentIndex++).value<QString>(),global::format_date);
-        out.email = query.value(currentIndex++).value<QString>();
-        out.phoneNumber = query.value(currentIndex++).value<QString>();
-        out.address = db::readAddressFromDB(query.value(currentIndex++).value<int>(),db,global::table_diversAddresses);
-        out.licenseNumber = query.value(currentIndex++).value<QString>();
-        out.certifDate = QDate::fromString(query.value(currentIndex++).value<QString>(),global::format_date);
-        out.diverLevelId = query.value(currentIndex++).value<int>();
-        out.member = query.value(currentIndex++).value<bool>();
-        out.diveCount = query.value(currentIndex++).value<int>();
-        out.paidDives = query.value(currentIndex++).value<int>();
-        out.gear_regulator = query.value(currentIndex++).value<bool>();
-        out.gear_suit = query.value(currentIndex++).value<bool>();
-        out.gear_computer = query.value(currentIndex++).value<bool>();
-        out.gear_jacket = query.value(currentIndex++).value<bool>();
-        return out;
-    },"SELECT * FROM %1 WHERE id=?",{table},{id});
+    return readFromDB<data::Diver>(db,extractDiverFromQuery,"SELECT * FROM %1 WHERE id=?",{table},{id});
 }
 
 int exists(const data::Diver& a,QSqlDatabase db,const QString& table)
