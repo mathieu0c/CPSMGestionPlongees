@@ -96,7 +96,7 @@ MainWindow::MainWindow(QWidget *parent)
     {
         auto dive{db::readDiveFromDB(dbLine[0].toInt(),db(),global::table_dives,global::table_divingSites,
                                     global::table_divesMembers,global::table_divers)};
-        db_syncDiversWithDives(dive.divers);
+//        db_syncDiversWithDives(dive.divers);
     }
 
     auto db{this->db()};
@@ -247,13 +247,13 @@ void MainWindow::divesSelected(QVector<int> idList)
 void MainWindow::diveChangeAccepted(data::Dive dive)
 {
     using db::storeInDB;
-    storeInDB(dive,db(),global::table_dives);
+    storeInDB(dive,db(),global::table_dives,global::table_divers,global::table_divesMembers);
 
 //    qDebug() << "Dive accepted : " << dive;
     ui->tab_dives->setCurrentIndex(1);//switch to search dive page
     ui->mainDiveSearch->refreshDivesList();
 
-    db_syncDiversWithDives(dive.divers);
+//    db_syncDiversWithDives(dive.divers);
 }
 
 void MainWindow::diveChangeRejected()
@@ -281,8 +281,8 @@ void MainWindow::on_pb_deleteDive_clicked()
         auto dive{db::readDiveFromDB(id,db,global::table_dives,global::table_divingSites,
                                      global::table_divesMembers,global::table_divers)};
         auto dbDiveSite{db::querySelect(db,"SELECT name FROM %0 WHERE id=?",{global::table_divingSites},{dive.diveSiteId})};
-        diveListConfirmation.append(QString{"%0 - %1 (%2 "}.arg(dive.date.toString(global::format_date),
-                                                                dbDiveSite[0][0].toString()).arg(dive.divers.size())+tr("plongeur(s)")+")");
+//        diveListConfirmation.append(QString{"%0 - %1 (%2 "}.arg(dive.date.toString(global::format_date),
+//                                                                dbDiveSite[0][0].toString()).arg(dive.divers.size())+tr("plongeur(s)")+")");
         diveList.append(std::move(dive));
     }
 
@@ -298,7 +298,7 @@ void MainWindow::on_pb_deleteDive_clicked()
         if(!success)
             ui->statusbar->showMessage(tr("Impossible de supprimer les plongées sélectionnées"));
 
-        db_syncDiversWithDives(dive.divers);
+//        db_syncDiversWithDives(dive.divers);
     }
 
     ui->mainDiveSearch->refreshDivesList();

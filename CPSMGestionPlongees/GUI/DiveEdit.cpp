@@ -108,11 +108,11 @@ void DiveEdit::setEditable(bool enable)
 void DiveEdit::refreshDiverSearchFilters_global()
 {
     QString idList{};
-    for(const auto& e : m_tempDive.divers)
-    {
-        idList += QString::number(e.id)+',';
-    }
-    idList.chop(1);//remove last ','
+//    for(const auto& e : m_tempDive.divers)
+//    {
+//        idList += QString::number(e.id)+',';
+//    }
+//    idList.chop(1);//remove last ','
     ui->diverSearch_global->setFilter("%0.id NOT IN (%1)",{global::table_divers,idList},{});//global::table_divesMembers
 }
 
@@ -120,11 +120,11 @@ void DiveEdit::refreshDiverSearchFilters_dive()
 {
     //refresh filter values to allow only divers with id corresponding to m_temp.divers (QList<id>)
     QString idList{};
-    for(const auto& e : m_tempDive.divers)
-    {
-        idList += QString::number(e.id)+',';
-    }
-    idList.chop(1);//remove last ','
+//    for(const auto& e : m_tempDive.divers)
+//    {
+//        idList += QString::number(e.id)+',';
+//    }
+//    idList.chop(1);//remove last ','
     ui->diverSearch_dive->setFilter("%0.id IN (%1)",{global::table_divers,idList},{});//global::table_divesMembers
 }
 
@@ -228,7 +228,7 @@ void DiveEdit::on_pb_diverToDive_clicked()
     for(const auto& e : diversIds)
     {
 //        qDebug() << "       Selected : " << e;
-        m_tempDive.divers.append({e,data::DiveType::exploration});
+//        m_tempDive.divers.append({e,data::DiveType::exploration});
     }
 
 //    qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~";

@@ -33,6 +33,7 @@ qt_add_executable(CPSMGestionPlongees WIN32 MACOSX_BUNDLE
     DBApi/DBDive.hpp DBApi/DBDive.cpp
     DBApi/DBDiver.hpp DBApi/DBDiver.cpp
     DBApi/DBApi.hpp DBApi/DBApi.cpp
+    Debug/ScopeTimer.hpp Debug/ScopeTimer.cpp
     Debug/DbVisualizer.cpp Debug/DbVisualizer.h Debug/DbVisualizer.ui
     Debug/LogFile.cpp Debug/LogFile.hpp
     Debug/Utils.cpp Debug/Utils.h

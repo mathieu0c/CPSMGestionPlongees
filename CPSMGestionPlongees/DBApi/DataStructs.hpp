@@ -109,6 +109,8 @@ struct DiveMember
     Diver fullDiver;
 };
 
+QDebug operator<<(QDebug debug, const data::DiveMember& m);
+
 struct Dive
 {
     struct MinimalDiver{
@@ -120,7 +122,6 @@ struct Dive
     QDate date{};
     QTime time{};
     int diveSiteId{1};
-    QVector<MinimalDiver> divers{};//diver id and type
     QVector<DiveMember> diver{};
     DivingSite site{};
 };

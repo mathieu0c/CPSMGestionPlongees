@@ -43,38 +43,49 @@ QString to_string(const Address& address)
 //############               ################
 //###########################################
 
+QDebug operator<<(QDebug debug, const data::DiveMember& m)
+{
+    QDebugStateSaver saver(debug);
+    debug.nospace() << "DiveMember{\ndiveId : " << m.diveId << "\n";
+    debug.nospace() << "diverId : " << m.diverId << "\n";
+    debug.nospace() << "Dive type : " << to_string(m.type) << "\n";
+    debug.nospace() << "};";
+
+    return debug;
+}
+
 void removeDiversFromDive(data::Dive& dive,QVector<int> idList)
 {
-    dive.divers.erase(std::remove_if(dive.divers.begin(),dive.divers.end(),[&](data::Dive::MinimalDiver& diver){
-        return idList.contains(diver.id);
-    }),dive.divers.end());
+//    dive.divers.erase(std::remove_if(dive.divers.begin(),dive.divers.end(),[&](data::Dive::MinimalDiver& diver){
+//        return idList.contains(diver.id);
+//    }),dive.divers.end());
 }
 
 data::DiveType getDiveTypeForDiver(const data::Dive& dive,int diverId)
 {
-    auto itDiver{std::find_if(dive.divers.begin(),dive.divers.end(),[&](const data::Dive::MinimalDiver& e){
-            return e.id == diverId;
-        })};
-    if(itDiver == dive.divers.end())
-    {
-        return data::DiveType::undefined;
-    }
+//    auto itDiver{std::find_if(dive.divers.begin(),dive.divers.end(),[&](const data::Dive::MinimalDiver& e){
+//            return e.id == diverId;
+//        })};
+//    if(itDiver == dive.divers.end())
+//    {
+//        return data::DiveType::undefined;
+//    }
 
-    return (*itDiver).type;
+//    return (*itDiver).type;
 }
 
 bool setDiveTypeForDiver(data::Dive& dive,int diverId,data::DiveType type)
 {
-    auto itDiver{std::find_if(dive.divers.begin(),dive.divers.end(),[&](const data::Dive::MinimalDiver& e){
-            return e.id == diverId;
-        })};
-    if(itDiver == dive.divers.end())
-    {
-        return false;
-    }
-    (*itDiver).type = type;
+//    auto itDiver{std::find_if(dive.divers.begin(),dive.divers.end(),[&](const data::Dive::MinimalDiver& e){
+//            return e.id == diverId;
+//        })};
+//    if(itDiver == dive.divers.end())
+//    {
+//        return false;
+//    }
+//    (*itDiver).type = type;
 
-    return true;
+//    return true;
 }
 
 QString to_string(data::DiveType diveType)
@@ -108,9 +119,9 @@ QDebug operator<<(QDebug debug, const data::Dive& m)
     debug.nospace() << "Time : " << m.time.toString(global::format_time) << "\n";
     debug.nospace() << "diveSiteId : " << m.diveSiteId << "\n";
     debug.nospace() << "Divers :" << "\n";
-    for(const auto& e : m.divers)
+    for(const auto& e : m.diver)
     {
-        debug << QString("    Id : %0    |   DiveType : %1").arg(e.id).arg(e.type) << "\n";
+        debug.nospace() <<"    " << e << "\n";
     }
     debug.nospace() << "};";
 

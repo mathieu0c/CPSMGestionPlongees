@@ -314,8 +314,8 @@ bool initDB(QSqlDatabase db)
 //    data::Dive tempDive3{-1,QDate::currentDate().addDays(1),1,{}};
 
 
-    auto firstId{storeInDB(tempDive,db,table_dives)};
-    auto secondId{storeInDB(tempDive2,db,table_dives)};
+    auto firstId{storeInDB(tempDive,db,global::table_dives,global::table_divers,global::table_divesMembers)};
+    auto secondId{storeInDB(tempDive2,db,global::table_dives,global::table_divers,global::table_divesMembers)};
 //    auto thirdId{data::addToDB(tempDive3,db,table_dives)};
     if(firstId < 0)
     {

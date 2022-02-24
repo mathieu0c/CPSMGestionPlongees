@@ -1,6 +1,7 @@
 #include "DBDive.hpp"
 #include "../global.hpp"
 
+#include "DBApi/DBApi.hpp"
 #include "DBApi/Database.hpp"
 #include "DBApi/DBDiver.hpp"
 #include <QSqlQuery>
@@ -9,7 +10,29 @@
 
 #include <algorithm>
 
+#include <QDebug>
+#include "Debug/global.hpp"
+#include "Debug/ScopeTimer.hpp"
+
 namespace db {
+
+QVector<data::DiveMember> readDiveMembersFromDB(int diveId,QSqlDatabase db, const QString& diveMembersTable, const QString& diversTable)
+{
+    const auto diversTableColumnCount{
+        QSqlQuery(QString{"SELECT * FROM %1 LIMIT 1"}.arg(diversTable)).record().count()
+    };
+    return readLFromDB<data::DiveMember>(db,[&](const QSqlQuery& query){
+            data::DiveMember member{};
+            int diveMemberQueryOffset{diversTableColumnCount+1};//The number of columns in the table "Divers"
+                //because DiveMember data will be accessible after "Diver"'s data
+            member.fullDiver = extractDiverFromQuery(query);
+            member.diveId = diveId;
+            member.diverId = query.value(diveMemberQueryOffset++).value<int>();
+            member.type = data::diveTypefrom_string(query.value(diveMemberQueryOffset++).value<QString>());
+        return member;
+    },"SELECT * FROM %0 INNER JOIN %1 ON %0.id = %1.diverId WHERE %1.diveId = ?",
+    {diversTable,diveMembersTable},{diveId});
+}
 
 bool removeAllFromDB(const data::Dive& dive,QSqlDatabase db, const QString& table)
 {
@@ -17,11 +40,11 @@ bool removeAllFromDB(const data::Dive& dive,QSqlDatabase db, const QString& tabl
 
     //------------------------- Delete from DivesMembers table
     QString idList{};
-    for(const auto& e : dive.divers)
-    {
-        idList += QString::number(e.id)+',';
-    }
-    idList.chop(1);//remove last ','
+//    for(const auto& e : dive.divers)
+//    {
+//        idList += QString::number(e.id)+',';
+//    }
+//    idList.chop(1);//remove last ','
 
     static const QString queryStr{"DELETE FROM %0 WHERE diveId=? AND diverId IN (%1)"};
     QSqlQuery query{db};
@@ -101,20 +124,20 @@ int addToDB(data::Dive &dive, QSqlDatabase db, QString table)
 
 
     //--- DiveMembers
-    for(const auto& diver : dive.divers)
-    {
-        if(enableDebug)
-            qDebug() << "INSERT INTO : " << global::table_divesMembers;
-        auto minDiverSuccess{addToDB(diver,dive.id,db,global::table_divesMembers)};
+//    for(const auto& diver : dive.divers)
+//    {
+//        if(enableDebug)
+//            qDebug() << "INSERT INTO : " << global::table_divesMembers;
+//        auto minDiverSuccess{addToDB(diver,dive.id,db,global::table_divesMembers)};
 
-        if(!minDiverSuccess)
-        {
-            QString errStr{QString{"%0 : SQL error : %1"}.arg(__func__,"Minimal Dive addition")};
-            qCritical() << errStr;
-            QSqlQuery{"ROLLBACK;",db};
-            return -1;
-        }
-    }
+//        if(!minDiverSuccess)
+//        {
+//            QString errStr{QString{"%0 : SQL error : %1"}.arg(__func__,"Minimal Dive addition")};
+//            qCritical() << errStr;
+//            QSqlQuery{"ROLLBACK;",db};
+//            return -1;
+//        }
+//    }
 
     if(lastId != -1)
         QSqlQuery{"COMMIT;",db};
@@ -159,26 +182,26 @@ bool updateDB(data::Dive& dive,QSqlDatabase db,QString table,bool checkExistence
         return -1;
     }
 
-    for(const auto& diver : dive.divers)
-    {
-        auto minDiverSuccess{storeInDB(diver,dive.id,db,global::table_divesMembers)};
+//    for(const auto& diver : dive.divers)
+//    {
+//        auto minDiverSuccess{storeInDB(diver,dive.id,db,global::table_divesMembers)};
 
-        if(!minDiverSuccess)
-        {
-            QString errStr{QString{"%0 : SQL error : %1"}.arg(__func__,"Minimal Dive addition")};
-            qCritical() << errStr;
-            QSqlQuery{"ROLLBACK;",db};
-            return false;
-        }
-    }
+//        if(!minDiverSuccess)
+//        {
+//            QString errStr{QString{"%0 : SQL error : %1"}.arg(__func__,"Minimal Dive addition")};
+//            qCritical() << errStr;
+//            QSqlQuery{"ROLLBACK;",db};
+//            return false;
+//        }
+//    }
 
-    if(!removeFromDBNotIn(dive.divers,dive.id,db,global::table_divesMembers))
-    {
-        QString errStr{QString{"%0:%1:%2 : SQL error : %3"}.arg(__FILE__,_LINE_,__func__,"Minimal Dive addition")};
-        qCritical() << errStr;
-        QSqlQuery{"ROLLBACK;",db};
-        return false;
-    }
+//    if(!removeFromDBNotIn(dive.divers,dive.id,db,global::table_divesMembers))
+//    {
+//        QString errStr{QString{"%0:%1:%2 : SQL error : %3"}.arg(__FILE__,_LINE_,__func__,"Minimal Dive addition")};
+//        qCritical() << errStr;
+//        QSqlQuery{"ROLLBACK;",db};
+//        return false;
+//    }
 
     QSqlQuery{"COMMIT;",db};
 
@@ -189,63 +212,6 @@ data::Dive readDiveFromDB(int id, QSqlDatabase db, const QString& diveTable,
                           const QString& divingSiteTable, const QString& diveMembersTable,
                           const QString& diversTable)
 {
-//    qDebug() << "##### " << __func__ << " #####";
-//    static const QString queryStr{"SELECT * FROM %1 WHERE id=?"};
-//    QSqlQuery query{db};
-//    query.prepare(queryStr.arg(table));
-//    query.addBindValue(id);
-//    query.exec();
-
-//    data::Dive out{};
-
-//    if(!query.next())//if nothing was found
-//    {
-//        if(enableDebug)
-//        {
-//            qDebug() << __func__ << " : No member found with id : " << id;
-//        }
-//        return out;
-//    }
-
-//    if(enableDebug)
-//    {
-//        qDebug() << "----------- " << __func__ << " -----------";
-//        qDebug() << "Query column count : " << query.record().count();
-//    }
-
-//    auto err{query.lastError()};
-//    if(err.type() != QSqlError::ErrorType::NoError)
-//    {
-//        QString errStr{QString{"%0 : SQL error : %1"}.arg(__func__,err.text())};
-//        qCritical() << errStr;
-//        return out;
-//    }
-
-//    int currentIndex{};
-
-//    out.id = query.value(currentIndex++).value<int>();
-//    out.date = QDate::fromString(query.value(currentIndex++).value<QString>(),global::format_date);
-//    out.time = QTime::fromString(query.value(currentIndex++).value<QString>(),global::format_time);
-//    out.diveSiteId = query.value(currentIndex++).value<int>();
-
-//    //count how many diverId there is
-//    auto diverCount{db::queryCount(db,"SELECT diverId FROM %0 WHERE diveId = ?",{global::table_divesMembers},{out.id})};
-
-//    out.divers.reserve(diverCount);
-
-//    auto divers{db::querySelect(db,"SELECT diverId,diveType FROM %0 WHERE diveId = ?",{global::table_divesMembers},{out.id})};
-
-//    for(const auto& diverLine : divers)
-//    {
-//        if(diverLine.size() != 2) //if we didn't get the two columns expected
-//            throw std::runtime_error{__func__ + std::string{" : Invalid column count : expected 2 and got "}+std::to_string(diverLine.size())};
-
-//        data::Dive::MinimalDiver diver{};
-//        diver.id = diverLine[0].toInt();
-//        diver.type = data::diveTypefrom_string(diverLine[1].toString());
-//        out.divers.append(diver);
-//    }
-
     auto out{readFromDB<data::Dive>(db,[&](const QSqlQuery& query){
         data::Dive out{};
         out.id = query.value(0).value<int>();
@@ -258,38 +224,95 @@ data::Dive readDiveFromDB(int id, QSqlDatabase db, const QString& diveTable,
     },"SELECT %0.id,date,time,diveSiteId,name FROM %0 INNER JOIN %1 ON %0.diveSiteId=%1.id WHERE %0.id = ?",
       {diveTable,divingSiteTable},{id})};
 
-    const auto diversTableColumnCount{
-        QSqlQuery(QString{"SELECT * FROM %1 LIMIT 1"}.arg(diversTable)).record().count()
-    };
-
     //SELECT * FROM Divers INNER JOIN DivesMembers ON Divers.id = DivesMembers.diverId WHERE DivesMembers.diveId = 1
 
-    auto divesMembers{readLFromDB<data::DiveMember>(db,[&](const QSqlQuery& query){
-            data::DiveMember member{};
-            int diveMemberQueryOffset{diversTableColumnCount+1};//The number of columns in the table "Divers"
-                //because DiveMember data will be accessible after "Diver"'s data
-            member.fullDiver = extractDiverFromQuery(query);
-            member.diveId = out.id;
-            member.diverId = query.value(diveMemberQueryOffset++).value<int>();
-            member.type = data::diveTypefrom_string(query.value(diveMemberQueryOffset++).value<QString>());
-        return member;
-    },"SELECT * FROM %0 INNER JOIN %1 ON %0.id = %1.diverId WHERE %1.diveId = ?",
-    {diversTable,diveMembersTable},{out.id})};
+    out.diver = readDiveMembersFromDB(out.id,db,diveMembersTable,diversTable);
 
 //    qDebug() << out;
 
     return out;
 }
 
+int storeInDB(data::Dive& dive, QSqlDatabase db, const QString &diveTable, const QString& diversTable,
+              const QString& diveMembersTable)
+{
+    //Perf (release) :
+    //Approx 4.4 - 6.2 ms when only the dive is udpated (not the divers neither diveMembers)
+    //When in max eco mode
+//    debug::ScopeTimer __tim{__CURRENT_PLACE__};
+    auto existBefore{exists(dive,db,diveTable)};
+
+    QSqlQuery{"BEGIN TRANSACTION;",db};//just in case something fail after
+
+    //cf https://stackoverflow.com/questions/3634984/insert-if-not-exists-else-update;
+    static QString queryStr{"INSERT INTO %1(id,"
+                            "date,"
+                            "time,"
+                            "diveSiteId"
+                            ") VALUES (?,?,?,?) "
+                            "ON CONFLICT(id) DO UPDATE SET "
+                            "date=excluded.date,"
+                            "time=excluded.time,"
+                            "diveSiteId=excluded.diveSiteId;"};
+
+    QSqlQuery query{db};
+    query.prepare(queryStr.arg(diveTable));
+    query.addBindValue((dive.id < 0)?QVariant(QVariant::Int):dive.id);
+    query.addBindValue(dive.date);
+    query.addBindValue(dive.time);
+    query.addBindValue(dive.diveSiteId);
+    query.exec();
+
+    auto err{query.lastError()};
+    if(err.type() != QSqlError::ErrorType::NoError)
+    {
+        QString errStr{QString{"%0 : SQL error : %1"}.arg(__CURRENT_PLACE__,err.text())};
+        qCritical() << errStr;
+        debug::debugQuery(query,__CURRENT_PLACE__);
+        QSqlQuery{"ROLLBACK;",db};//cancel transaction
+        return -1;
+    }
+
+    auto updateDiveMembersResult{storeInDB(dive.diver,db,diveMembersTable)};
+    if(updateDiveMembersResult < 0)
+    {
+        QString errStr{QString{"%0 : SQL error : Cannot update DivesMembers table"}.arg(__CURRENT_PLACE__)};
+        qCritical() << errStr;
+        QSqlQuery{"ROLLBACK;",db};//cancel transaction
+        return -1;
+    }
+
+//    debug::debugQuery(query,__CURRENT_PLACE__);
+
+   if(updateDiversDiveCount(dive.diver,db,diveMembersTable,diversTable) < 0)//update diveCount
+   {
+       QString errStr{QString{"%0 : SQL error : Cannot update divers DiveCount"}.arg(__CURRENT_PLACE__)};
+       qCritical() << errStr;
+       QSqlQuery{"ROLLBACK;",db};//cancel transaction
+       return -1;
+   }
+
+    auto returnId{-1};
+
+    if(existBefore < 0)
+    {
+        auto id{getLastInsertId(db,diveTable)};
+        returnId = id;
+    }
+    else
+    {
+        returnId = dive.id;
+    }
+
+
+    QSqlQuery{"COMMIT;",db};
+
+    return returnId;
+}
+
 int exists(const data::Dive& a,QSqlDatabase db,const QString& table)
 {
-    auto temp{db::querySelect(db,"SELECT id FROM %1 WHERE %1.id = ?",{table},{a.id})};
-
-    if(temp.size() > 0)
-    {
-        return temp[0][0].toInt();
-    }
-    return -1;
+    return (db::queryExist(db,"SELECT id FROM %1 WHERE %1.id",{table},{a.id}))?a.id:-1;
 }
 
 

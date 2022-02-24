@@ -13,6 +13,7 @@
 #include <QSqlRecord>
 
 #include <QDebug>
+#include "Debug/global.hpp"
 
 namespace db
 {
@@ -65,12 +66,7 @@ int storeInDB(const data::Address &a, QSqlDatabase db, const QString &addressTab
         return -1;
     }
 
-//    qDebug() << "-----------------------------";
-//    qDebug() << __CURRENT_PLACE__<< ": " << query.lastQuery();
-//    for(const auto& e : query.boundValues())
-//    {
-//        qDebug() << e;
-//    }
+//    debug::debugQuery(query,__CURRENT_PLACE__);
 
     if(existBefore < 0)
     {

@@ -9,6 +9,8 @@
 
 namespace db {
 
+QVector<data::DiveMember> readDiveMembersFromDB(int diveId, QSqlDatabase db, const QString& diveMembersTable, const QString &diversTable);
+
 /*!
  * \brief removeAllFromDB : Remove all component in all tables linked to dive
  * \param dive
@@ -26,6 +28,9 @@ bool updateDB(data::Dive &dive, QSqlDatabase db, QString table, bool checkExiste
 data::Dive readDiveFromDB(int id, QSqlDatabase db, const QString &diveTable,
                           const QString &divingSiteTable, const QString &diveMembersTable,
                           const QString &diversTable);
+
+int storeInDB(data::Dive &dive, QSqlDatabase db, const QString &diveTable, const QString &diversTable,
+              const QString& diveMembersTable);
 
 //search if the diver already exists and return id if true, -1 otherwise
 int exists(const data::Dive& a, QSqlDatabase db, const QString &table);
