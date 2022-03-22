@@ -1,7 +1,22 @@
 # Generated from CPSMGestionPlongees.pro.
 
+#set(PROJECT_NAME)
+
+#VERSION = MAJOR.MINOR.PATCH
+set(VERSIONING_MAJOR 0)#incompatible update
+set(VERSIONING_MINOR 0)#new features added
+set(VERSIONING_PATCH 0)#bug fixed / minor change
+
+
+add_definitions("-DPROJECT_V_MAJOR=${VERSIONING_MAJOR}")
+add_definitions("-DPROJECT_V_MINOR=${VERSIONING_MINOR}")
+add_definitions("-DPROJECT_V_PATCH=${VERSIONING_PATCH}")
+
 cmake_minimum_required(VERSION 3.16)
-project(CPSMGestionPlongees LANGUAGES CXX)
+project(CPSMGestionPlongees VERSION ${VERSIONING_MAJOR}.${VERSIONING_MINOR}.${VERSIONING_PATCH} LANGUAGES CXX)
+add_definitions("-DPROJECT_VERSION=\"${CMAKE_PROJECT_VERSION}\"")
+
+set(EXE_NAME ${PROJECT_NAME})
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -12,18 +27,15 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
-if(NOT DEFINED INSTALL_EXAMPLESDIR)
-  set(INSTALL_EXAMPLESDIR "examples")
-endif()
 
-set(INSTALL_EXAMPLEDIR "${INSTALL_EXAMPLESDIR}")
+find_package(Qt6 COMPONENTS
+                 Core
+                 Gui
+                 Widgets
+                 Sql
+                 REQUIRED)
 
-find_package(Qt6 COMPONENTS Core REQUIRED)
-find_package(Qt6 COMPONENTS Gui REQUIRED)
-find_package(Qt6 COMPONENTS Widgets REQUIRED)
-find_package(Qt6 COMPONENTS Sql REQUIRED)
-
-qt_add_executable(CPSMGestionPlongees WIN32 MACOSX_BUNDLE
+set(PROJECT_SOURCES
     DBApi/Database.cpp DBApi/Database.hpp
     DBApi/global.cpp
     DBApi/local.cpp
@@ -33,11 +45,13 @@ qt_add_executable(CPSMGestionPlongees WIN32 MACOSX_BUNDLE
     DBApi/DBDive.hpp DBApi/DBDive.cpp
     DBApi/DBDiver.hpp DBApi/DBDiver.cpp
     DBApi/DBApi.hpp DBApi/DBApi.cpp
+
     Debug/ScopeTimer.hpp Debug/ScopeTimer.cpp
     Debug/DbVisualizer.cpp Debug/DbVisualizer.h Debug/DbVisualizer.ui
     Debug/LogFile.cpp Debug/LogFile.hpp
     Debug/Utils.cpp Debug/Utils.h
     Debug/global.cpp Debug/global.hpp
+
     GUI/Dialog_ConfirmDiveDeletion.hpp GUI/Dialog_ConfirmDiveDeletion.cpp GUI/Dialog_ConfirmDiveDeletion.ui
     GUI/Dialog_ConfirmDiverDeletion.cpp GUI/Dialog_ConfirmDiverDeletion.h GUI/Dialog_ConfirmDiverDeletion.ui
     GUI/Dialog_EditFamily.cpp GUI/Dialog_EditFamily.h GUI/Dialog_EditFamily.ui
@@ -48,19 +62,25 @@ qt_add_executable(CPSMGestionPlongees WIN32 MACOSX_BUNDLE
     GUI/MainWindow.cpp GUI/MainWindow.h GUI/MainWindow.ui
     GUI/constSettings.hpp
     GUI/global.cpp GUI/global.hpp
+
+    global.hpp
+    main.cpp
+)
+
+qt_add_executable(${EXE_NAME} WIN32 MACOSX_BUNDLE
+    ${PROJECT_SOURCES}
 #    DataStruct/Address.cpp DataStruct/Address.h
 #    DataStruct/Dive.cpp DataStruct/Dive.h
 #    DataStruct/Diver.cpp DataStruct/Diver.h
 #    DataStruct/User.cpp DataStruct/User.h
 #    DataStruct/global.cpp DataStruct/global.hpp
-    global.hpp
-    main.cpp
 )
-target_link_libraries(CPSMGestionPlongees PUBLIC
-    Qt6::Core
-    Qt6::Gui
-    Qt6::Sql
-    Qt6::Widgets
+
+target_link_libraries(${EXE_NAME} PRIVATE
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Gui
+    Qt${QT_VERSION_MAJOR}::Sql
+    Qt${QT_VERSION_MAJOR}::Widgets
 )
 
 #----- Used to get the current filename
@@ -71,14 +91,6 @@ target_link_libraries(CPSMGestionPlongees PUBLIC
 string(LENGTH "${CMAKE_SOURCE_DIR}/" SOURCE_PATH_SIZE)
 add_definitions("-DSOURCE_PATH_SIZE=${SOURCE_PATH_SIZE}")
 
-#if((QT_MAJOR_VERSION GREATER 4))
-#    target_link_libraries(CPSMGestionPlongees PRIVATE
-#        Qt6::Widgets
-#    )
-#endif()
 
-#install(TARGETS CPSMGestionPlongees
-#    RUNTIME DESTINATION "${INSTALL_EXAMPLEDIR}"
-#    BUNDLE DESTINATION "${INSTALL_EXAMPLEDIR}"
-#    LIBRARY DESTINATION "${INSTALL_EXAMPLEDIR}"
-#)
+
+message("Project name : <${PROJECT_NAME}>")

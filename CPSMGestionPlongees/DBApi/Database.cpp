@@ -53,14 +53,14 @@ int countField(QSqlDatabase& db,const QString& table,const QString& field,QVaria
     {
         if(enableDebug)
         {
-            qDebug() << __func__ << " : Cannot satisfy request : <" << query.last()<<">";
+            qDebug() << __CURRENT_PLACE__ << " : Cannot satisfy request : <" << query.last()<<">";
         }
     }
 
     auto err{query.lastError()};
     if(err.type() != QSqlError::ErrorType::NoError)//if there is an error
     {
-        QString errStr{QString{"%0 : SQL error : %1"}.arg(__func__,err.text())};
+        QString errStr{QString{"%0 : SQL error : %1"}.arg(__CURRENT_PLACE__,err.text())};
         qCritical() << errStr;
         return -1;
     }
@@ -107,7 +107,7 @@ QVector<QVector<QVariant>> querySelect(QSqlDatabase db,QString request,const QSt
     auto err{query.lastError()};
     if(err.type() != QSqlError::ErrorType::NoError)//if there was an error
     {
-        QString errStr{QString{"%0 : SQL error : %1 : "}.arg(__func__,err.text())};
+        QString errStr{QString{"%0 : SQL error : %1 : "}.arg(__CURRENT_PLACE__,err.text())};
         qCritical() << errStr;
         qCritical() << query.lastQuery();
         return {};
@@ -154,7 +154,7 @@ int queryCount(QSqlDatabase& db,QString request,const QStringList& argList,const
 
     if(!query.next())
     {
-        qCritical() << __func__ << " : No valid result";
+        qCritical() << __CURRENT_PLACE__ << " : No valid result";
         return -1;
     }
     int out{query.value(0).toInt()};
@@ -167,7 +167,7 @@ int queryCount(QSqlDatabase& db,QString request,const QStringList& argList,const
     auto err{query.lastError()};
     if(err.type() != QSqlError::ErrorType::NoError)//if there was an error
     {
-        QString errStr{QString{"%0 : SQL error : %1 : "}.arg(__func__,err.text())};
+        QString errStr{QString{"%0 : SQL error : %1 : "}.arg(__CURRENT_PLACE__,err.text())};
         qCritical() << errStr;
         qCritical() << query.lastQuery();
         return {};
@@ -200,6 +200,40 @@ bool queryExist(QSqlDatabase& db,QString request,const QStringList& argList,cons
     //else
     return false;
 }
+
+
+bool queryDelete(QSqlDatabase& db,QString request,const QStringList& argList,const QVector<QVariant>& valList)
+{
+    QSqlQuery query{db};
+
+    for(const auto& e : argList)//match argument list
+    {
+        request = request.arg(e);
+    }
+
+    query.prepare(request);//prepare sql query
+
+    for(const auto& e : valList) //bind all values (this way add some injection protection)
+    {
+        query.addBindValue(e);
+    }
+
+    query.exec();
+
+    auto err{query.lastError()};
+    if(err.type() != QSqlError::ErrorType::NoError)//if there was an error
+    {
+        QString errStr{QString{"%0 : SQL error : %1 : "}.arg(__CURRENT_PLACE__,err.text())};
+        qCritical() << errStr;
+        qCritical() << query.lastQuery();
+        return false;
+    }
+
+    //else
+    return true;
+}
+
+
 
 int getLastInsertId(const QSqlDatabase& db, QString table)
 {

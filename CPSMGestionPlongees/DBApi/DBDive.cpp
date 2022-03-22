@@ -9,6 +9,7 @@
 #include <QSqlRecord>
 
 #include <algorithm>
+#include <unordered_map>
 
 #include <QDebug>
 #include "Debug/global.hpp"
@@ -258,8 +259,8 @@ int storeInDB(data::Dive& dive, QSqlDatabase db, const QString &diveTable, const
     QSqlQuery query{db};
     query.prepare(queryStr.arg(diveTable));
     query.addBindValue((dive.id < 0)?QVariant(QVariant::Int):dive.id);
-    query.addBindValue(dive.date);
-    query.addBindValue(dive.time);
+    query.addBindValue(dive.date.toString(global::format_date));
+    query.addBindValue(dive.time.toString(global::format_time));
     query.addBindValue(dive.diveSiteId);
     query.exec();
 
@@ -273,14 +274,52 @@ int storeInDB(data::Dive& dive, QSqlDatabase db, const QString &diveTable, const
         return -1;
     }
 
-    auto updateDiveMembersResult{storeInDB(dive.diver,db,diveMembersTable)};
-    if(updateDiveMembersResult < 0)
+
+    //remove deleted divers from the dive
+    auto existingDivers{readLFromDB<int>(db,[&](const QSqlQuery& query){
+        int out{query.value(0).toInt()};
+        return out;
+    },"SELECT diverId FROM %0 WHERE %0.diveId = ?",
+      {diveMembersTable},{dive.id})};
+    QVector<QVariant> diversToRemoveFromDBDive{};
+    diversToRemoveFromDBDive.reserve(existingDivers.size());
+    QString removeListArgs{"("};//"?,?,?,?" with the right count of values corresponding to the number of divers to remove
+    for(const auto& diverId : existingDivers)
+    {
+        qDebug() << diverId;
+        if(std::find_if(dive.diver.cbegin(),dive.diver.cend(),[&](auto e){return e.diverId == diverId;})
+                        == dive.diver.cend())//if existing diver in the db isn't found in the dive's divers list
+        {
+            diversToRemoveFromDBDive.push_back(diverId);//say that we need to remove it
+            removeListArgs.append("?,");
+        }
+    }
+    if(removeListArgs.endsWith(','))
+        removeListArgs.resize(removeListArgs.size()-1);
+    removeListArgs += ")";
+
+    auto successRemoveDivers{db::queryDelete(db,"DELETE FROM %0 WHERE diveId=? AND diverId IN %1",
+                                             {diveMembersTable,removeListArgs},
+                                             QVector<QVariant>{dive.id}+diversToRemoveFromDBDive)};
+    if(!successRemoveDivers)
+    {
+        QString errStr{QString{"%0 : SQL error : Cannot update DivesMembers table (delete diveMembers)"}.arg(__CURRENT_PLACE__)};
+        qCritical() << errStr;
+        QSqlQuery{"ROLLBACK;",db};//cancel transaction
+        return -1;
+    }
+
+    //add new diveMembers to db
+    auto addDiveMembersResult{storeInDB(dive.diver,db,diveMembersTable)};
+    if(addDiveMembersResult < 0)
     {
         QString errStr{QString{"%0 : SQL error : Cannot update DivesMembers table"}.arg(__CURRENT_PLACE__)};
         qCritical() << errStr;
         QSqlQuery{"ROLLBACK;",db};//cancel transaction
         return -1;
     }
+
+
 
 //    debug::debugQuery(query,__CURRENT_PLACE__);
 

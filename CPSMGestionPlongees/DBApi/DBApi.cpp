@@ -120,9 +120,10 @@ int storeInDB(const data::DiveMember& diver,QSqlDatabase db, const QString& dive
 
     static const QString queryStr{QString{"INSERT INTO %1(diveId,"
                             "diverId,"
-                            "diveType,"
-                            "diveSiteId"
-                            ") VALUES (?,?,?,?)"}.arg(diveMembersTable)};
+                            "diveType"
+                            ") VALUES (?,?,?) "
+                            "ON CONFLICT(diveId,diverId) DO UPDATE SET "
+                            "diveType=excluded.diveType;"}.arg(diveMembersTable)};
 
     QSqlQuery query{db};
     query.prepare(queryStr);
@@ -156,7 +157,9 @@ int storeInDB(const QVector<data::DiveMember>& divers,QSqlDatabase db, const QSt
     static const QString queryStr{QString{"INSERT INTO %1(diveId,"
                             "diverId,"
                             "diveType"
-                            ") VALUES (?,?,?)"}.arg(diveMembersTable)};
+                            ") VALUES (?,?,?) "
+                            "ON CONFLICT(diveId,diverId) DO UPDATE SET "
+                            "diveType=excluded.diveType;"}.arg(diveMembersTable)};
 
     QSqlQuery query{db};
     for(const auto& diver : divers)
@@ -170,7 +173,7 @@ int storeInDB(const QVector<data::DiveMember>& divers,QSqlDatabase db, const QSt
         auto err{query.lastError()};
         if(err.type() != QSqlError::ErrorType::NoError)
         {
-            QString errStr{QString{"%0 : SQL error : %1"}.arg(__CURRENT_PLACE__,err.text())};
+            QString errStr{QString{"%0 : SQL error"}.arg(__CURRENT_PLACE__)};
             qCritical() << errStr;
             debug::debugQuery(query,__CURRENT_PLACE__);
             QSqlQuery{"ROLLBACK;",db};//cancel transaction

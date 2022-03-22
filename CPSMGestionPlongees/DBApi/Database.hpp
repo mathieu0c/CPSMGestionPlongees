@@ -42,6 +42,10 @@ int queryCount(QSqlDatabase& db,QString request,const QStringList& argList,const
 
 bool queryExist(QSqlDatabase& db,QString request,const QStringList& argList,const QVector<QVariant>& valList);
 
+
+bool queryDelete(QSqlDatabase& db,QString request,const QStringList& argList,const QVector<QVariant>& valList);
+
+
 int getLastInsertId(const QSqlDatabase& db, QString table);
 
 //----------------------------------------------------------------
