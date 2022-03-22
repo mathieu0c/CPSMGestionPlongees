@@ -227,11 +227,14 @@ void DiveEdit::on_pb_diverToDive_clicked()
 //    qDebug() << ui->diverSearch_dive->getDisplayedDiversId();
 //    qDebug() << m_tempDive;
 
+//    qDebug() << __CURRENT_PLACE__;
     for(const auto& e : diversIds)
     {
+
 //        qDebug() << "       Selected : " << e;
 //        m_tempDive.divers.append({e,data::DiveType::exploration});
     }
+
 
 //    qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~";
 //    qDebug() << m_tempDive;
@@ -243,11 +246,17 @@ void DiveEdit::on_pb_diverToDive_clicked()
 void DiveEdit::on_pb_diveToDiver_clicked()
 {
     auto diversIds{ui->diverSearch_dive->getSelectedDiversId()};
-    if(!diversIds.size())
-        return;
+//    if(!diversIds.size())
+//        return;
 
 //    qDebug() << __func__ <<" ---------------------------------- ";
 //    qDebug() << m_tempDive;
+    qDebug() << __CURRENT_PLACE__;
+    for(const auto& e : diversIds)
+    {
+        qDebug() << "       Selected : " << e;
+//        m_tempDive.divers.append({e,data::DiveType::exploration});
+    }
 
     data::removeDiversFromDive(m_tempDive,diversIds);
 //    qDebug() << m_tempDive;

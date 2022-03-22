@@ -32,8 +32,9 @@ DiveMembersEditor::~DiveMembersEditor()
 }
 
 void DiveMembersEditor::setSelectionColumns(QStringList columnsNames){
-    ui->tv_divers->setColumnCount(columnsNames.count());
+    ui->tv_divers->setColumnCount(columnsNames.count()+1);
     ui->tv_divers->setHorizontalHeaderLabels(columnsNames);
+    ui->tv_divers->hideColumn(columnsNames.count());
 }
 
 void DiveMembersEditor::setHiddenButton(bool hide)
@@ -41,6 +42,22 @@ void DiveMembersEditor::setHiddenButton(bool hide)
     ui->buttonBox->setVisible(!hide);
 }
 
+
+QVector<int> DiveMembersEditor::getSelectedDiversId() const
+{
+    auto indexes{ui->tv_divers->selectionModel()->selectedRows()};
+    QVector<int> out{};
+    out.resize(indexes.size());
+
+    for(int i{}; i < indexes.size(); ++i)
+    {
+        auto row{indexes[i].row()};
+
+        auto tmpLabel{static_cast<const QLabel*>(ui->tv_divers->cellWidget(row,ui->tv_divers->columnCount()-1))->text()};
+        out[i] = tmpLabel.toInt();
+    }
+    return out;
+}
 
 
 void DiveMembersEditor::refreshDiverList(QSqlDatabase db,const QString& table_diverLevel)
@@ -71,6 +88,8 @@ void DiveMembersEditor::refreshDiverList(QSqlDatabase db,const QString& table_di
         ui->tv_divers->setCellWidget(i,0,new QLabel(" "+e.fullDiver.lastName+" ",ui->tv_divers));
         ui->tv_divers->setCellWidget(i,1,new QLabel(" "+e.fullDiver.firstName+" ",ui->tv_divers));
         ui->tv_divers->setCellWidget(i,2,new QLabel(" "+lvlList[e.fullDiver.diverLevelId]+" ",ui->tv_divers));
+        ui->tv_divers->setCellWidget(i,ui->tv_divers->columnCount()-1,
+                                     new QLabel(QString::number(e.diverId),ui->tv_divers));
 
         auto cbDiveType{new QComboBox{ui->tv_divers}};
         cbDiveType->addItem(to_string(data::DiveType::exploration),i);

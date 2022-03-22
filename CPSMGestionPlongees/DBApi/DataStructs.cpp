@@ -56,9 +56,9 @@ QDebug operator<<(QDebug debug, const data::DiveMember& m)
 
 void removeDiversFromDive(data::Dive& dive,QVector<int> idList)
 {
-//    dive.divers.erase(std::remove_if(dive.divers.begin(),dive.divers.end(),[&](data::Dive::MinimalDiver& diver){
-//        return idList.contains(diver.id);
-//    }),dive.divers.end());
+    dive.diver.erase(std::remove_if(dive.diver.begin(),dive.diver.end(),[&](data::DiveMember& diver){
+        return idList.contains(diver.diverId);
+    }),dive.diver.end());
 }
 
 data::DiveType getDiveTypeForDiver(const data::Dive& dive,int diverId)

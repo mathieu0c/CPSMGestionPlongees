@@ -30,16 +30,14 @@ public:
 
     void setHiddenButton(bool hide);
 
-    QVector<int> getSelectedDiversId(){
-        return {};
-    }
-
     void setDivers(DiverList& divers){
         m_divers = &divers;
     }
     void setDivers(DiverList* divers){
         m_divers = divers;
     }
+
+    QVector<int> getSelectedDiversId() const;
 
 public slots:
     void refreshDiverList(QSqlDatabase db, const QString &table_diverLevel);
