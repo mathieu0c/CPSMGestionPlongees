@@ -213,7 +213,7 @@
        </layout>
       </item>
       <item>
-       <widget class="gui::DiverSearch" name="diverSearch_dive" native="true">
+       <widget class="gui::DiveMembersEditor" name="diverSearch_dive" native="true">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -248,6 +248,12 @@
    <class>gui::DiverSearch</class>
    <extends>QWidget</extends>
    <header>GUI/DiverSearch.hpp</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>gui::DiveMembersEditor</class>
+   <extends>QWidget</extends>
+   <header>GUI/DiveMembersEditor.hpp</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

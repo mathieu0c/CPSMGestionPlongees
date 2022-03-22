@@ -52,6 +52,7 @@ set(PROJECT_SOURCES
     Debug/Utils.cpp Debug/Utils.h
     Debug/global.cpp Debug/global.hpp
 
+    GUI/DiveMembersEditor.hpp GUI/DiveMembersEditor.cpp GUI/DiveMembersEditor.ui
     GUI/Dialog_ConfirmDiveDeletion.hpp GUI/Dialog_ConfirmDiveDeletion.cpp GUI/Dialog_ConfirmDiveDeletion.ui
     GUI/Dialog_ConfirmDiverDeletion.cpp GUI/Dialog_ConfirmDiverDeletion.h GUI/Dialog_ConfirmDiverDeletion.ui
     GUI/Dialog_EditFamily.cpp GUI/Dialog_EditFamily.h GUI/Dialog_EditFamily.ui
