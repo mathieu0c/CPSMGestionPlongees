@@ -186,8 +186,6 @@ void DiveEdit::setDive(data::Dive dive){
 
     using db::operator<<;
 
-    qDebug() << m_tempDive.diver.count();
-
     if(enableDebug)
     {
         qDebug() << "Setup diver in edition mode : ";
