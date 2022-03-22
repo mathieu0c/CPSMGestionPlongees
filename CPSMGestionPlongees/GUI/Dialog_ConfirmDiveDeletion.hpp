@@ -22,6 +22,9 @@ public:
 
     static bool confirmDeletion(const QStringList& diveList,QWidget* parent = nullptr);
 
+private slots:
+    void on_buttonBox_accepted();
+
 private:
     Ui::Dialog_ConfirmDiveDeletion *ui;
 };

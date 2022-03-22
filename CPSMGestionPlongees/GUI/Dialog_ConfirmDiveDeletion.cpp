@@ -1,6 +1,8 @@
 #include "Dialog_ConfirmDiveDeletion.hpp"
 #include "ui_Dialog_ConfirmDiveDeletion.h"
 
+#include <QMessageBox>
+
 #include "GUI/global.hpp"
 
 namespace gui
@@ -44,6 +46,14 @@ bool Dialog_ConfirmDiveDeletion::confirmDeletion(const QStringList& diverList,QW
     }//End if
 
     return false;
+}
+
+
+void Dialog_ConfirmDiveDeletion::on_buttonBox_accepted()
+{
+    auto ans{QMessageBox::warning(this,"Confirmation","Cette action est irréversible, souhaitez-vous continuer ?",
+                                  QMessageBox::StandardButton::Yes | QMessageBox::StandardButton::Cancel)};
+    done(ans==QMessageBox::Yes?QDialog::Accepted:QDialog::Rejected);
 }
 
 }//namespace gui

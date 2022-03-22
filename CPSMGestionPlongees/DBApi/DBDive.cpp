@@ -286,7 +286,6 @@ int storeInDB(data::Dive& dive, QSqlDatabase db, const QString &diveTable, const
     QString removeListArgs{"("};//"?,?,?,?" with the right count of values corresponding to the number of divers to remove
     for(const auto& diverId : existingDivers)
     {
-        qDebug() << diverId;
         if(std::find_if(dive.diver.cbegin(),dive.diver.cend(),[&](auto e){return e.diverId == diverId;})
                         == dive.diver.cend())//if existing diver in the db isn't found in the dive's divers list
         {

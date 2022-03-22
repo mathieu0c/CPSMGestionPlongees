@@ -50,8 +50,8 @@ void DiveMembersEditor::refreshDiverList(QSqlDatabase db,const QString& table_di
         return;
     }
 
-    qDebug() << "---------------- " << __func__;
-    qDebug() << m_divers->count();
+//    qDebug() << "---------------- " << __func__;
+//    qDebug() << m_divers->count();
 
     ui->tv_divers->setRowCount(m_divers->count());
 
@@ -73,18 +73,14 @@ void DiveMembersEditor::refreshDiverList(QSqlDatabase db,const QString& table_di
         ui->tv_divers->setCellWidget(i,2,new QLabel(" "+lvlList[e.fullDiver.diverLevelId]+" ",ui->tv_divers));
 
         auto cbDiveType{new QComboBox{ui->tv_divers}};
+        cbDiveType->addItem(to_string(data::DiveType::exploration),i);
+        cbDiveType->addItem(to_string(data::DiveType::technical),i);
+        cbDiveType->setCurrentText(to_string(e.type));
+
         connect(cbDiveType,&QComboBox::currentIndexChanged,this,[&,cbDiveType](auto newIndex){
             auto diverIndex{cbDiveType->itemData(newIndex).toInt()};
             (*m_divers)[diverIndex].type = data::diveTypefrom_string(cbDiveType->itemText(newIndex));
-            qDebug() << "INFO --- ";
-            for(const auto& el : *m_divers)
-            {
-                qDebug()<<" llllll " << el;
-            }
         });
-
-        cbDiveType->addItem(to_string(data::DiveType::exploration),i);
-        cbDiveType->addItem(to_string(data::DiveType::technical),i);
         ui->tv_divers->setCellWidget(i,3,cbDiveType);
     }
 }

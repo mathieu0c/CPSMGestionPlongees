@@ -309,8 +309,8 @@ bool initDB(QSqlDatabase db)
 
     //table Dives
 
-    data::Dive tempDive{-1,QDate::currentDate(),QTime::currentTime(),2,{{1,data::DiveType::exploration},{2,data::DiveType::technical}}};
-    data::Dive tempDive2{-1,QDate::currentDate().addDays(-1),QTime::currentTime(),1,{{1,data::DiveType::technical}}};
+    data::Dive tempDive{-1,QDate::currentDate(),QTime::currentTime(),2,{{1,1,data::DiveType::exploration},{1,2,data::DiveType::technical}}};
+    data::Dive tempDive2{-1,QDate::currentDate().addDays(-1),QTime::currentTime(),1,{{2,1,data::DiveType::technical}}};
 //    data::Dive tempDive3{-1,QDate::currentDate().addDays(1),1,{}};
 
 

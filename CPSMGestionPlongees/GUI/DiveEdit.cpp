@@ -180,11 +180,13 @@ void DiveEdit::slot_diveComboBox(int index)
     data::setDiveTypeForDiver(m_tempDive,diverId,data::diveTypefrom_string(box->currentText()));
 }
 
-void DiveEdit::setDive(data::Dive diver){
-    m_tempDive = std::move(diver);
+void DiveEdit::setDive(data::Dive dive){
+    m_tempDive = std::move(dive);
     ui->diverSearch_dive->setDivers(m_tempDive.diver);
 
     using db::operator<<;
+
+    qDebug() << m_tempDive.diver.count();
 
     if(enableDebug)
     {
