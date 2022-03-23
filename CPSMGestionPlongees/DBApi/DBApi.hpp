@@ -51,6 +51,82 @@ int storeInDB(const data::DiveMember& divers, QSqlDatabase db, const QString& di
  */
 int storeInDB(const QVector<data::DiveMember>& divers, QSqlDatabase db, const QString& diveMembersTable);
 
+
+//---------- Utils
+
+/*!
+ * \brief formatListForSQL : format a list like `{1,2,3}` in `"(1,2,3)"`
+ * \param in : input list
+ * \return formatted string
+ */
+template<typename T>
+inline
+QString formatListForSQL(const QVector<QVariant>& in)
+{
+    QString out{'('};
+    for(const auto& e : in){
+        out = out+QString("%0,").arg(e.value<T>());
+    }
+    if(out.endsWith(','))
+        out.resize(out.size()-1);
+    out += ")";
+    return out;
+}
+
+template<typename T>
+inline
+QString formatListForSQL(const QVector<T>& in)
+{
+    QString out{'('};
+    for(const auto& e : in){
+        out = out+QString("%0,").arg(e);
+    }
+    if(out.endsWith(','))
+        out.resize(out.size()-1);
+    out += ")";
+    return out;
+}
+
+
+/*!
+ * \brief questionMarkList : create a list of questino mark for SQL requests.
+ *              For example : `{1,3,6,9}` will produce `"(?,?,?,?)"`
+ * \param in
+ * \return
+ */
+template<typename T>
+inline
+QString questionMarkList(const QVector<T>& in)
+{
+    QString out{'('};
+    for(const auto& e : in){
+        out = out+"?,";
+    }
+    if(out.endsWith(','))
+        out.resize(out.size()-1);
+    out += ")";
+    return out;
+}
+
+/*!
+ * \brief prepRequestListFilter : prepare a list of elements for a SQL request
+ * \param in : input list
+ * \return a formatted string like (?,?,?,?) and a vector<QVariant> containing values to use in the sql req
+*/
+template<typename T>
+inline
+std::tuple<QString,QVector<QVariant>> prepRequestListFilter(const QVector<T>& in)
+{
+    auto ouStr{questionMarkList(in)};
+    QVector<QVariant> outL(in.size());
+    for(int i{}; i < outL.size();++i)
+    {
+        outL[i] = QVariant{in[i]};
+    }
+    return {ouStr,outL};
+}
+
+
 } // namespace db
 
 #endif // DB_DBAPI_HPP

@@ -79,12 +79,17 @@ void DiveEdit::refreshSiteList(const QString& siteTable)
 
 void DiveEdit::setEditable(bool enable)
 {
-//    m_isEditable = enable;
-//    global::tools::applyToChildren<QComboBox*>(this,[&](QComboBox* box){box->setEnabled(false);});
-//    global::tools::applyToChildren<QDateEdit*>(this,[&](QDateEdit* box){box->setReadOnly(true);});
-//    global::tools::applyToChildren<QTimeEdit*>(this,[&](QTimeEdit* box){box->setReadOnly(true);});
+    m_isEditable = enable;
+    global::tools::applyToChildren<QComboBox*>(this,[&](QComboBox* box){box->setEnabled(enable);});
+    global::tools::applyToChildren<QDateEdit*>(this,[&](QDateEdit* box){box->setReadOnly(!enable);});
+    global::tools::applyToChildren<QTimeEdit*>(this,[&](QTimeEdit* box){box->setReadOnly(!enable);});
 
-//    //disable combo box for type selection
+    ui->diverSearch_dive->setEditable(enable);
+
+    ui->pb_diveToDiver->setEnabled(enable);
+    ui->pb_diverToDive->setEnabled(enable);
+
+    //disable combo box for type selection
 //    auto rowCount{ui->diverSearch_dive->getRowCount()};
 //    auto columnCount{ui->diverSearch_dive->getColumnCount()-1};//one column is hidden by default
 //    auto table{ui->diverSearch_dive->table()};
@@ -107,13 +112,14 @@ void DiveEdit::setEditable(bool enable)
 
 void DiveEdit::refreshDiverSearchFilters_global()
 {
-    QString idList{};
+    QString idList{ui->diverSearch_dive->formattedDiversIds()};
+
 //    for(const auto& e : m_tempDive.divers)
 //    {
 //        idList += QString::number(e.id)+',';
 //    }
 //    idList.chop(1);//remove last ','
-    ui->diverSearch_global->setFilter("%0.id NOT IN (%1)",{global::table_divers,idList},{});//global::table_divesMembers
+    ui->diverSearch_global->setFilter("%0.id NOT IN %1",{global::table_divers,idList},{});//global::table_divesMembers
 }
 
 void DiveEdit::refreshDiverSearchFilters_dive()
@@ -149,7 +155,7 @@ void DiveEdit::refreshDiversListComboBox()
 
 //    for(int i{}; i < rowCount;++i)
 //    {
-//        auto index{ui->diverSearch_dive->indexAt(columnCount-1,i)};//modify pre-last column
+//        auto index{ui->diverSearch_dive->indexAt(columnCount-1,i)};//modify pre-last columndiveMemberQueryOffset
 //            //the last one is the diver id
 ////        qDebug() << __func__ << "  " << index;
 ////        qDebug() << index.data();
@@ -216,6 +222,8 @@ void DiveEdit::resetDive(){
 /*
  * Function called when a list of diver is required to move from the global
  * listing to the dive listing
+ * dive -> diveMembers
+ * diver -> All available divers
 */
 void DiveEdit::on_pb_diverToDive_clicked()
 {
@@ -227,13 +235,8 @@ void DiveEdit::on_pb_diverToDive_clicked()
 //    qDebug() << ui->diverSearch_dive->getDisplayedDiversId();
 //    qDebug() << m_tempDive;
 
-//    qDebug() << __CURRENT_PLACE__;
-    for(const auto& e : diversIds)
-    {
-
-//        qDebug() << "       Selected : " << e;
-//        m_tempDive.divers.append({e,data::DiveType::exploration});
-    }
+    //assuming divers displayed are not already in the dive's divers list
+    m_tempDive.diver += db::readDiveMembersFromDB(m_tempDive.id,diversIds,QSqlDatabase::database(),global::table_divers);
 
 
 //    qDebug() << "~~~~~~~~~~~~~~~~~~~~~~~~~";
@@ -243,9 +246,11 @@ void DiveEdit::on_pb_diverToDive_clicked()
 }
 
 
+//dive -> diveMembers
+//diver -> All available divers
 void DiveEdit::on_pb_diveToDiver_clicked()
 {
-    auto diversIds{ui->diverSearch_dive->getSelectedDiversId()};
+    auto diversIds{ui->diverSearch_dive->selectedDiversId()};
 //    if(!diversIds.size())
 //        return;
 

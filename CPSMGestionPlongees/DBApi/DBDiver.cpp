@@ -6,6 +6,7 @@
 #include "DBApi/Database.hpp"
 #include "DBApi/Generic.hpp"
 #include "DBApi/DBAddress.hpp"
+#include "DBApi/DBApi.hpp"
 
 #include <QSqlDatabase>
 #include <QSqlQuery>
@@ -45,6 +46,19 @@ data::Diver extractDiverFromQuery(const QSqlQuery& query){
 data::Diver readDiverFromDB(int id, QSqlDatabase db, QString table)
 {
     return readFromDB<data::Diver>(db,extractDiverFromQuery,"SELECT * FROM %1 WHERE id=?",{table},{id});
+}
+
+/*!
+ * \brief readDiverLFromDB : read a diver list from DB
+ * \param idList : list of divers id to retrieve
+ * \param db : source database
+ * \param table : divers table
+ * \return a list of divers
+ */
+QVector<data::Diver> readDiverLFromDB(QVector<int> idList, QSqlDatabase db, QString table)
+{
+    auto [str,values]{db::prepRequestListFilter(idList)};
+    return readLFromDB<data::Diver>(db,extractDiverFromQuery,"SELECT * FROM %1 WHERE id IN %2",{table,str},values);
 }
 
 int exists(const data::Diver& a,QSqlDatabase db,const QString& table)

@@ -9,8 +9,6 @@ namespace debug
 {
 
 static bool enable_logFile{true};
-static QString c_extension_log{".log"};
-
 
 
 static const QtMessageHandler QT_DEFAULT_MESSAGE_HANDLER = qInstallMessageHandler(0);

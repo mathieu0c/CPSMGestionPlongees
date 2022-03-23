@@ -6,6 +6,7 @@
 
 #include <memory>
 #include "DBApi/DataStructs.hpp"
+#include "DBApi/DBApi.hpp"
 #include <QSqlDatabase>
 
 #include "../global.hpp"
@@ -30,6 +31,8 @@ public:
 
     void setHiddenButton(bool hide);
 
+    void setEditable(bool enable);
+
     void setDivers(DiverList& divers){
         m_divers = &divers;
     }
@@ -37,7 +40,10 @@ public:
         m_divers = divers;
     }
 
-    QVector<int> getSelectedDiversId() const;
+    QVector<int> selectedDiversId() const;
+
+    inline QVector<int> diversIds()const;
+    QString formattedDiversIds()const;
 
 public slots:
     void refreshDiverList(QSqlDatabase db, const QString &table_diverLevel);
@@ -45,7 +51,26 @@ public slots:
 private:
     Ui::DiveMembersEditor *ui;
     DiverList* m_divers;
+    bool m_isEditable;
 };
+
+inline
+QVector<int> DiveMembersEditor::diversIds()const {
+    if(!m_divers)
+        return {};
+    QVector<int> out;
+    out.reserve(m_divers->size());
+    for(const auto& e : *m_divers)
+    {
+        out.append(e.diverId);
+    }
+    return out;
+}
+
+inline
+QString DiveMembersEditor::formattedDiversIds() const {
+    return db::formatListForSQL(diversIds());
+}
 
 }//namespace gui
 

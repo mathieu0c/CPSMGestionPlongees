@@ -28,12 +28,33 @@ QVector<data::DiveMember> readDiveMembersFromDB(int diveId,QSqlDatabase db, cons
                 //because DiveMember data will be accessible after "Diver"'s data
             member.fullDiver = extractDiverFromQuery(query);
             member.diveId = diveId;
-            member.diverId = query.value(diveMemberQueryOffset++).value<int>();
+            member.diverId = member.fullDiver.id;
+            diveMemberQueryOffset++;//skip diver id in diveMember table
             member.type = data::diveTypefrom_string(query.value(diveMemberQueryOffset++).value<QString>());
         return member;
     },"SELECT * FROM %0 INNER JOIN %1 ON %0.id = %1.diverId WHERE %1.diveId = ?",
     {diversTable,diveMembersTable},{diveId});
 }
+
+QVector<data::DiveMember> readDiveMembersFromDB(int diveId,QVector<int> diversId,QSqlDatabase db,const QString& diversTable)
+{
+    const auto diversTableColumnCount{
+        QSqlQuery(QString{"SELECT * FROM %1 LIMIT 1"}.arg(diversTable)).record().count()
+    };
+    auto [strIds,idsValues]{db::prepRequestListFilter(diversId)};
+    return readLFromDB<data::DiveMember>(db,[&](const QSqlQuery& query){
+            data::DiveMember member{};
+            int diveMemberQueryOffset{diversTableColumnCount+1};//The number of columns in the table "Divers"
+                //because DiveMember data will be accessible after "Diver"'s data
+            member.fullDiver = extractDiverFromQuery(query);
+            member.diveId = diveId;
+            member.diverId = member.fullDiver.id;
+            member.type = data::diveTypefrom_string(query.value(diveMemberQueryOffset++).value<QString>());
+        return member;
+    },"SELECT * FROM %0 WHERE %0.id IN %1",
+    {diversTable,strIds},idsValues);
+}
+
 
 bool removeAllFromDB(const data::Dive& dive,QSqlDatabase db, const QString& table)
 {

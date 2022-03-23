@@ -1,4 +1,5 @@
 #include "LogFile.hpp"
+#include "Debug/global.hpp"
 
 #include <QDate>
 #include <QTime>

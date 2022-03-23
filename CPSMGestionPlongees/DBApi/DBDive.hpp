@@ -10,6 +10,7 @@
 namespace db {
 
 QVector<data::DiveMember> readDiveMembersFromDB(int diveId, QSqlDatabase db, const QString& diveMembersTable, const QString &diversTable);
+QVector<data::DiveMember> readDiveMembersFromDB(int diveId, QVector<int> diversId, QSqlDatabase db, const QString& diversTable);
 
 /*!
  * \brief removeAllFromDB : Remove all component in all tables linked to dive

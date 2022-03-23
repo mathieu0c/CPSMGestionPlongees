@@ -19,7 +19,9 @@ namespace gui{
 
 DiveMembersEditor::DiveMembersEditor(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::DiveMembersEditor)
+    ui(new Ui::DiveMembersEditor),
+    m_divers{nullptr},
+    m_isEditable{true}
 {
     ui->setupUi(this);
 
@@ -42,8 +44,18 @@ void DiveMembersEditor::setHiddenButton(bool hide)
     ui->buttonBox->setVisible(!hide);
 }
 
+void DiveMembersEditor::setEditable(bool enable)
+{
+//    global::tools::applyToChildren<QComboBox*>(ui->tv_divers,[&](QComboBox* box){box->setEnabled(enable);});
+    m_isEditable = enable;
+    for(int i{};i < ui->tv_divers->rowCount();++i)
+    {
+        static_cast<QComboBox*>(ui->tv_divers->cellWidget(i,ui->tv_divers->columnCount()-2))->setEnabled(enable);
+        //last column contains diver id. Pre-last contains combobox for divetype
+    }
+}
 
-QVector<int> DiveMembersEditor::getSelectedDiversId() const
+QVector<int> DiveMembersEditor::selectedDiversId() const
 {
     auto indexes{ui->tv_divers->selectionModel()->selectedRows()};
     QVector<int> out{};
@@ -59,7 +71,6 @@ QVector<int> DiveMembersEditor::getSelectedDiversId() const
     return out;
 }
 
-
 void DiveMembersEditor::refreshDiverList(QSqlDatabase db,const QString& table_diverLevel)
 {
     if(!m_divers)
@@ -67,6 +78,10 @@ void DiveMembersEditor::refreshDiverList(QSqlDatabase db,const QString& table_di
         return;
     }
 
+
+    std::sort(m_divers->begin(),m_divers->end(),[&](const data::DiveMember& e,const data::DiveMember& r){
+        return e.fullDiver.lastName < r.fullDiver.lastName;
+    });
 //    qDebug() << "---------------- " << __func__;
 //    qDebug() << m_divers->count();
 
@@ -95,6 +110,7 @@ void DiveMembersEditor::refreshDiverList(QSqlDatabase db,const QString& table_di
         cbDiveType->addItem(to_string(data::DiveType::exploration),i);
         cbDiveType->addItem(to_string(data::DiveType::technical),i);
         cbDiveType->setCurrentText(to_string(e.type));
+        cbDiveType->setEnabled(m_isEditable);
 
         connect(cbDiveType,&QComboBox::currentIndexChanged,this,[&,cbDiveType](auto newIndex){
             auto diverIndex{cbDiveType->itemData(newIndex).toInt()};

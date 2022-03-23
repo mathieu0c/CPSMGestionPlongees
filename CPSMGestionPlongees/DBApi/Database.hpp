@@ -13,6 +13,8 @@
 #include <concepts>
 #include <functional>
 
+#include "Debug/global.hpp"
+
 namespace db
 {
 
@@ -98,6 +100,10 @@ QVector<T> readLFromDB(const QSqlDatabase& db,UnaryFunction extractValue,QString
     {
         QString errStr{QString{"%0 : SQL error : %1"}.arg(__CURRENT_PLACE__,err.text())};
         qCritical() << errStr;
+        if(enableDebug || true)
+        {
+            debug::debugQuery(query,__CURRENT_PLACE__);
+        }
         return out;
     }
 

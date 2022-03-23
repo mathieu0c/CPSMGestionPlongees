@@ -55,8 +55,15 @@ static void displayDive(const data::Dive& dive,QWidget* parent)
 
     DiveEdit de{&dial};
     de.refreshSiteList(global::table_divingSites);
-    de.setEditable(false);
     de.setDive(dive);
+
+    connect(&de,&DiveEdit::endEditing,&dial,[&](const auto&){
+        dial.done(QDialog::Accepted);
+    });
+    connect(&de,&DiveEdit::rejectedEditing,&dial,[&](){
+        dial.done(QDialog::Rejected);
+    });
+    de.setEditable(false);
 
     dial.exec();
 }
