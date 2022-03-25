@@ -54,8 +54,6 @@ signals:
     void rejectedEditing();
 
 private slots:
-    void slot_diveComboBox(int index);
-
     void on_buttonBox_accepted();
 
     void on_buttonBox_rejected();

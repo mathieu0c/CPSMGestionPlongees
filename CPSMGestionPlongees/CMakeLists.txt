@@ -12,6 +12,8 @@ add_definitions("-DPROJECT_V_MAJOR=${VERSIONING_MAJOR}")
 add_definitions("-DPROJECT_V_MINOR=${VERSIONING_MINOR}")
 add_definitions("-DPROJECT_V_PATCH=${VERSIONING_PATCH}")
 
+add_compile_definitions(PROJECT_GITHUB_RELEASE="https://api.github.com/repos/BrokenGameNoob/BrokenTC2/releases/latest")
+
 cmake_minimum_required(VERSION 3.16)
 project(CPSMGestionPlongees VERSION ${VERSIONING_MAJOR}.${VERSIONING_MINOR}.${VERSIONING_PATCH} LANGUAGES CXX)
 add_definitions("-DPROJECT_VERSION=\"${CMAKE_PROJECT_VERSION}\"")
@@ -33,9 +35,14 @@ find_package(Qt6 COMPONENTS
                  Gui
                  Widgets
                  Sql
+                 Network
                  REQUIRED)
 
 set(PROJECT_SOURCES
+    Update/Update.hpp Update/Update.cpp
+    Update/PostUpdate.hpp Update/PostUpdate.cpp
+    Update/UpdateManager.hpp Update/UpdateManager.cpp Update/UpdateManager.ui
+
     DBApi/Database.cpp DBApi/Database.hpp
     DBApi/global.cpp
     DBApi/local.cpp
@@ -64,6 +71,10 @@ set(PROJECT_SOURCES
     GUI/constSettings.hpp
     GUI/global.cpp GUI/global.hpp
 
+
+    Utils/JSONTools.hpp Utils/JSONTools.cpp
+    Utils/GUITools.hpp Utils/GUITools.cpp
+
     global.hpp
     main.cpp
 )
@@ -82,6 +93,7 @@ target_link_libraries(${EXE_NAME} PRIVATE
     Qt${QT_VERSION_MAJOR}::Gui
     Qt${QT_VERSION_MAJOR}::Sql
     Qt${QT_VERSION_MAJOR}::Widgets
+    Qt${QT_VERSION_MAJOR}::Network
 )
 
 #----- Used to get the current filename

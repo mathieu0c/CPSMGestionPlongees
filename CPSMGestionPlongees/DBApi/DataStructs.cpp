@@ -69,33 +69,6 @@ void removeDiversFromDive(data::Dive& dive,QVector<int> idList)
     }),dive.diver.end());
 }
 
-data::DiveType getDiveTypeForDiver(const data::Dive& dive,int diverId)
-{
-//    auto itDiver{std::find_if(dive.divers.begin(),dive.divers.end(),[&](const data::Dive::MinimalDiver& e){
-//            return e.id == diverId;
-//        })};
-//    if(itDiver == dive.divers.end())
-//    {
-//        return data::DiveType::undefined;
-//    }
-
-//    return (*itDiver).type;
-}
-
-bool setDiveTypeForDiver(data::Dive& dive,int diverId,data::DiveType type)
-{
-//    auto itDiver{std::find_if(dive.divers.begin(),dive.divers.end(),[&](const data::Dive::MinimalDiver& e){
-//            return e.id == diverId;
-//        })};
-//    if(itDiver == dive.divers.end())
-//    {
-//        return false;
-//    }
-//    (*itDiver).type = type;
-
-//    return true;
-}
-
 QString to_string(data::DiveType diveType)
 {
     switch (diveType)

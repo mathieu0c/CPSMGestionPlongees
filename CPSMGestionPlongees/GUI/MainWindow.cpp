@@ -2,12 +2,17 @@
 #include "ui_MainWindow.h"
 #include "GUI/constSettings.hpp"
 
+#include "Update/UpdateManager.hpp"
+#include "Update/PostUpdate.hpp"
+
 #include "GUI/DiverEdit.h"
 #include "GUI/Dialog_ConfirmDiverDeletion.h"
 #include "GUI/Dialog_ConfirmDiveDeletion.hpp"
+#include <QMessageBox>
 
 #include "../global.hpp"
 #include "GUI/global.hpp"
+
 
 //#include "DataStruct/Diver.h"
 //#include "DataStruct/Dive.h"
@@ -50,7 +55,9 @@ void setEnableDebug(bool state,bool enableLog = false){
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
+    , ui(new Ui::MainWindow),
+    m_updateManager{false,this},
+    m_wasUpdated{updt::postUpdateFunction()}
 {
     ui->setupUi(this);
 
@@ -87,6 +94,21 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->mainDiveSearch->setHiddenButton(true);
     ui->mainDiveSearch->refreshDivesList();
+
+    //UPDATES
+//    connect(ui->action_checkUpdates,&QAction::triggered,&m_updateManager,&updt::UpdateManager::checkUpdate);
+
+    connect(&m_updateManager,&updt::UpdateManager::hiddenUpdateAvailable,this,[&](){
+        auto ans = QMessageBox::question(this,tr("Update available"),tr("A new update is available. Do you want to download it ?"));
+        if(ans == QMessageBox::Yes)
+        {
+            m_updateManager.exec();
+        }
+    });
+    connect(&m_updateManager,&updt::UpdateManager::hiddenNoUpdateAvailable,this,[&](){
+        ui->statusbar->showMessage(tr("No available update found"),10000);
+    });
+    m_updateManager.checkUpdate();
 
 // -- -- -- -- -- -- debugging purpose
 //    ui->pg_editDive->setEditable(false);

@@ -156,14 +156,6 @@ void DiveEdit::displayDive(const data::Dive& dive,QWidget* parent)
 
 
 
-
-void DiveEdit::slot_diveComboBox(int index)
-{
-    QComboBox* box{qobject_cast<QComboBox*>(QObject::sender())};
-    auto diverId{box->itemData(index).value<int>()};
-    data::setDiveTypeForDiver(m_tempDive,diverId,data::diveTypefrom_string(box->currentText()));
-}
-
 void DiveEdit::setDive(data::Dive dive){
     m_tempDive = std::move(dive);
     ui->diverSearch_dive->setDivers(m_tempDive.diver);

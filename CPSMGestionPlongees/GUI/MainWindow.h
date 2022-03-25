@@ -9,6 +9,8 @@
 
 #include <QSqlQuery>
 
+#include "Update/UpdateManager.hpp"
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -57,6 +59,8 @@ private:
 
 private:
     Ui::MainWindow *ui;
+    updt::UpdateManager m_updateManager;
+    bool m_wasUpdated;
 };
 
 
