@@ -75,10 +75,6 @@ void Dialog_EditFamily::setAddressId(int id)
             return query.value(0).value<int>();
         },"SELECT %0.id FROM %0 WHERE memberAddressId=?",{global::table_divers},{id})};
 
-    qDebug() << __CURRENT_PLACE__ <<"Count sharing address : " << diverIdsSharingAddress.size();
-    qDebug() << "Divers sharing this address : " << diverIdsSharingAddress;
-    qDebug() << "Diver id : " << m_diverId;
-
     if(diverIdsSharingAddress.size() < 1 || (
         diverIdsSharingAddress.size() == 1 && diverIdsSharingAddress.contains(m_diverId)
     ))

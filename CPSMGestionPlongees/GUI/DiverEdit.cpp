@@ -6,11 +6,12 @@
 #include "GUI/global.hpp"
 #include "GUI/Dialog_EditFamily.h"
 #include "GUI/DiveEdit.h"
-//#include "DataStruct/Dive.h"
+#include <QMessageBox>
 
 #include "DBApi/DataStructs.hpp"
 #include "DBApi/DBDive.hpp"
 #include "DBApi/DBAddress.hpp"
+#include "DBApi/DBApi.hpp"
 
 #include "DBApi/DBAddress.hpp"
 
@@ -189,6 +190,35 @@ void DiverEdit::on_pb_family_clicked()
 void gui::DiverEdit::on_buttonBox_accepted()
 {
     //qDebug() << m_tempDiver;
+    auto diverIdsSharingAddress{db::readLFromDB<int>(QSqlDatabase::database(),[&](const QSqlQuery& query){
+            return query.value(0).value<int>();
+        },"SELECT %0.id FROM %0 WHERE memberAddressId=? AND memberAddressId!=?",
+        {global::table_divers},{m_tempDiver.address.id,m_tempDiver.id})};
+
+    qDebug() << __CURRENT_PLACE__ << diverIdsSharingAddress;
+
+    if(diverIdsSharingAddress.size() > 1)//if multiple divers shares this address
+    {
+        auto refAddr{db::readAddressFromDB(m_tempDiver.address.id,QSqlDatabase::database(),global::table_diversAddresses)};
+
+        if(refAddr.id < 0)
+            throw std::runtime_error{QString{"%0 : Abnormal address id got when read from the DB"}.arg(__CURRENT_PLACE__).toStdString()};
+        if(m_tempDiver.address != refAddr)
+        {
+            auto ans{QMessageBox::question(this,"Confirmation",
+                                           QString{"Vous êtes sur le point de modifier l'adresse de"
+                                                   " %0 personnes\n"
+                                                   "Souhaitez-vous continuer ?"}.arg(diverIdsSharingAddress.size()))};
+            if(ans == QMessageBox::No)
+            {
+                QMessageBox::information(this,"Information","Si vous souhaitez utiliser une adresse différente "
+                                                            "pour cette personne uniquement, pensez à la"
+                                                            " retirer de la famille dans laquelle elle se trouve.");
+                return;
+            }
+        }
+    }
+
     emit endEditing(m_tempDiver);
 }
 

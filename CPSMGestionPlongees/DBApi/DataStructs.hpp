@@ -39,6 +39,12 @@ struct Address
     QString city{};
 };
 
+bool operator==(const data::Address& a, const data::Address& b);
+inline
+bool operator!=(const data::Address& a, const data::Address& b){
+    return !(a==b);
+}
+
 QDebug operator<<(QDebug debug, const Address& a);
 
 QString to_string(const Address& address);

@@ -13,6 +13,14 @@ namespace data
 //############               ################
 //###########################################
 
+bool operator==(const data::Address& a, const data::Address& b)
+{
+    return  a.id == b.id &&
+            a.city == b.city &&
+            a.postalCode == b.postalCode &&
+            a.address == b.address;
+}
+
 QDebug operator<<(QDebug debug, const Address& a)
 {
     QDebugStateSaver saver(debug);
