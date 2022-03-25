@@ -26,13 +26,16 @@ data::Address readAddressFromDB(int id, QSqlDatabase db, QString table)
         out.address = query.value(1).value<QString>();
         out.postalCode = query.value(2).value<QString>();
         out.city = query.value(3).value<QString>();
+        qDebug() << __CURRENT_PLACE__ << " ---- ";
+        qDebug() << out;
+        qDebug() << "-------------------------- ";
         return out;
     },"SELECT * FROM %1 WHERE id=?",{table},{id});
 }
 
 int exists(const data::Address& a,QSqlDatabase db,const QString& table)
 {
-    return (db::queryExist(db,"SELECT id FROM %1 WHERE %1.id",{table},{a.id}))?a.id:-1;
+    return (db::queryExist(db,"SELECT id FROM %1 WHERE %1.id=?",{table},{a.id}))?a.id:-1;
 }
 
 int storeInDB(const data::Address &a, QSqlDatabase db, const QString &addressTable)

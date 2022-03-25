@@ -12,7 +12,7 @@ void debugQuery(const QSqlQuery& query, const QString &fileAndLine)
     auto err{query.lastError()};
 //    qDebug() << "    --------------- "<<__func__<< " --------------";
     auto qText{query.lastQuery()};
-    qDebug() << fileAndLine << ":" << err.text()<<">>>";
+    qDebug() << fileAndLine << ":error:" << err.text()<<">>>";
     for(const auto& e : query.boundValues())
     {
         qText = qText.replace(qText.indexOf('?'),1,e.toString());

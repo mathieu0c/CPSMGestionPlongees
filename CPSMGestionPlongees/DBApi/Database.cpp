@@ -194,6 +194,8 @@ bool queryExist(QSqlDatabase& db,QString request,const QStringList& argList,cons
 
     query.exec();
 
+    debug::debugQuery(query,__CURRENT_PLACE__);
+
     if(query.next())//if the query returned something
         return true;
 
