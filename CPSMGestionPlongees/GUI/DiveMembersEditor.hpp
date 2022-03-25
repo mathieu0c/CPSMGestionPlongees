@@ -49,6 +49,9 @@ public slots:
     void refreshDiverList(QSqlDatabase db, const QString &table_diverLevel, bool sortBefore = true);
     void applyFilter(const QString& toContains);
 
+signals:
+    void doubleClick();
+
 private:
     Ui::DiveMembersEditor *ui;
     DiverList* m_divers;

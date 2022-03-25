@@ -58,7 +58,7 @@
       <locale language="English" country="UnitedStates"/>
      </property>
      <property name="dragDropMode">
-      <enum>QAbstractItemView::DragDrop</enum>
+      <enum>QAbstractItemView::NoDragDrop</enum>
      </property>
      <property name="defaultDropAction">
       <enum>Qt::MoveAction</enum>

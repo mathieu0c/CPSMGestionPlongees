@@ -79,6 +79,8 @@ signals:
     void askRefreshDiverList();//this signal is sent at the beginning of the function refreshDiverList()
     void refreshedDiverList();//this signal is sent at the end of the function refreshDiverList()
 
+    void doubleClick();
+
 private slots:
     void on_tv_divers_doubleClicked(const QModelIndex &index);
 

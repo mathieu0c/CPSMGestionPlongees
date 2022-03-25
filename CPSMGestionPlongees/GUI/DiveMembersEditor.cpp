@@ -34,6 +34,10 @@ DiveMembersEditor::DiveMembersEditor(QWidget *parent) :
     connect(ui->cb_search_lastName,&QCheckBox::stateChanged,this,[&](auto){
         this->applyFilter(ui->le_search->text());
     });
+
+    connect(ui->tv_divers,&QTableView::doubleClicked,this,[&](const auto&){
+        emit doubleClick();
+    });
 }
 
 DiveMembersEditor::~DiveMembersEditor()

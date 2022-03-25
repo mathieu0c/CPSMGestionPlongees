@@ -47,26 +47,7 @@ public:
     void resetDive();
 
 public:
-static void displayDive(const data::Dive& dive,QWidget* parent)
-{
-    QDialog dial(parent);
-
-    qDebug() << "    " << __CURRENT_PLACE__;
-
-    DiveEdit de{&dial};
-    de.refreshSiteList(global::table_divingSites);
-    de.setDive(dive);
-
-    connect(&de,&DiveEdit::endEditing,&dial,[&](const auto&){
-        dial.done(QDialog::Accepted);
-    });
-    connect(&de,&DiveEdit::rejectedEditing,&dial,[&](){
-        dial.done(QDialog::Rejected);
-    });
-    de.setEditable(false);
-
-    dial.exec();
-}
+static void displayDive(const data::Dive& dive,QWidget* parent);
 
 signals:
     void endEditing(const data::Dive& dive);
@@ -74,7 +55,6 @@ signals:
 
 private slots:
     void slot_diveComboBox(int index);
-    void refreshDiversListComboBox();//recreate the combo box for dive type
 
     void on_buttonBox_accepted();
 

@@ -30,6 +30,10 @@ DiverSearch::DiverSearch(QWidget *parent) :
     connect(ui->cb_search_firstName,&QCheckBox::stateChanged,[&](){refreshDiverList();});
     connect(ui->cb_search_lastName,&QCheckBox::stateChanged,[&](){refreshDiverList();});
 
+    connect(ui->tv_divers,&QTableView::doubleClicked,this,[&](const auto&){
+        emit doubleClick();
+    });
+
     ui->tv_divers->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
     refreshDiverList();
 }

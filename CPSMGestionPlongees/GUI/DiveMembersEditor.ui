@@ -54,8 +54,11 @@
    </item>
    <item>
     <widget class="QTableWidget" name="tv_divers">
+     <property name="editTriggers">
+      <set>QAbstractItemView::DoubleClicked</set>
+     </property>
      <property name="dragDropMode">
-      <enum>QAbstractItemView::DragDrop</enum>
+      <enum>QAbstractItemView::NoDragDrop</enum>
      </property>
      <property name="defaultDropAction">
       <enum>Qt::MoveAction</enum>
