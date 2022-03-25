@@ -371,7 +371,7 @@ int storeInDB(data::Dive& dive, QSqlDatabase db, const QString &diveTable, const
 
 int exists(const data::Dive& a,QSqlDatabase db,const QString& table)
 {
-    return (db::queryExist(db,"SELECT id FROM %1 WHERE %1.id",{table},{a.id}))?a.id:-1;
+    return (db::queryExist(db,"SELECT id FROM %1 WHERE %1.id=?",{table},{a.id}))?a.id:-1;
 }
 
 

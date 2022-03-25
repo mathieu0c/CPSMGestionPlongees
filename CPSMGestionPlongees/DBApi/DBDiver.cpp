@@ -141,9 +141,6 @@ int storeInDB(data::Diver &a, QSqlDatabase db, const QString &diverTable)
     query.addBindValue(a.gear_suit);
     query.exec();
 
-    qDebug() << "------------";
-    qDebug() << a.address;
-
     auto err{query.lastError()};
     if(err.type() != QSqlError::ErrorType::NoError)
     {

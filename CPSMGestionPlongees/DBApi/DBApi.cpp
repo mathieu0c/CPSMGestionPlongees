@@ -29,7 +29,7 @@ data::DivingSite readDivingSiteFromDB(int id, QSqlDatabase db, const QString &ta
 //search if the address already exists and return id if true, -1 otherwise
 int exists(const data::DivingSite& a, QSqlDatabase db, const QString &table)
 {
-    return (db::queryExist(db,"SELECT id FROM %1 WHERE %1.id",{table},{a.id}))?a.id:-1;
+    return (db::queryExist(db,"SELECT id FROM %1 WHERE %1.id=?",{table},{a.id}))?a.id:-1;
 }
 
 //alter data if existing

@@ -26,9 +26,6 @@ data::Address readAddressFromDB(int id, QSqlDatabase db, QString table)
         out.address = query.value(1).value<QString>();
         out.postalCode = query.value(2).value<QString>();
         out.city = query.value(3).value<QString>();
-        qDebug() << __CURRENT_PLACE__ << " ---- ";
-        qDebug() << out;
-        qDebug() << "-------------------------- ";
         return out;
     },"SELECT * FROM %1 WHERE id=?",{table},{id});
 }

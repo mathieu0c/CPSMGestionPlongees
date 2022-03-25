@@ -70,9 +70,18 @@ void Dialog_EditFamily::setAddressId(int id)
     m_addressId = id;
 
     auto db{this->db()};
-    auto diverCountWithAddressId{db::queryCount(db,"SELECT * FROM %0 WHERE memberAddressId=?",{global::table_divers},{id})};
 
-    if(diverCountWithAddressId < 1)
+    auto diverIdsSharingAddress{db::readLFromDB<int>(db,[&](const QSqlQuery& query){
+            return query.value(0).value<int>();
+        },"SELECT %0.id FROM %0 WHERE memberAddressId=?",{global::table_divers},{id})};
+
+    qDebug() << __CURRENT_PLACE__ <<"Count sharing address : " << diverIdsSharingAddress.size();
+    qDebug() << "Divers sharing this address : " << diverIdsSharingAddress;
+    qDebug() << "Diver id : " << m_diverId;
+
+    if(diverIdsSharingAddress.size() < 1 || (
+        diverIdsSharingAddress.size() == 1 && diverIdsSharingAddress.contains(m_diverId)
+    ))
     {
         setMode(EditMode::selectFamily);
     }

@@ -194,7 +194,11 @@ bool queryExist(QSqlDatabase& db,QString request,const QStringList& argList,cons
 
     query.exec();
 
-    debug::debugQuery(query,__CURRENT_PLACE__);
+    if(query.lastError().type() != QSqlError::ErrorType::NoError)
+    {
+        debug::debugQuery(query,__CURRENT_PLACE__);
+        __asm("nop");
+    }
 
     if(query.next())//if the query returned something
         return true;
