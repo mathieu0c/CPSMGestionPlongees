@@ -46,7 +46,8 @@ public:
     QString formattedDiversIds()const;
 
 public slots:
-    void refreshDiverList(QSqlDatabase db, const QString &table_diverLevel);
+    void refreshDiverList(QSqlDatabase db, const QString &table_diverLevel, bool sortBefore = true);
+    void applyFilter(const QString& toContains);
 
 private:
     Ui::DiveMembersEditor *ui;

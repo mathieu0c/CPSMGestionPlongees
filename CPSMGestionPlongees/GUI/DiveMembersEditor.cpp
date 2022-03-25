@@ -26,6 +26,8 @@ DiveMembersEditor::DiveMembersEditor(QWidget *parent) :
     ui->setupUi(this);
 
     ui->tv_divers->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+
+    connect(ui->le_search,&QLineEdit::textChanged,this,&DiveMembersEditor::applyFilter);
 }
 
 DiveMembersEditor::~DiveMembersEditor()
@@ -71,19 +73,17 @@ QVector<int> DiveMembersEditor::selectedDiversId() const
     return out;
 }
 
-void DiveMembersEditor::refreshDiverList(QSqlDatabase db,const QString& table_diverLevel)
+void DiveMembersEditor::refreshDiverList(QSqlDatabase db,const QString& table_diverLevel,bool sortBefore)
 {
-    if(!m_divers)
+    if(!m_divers)//if the diver list pointer isn't initialized
     {
         return;
     }
 
-
-    std::sort(m_divers->begin(),m_divers->end(),[&](const data::DiveMember& e,const data::DiveMember& r){
-        return e.fullDiver.lastName < r.fullDiver.lastName;
-    });
-//    qDebug() << "---------------- " << __func__;
-//    qDebug() << m_divers->count();
+    if(sortBefore)//if we have to sort the list before doing anything -> Default behaviour
+        std::sort(m_divers->begin(),m_divers->end(),[&](const data::DiveMember& e,const data::DiveMember& r){
+            return e.fullDiver.lastName < r.fullDiver.lastName;
+        });
 
     ui->tv_divers->setRowCount(m_divers->count());
 
@@ -97,9 +97,16 @@ void DiveMembersEditor::refreshDiverList(QSqlDatabase db,const QString& table_di
         throw std::runtime_error{errStr.toStdString()};
     }
 
+    QString ansRegex{
+        ".*"//anything before
+        "%0"//what to search
+        ".*"//anything after
+    };
+
     for(int i{}; i < m_divers->size();++i)
     {
         const auto& e = m_divers->at(i);
+
         ui->tv_divers->setCellWidget(i,0,new QLabel(" "+e.fullDiver.lastName+" ",ui->tv_divers));
         ui->tv_divers->setCellWidget(i,1,new QLabel(" "+e.fullDiver.firstName+" ",ui->tv_divers));
         ui->tv_divers->setCellWidget(i,2,new QLabel(" "+lvlList[e.fullDiver.diverLevelId]+" ",ui->tv_divers));
@@ -117,6 +124,48 @@ void DiveMembersEditor::refreshDiverList(QSqlDatabase db,const QString& table_di
             (*m_divers)[diverIndex].type = data::diveTypefrom_string(cbDiveType->itemText(newIndex));
         });
         ui->tv_divers->setCellWidget(i,3,cbDiveType);
+    }
+}
+
+void DiveMembersEditor::applyFilter(const QString& toContains)
+{
+    if(toContains.isEmpty())
+    {
+        for(int i{}; i < ui->tv_divers->rowCount();++i)
+        {
+            ui->tv_divers->showRow(i);
+        }
+        return;
+    }
+
+    ui->tv_divers->clearSelection();
+
+    for(int i{}; i < ui->tv_divers->rowCount();++i)
+    {
+        const auto& e = m_divers->at(i);
+
+        bool matchFirstName{true};
+        bool matchLastName{true};
+
+        if(ui->cb_search_firstName->isChecked() &&
+           !e.fullDiver.firstName.contains(toContains,Qt::CaseSensitivity::CaseInsensitive))
+        {
+            matchFirstName = false;
+        }
+        if(ui->cb_search_lastName->isChecked() &&
+           !e.fullDiver.lastName.contains(toContains,Qt::CaseSensitivity::CaseInsensitive))
+        {
+            matchLastName = false;
+        }
+
+        if(matchFirstName || matchLastName)
+        {
+            ui->tv_divers->showRow(i);
+        }
+        else
+        {
+            ui->tv_divers->hideRow(i);
+        }
     }
 }
 

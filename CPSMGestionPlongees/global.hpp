@@ -3,6 +3,8 @@
 
 #include <QString>
 #include <QObject>
+#include <QRegularExpression>
+#include <QRegularExpressionMatch>
 
 #pragma clang diagnostic ignored "-Wstring-plus-int"
 
@@ -88,6 +90,17 @@ void applyToChildren(QObject* parent,UnaryFunction lambda)
         lambda(e);
     }
 }
+
+inline
+bool matchRegex(const QString& str,const QString& regex)
+{
+    QRegularExpression re{regex};
+    auto ans{re.match(str,0,QRegularExpression::MatchType::NormalMatch,
+                      QRegularExpression::NoMatchOption)};
+    return ans.hasMatch();
+}
+
+
 }//namespace tools
 
 }//namespace global

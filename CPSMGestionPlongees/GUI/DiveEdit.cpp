@@ -256,12 +256,6 @@ void DiveEdit::on_pb_diveToDiver_clicked()
 
 //    qDebug() << __func__ <<" ---------------------------------- ";
 //    qDebug() << m_tempDive;
-    qDebug() << __CURRENT_PLACE__;
-    for(const auto& e : diversIds)
-    {
-        qDebug() << "       Selected : " << e;
-//        m_tempDive.divers.append({e,data::DiveType::exploration});
-    }
 
     data::removeDiversFromDive(m_tempDive,diversIds);
 //    qDebug() << m_tempDive;

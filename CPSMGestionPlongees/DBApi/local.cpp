@@ -164,6 +164,12 @@ bool createDB(QSqlDatabase db)
     if(storeInDB(data::DivingSite{-1,"L'arroyo"},db,global::table_divingSites) < 0)
         return false;
 
+    if(storeInDB(data::DivingSite{-1,"Le tromblon"},db,global::table_divingSites) < 0)
+        return false;
+
+    if(storeInDB(data::DivingSite{-1,"La vallée aux gorgones"},db,global::table_divingSites) < 0)
+        return false;
+
 
     // Dives
 

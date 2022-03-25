@@ -122,6 +122,12 @@ void MainWindow::on_tabw_main_currentChanged(int i)
     if(ui->tabw_main->tabText(i) == "Plongeurs")
     {
         ui->mainDiverSearch->refreshDiverList();
+        diveChangeRejected();
+    }
+    else
+    {
+        ui->mainDiveSearch->refreshDivesList();
+        diverChangeRejected();
     }
 }
 

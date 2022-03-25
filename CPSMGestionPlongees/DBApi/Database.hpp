@@ -115,7 +115,6 @@ QVector<T> readLFromDB(const QSqlDatabase& db,UnaryFunction extractValue,QString
     }
     out.shrink_to_fit();
 
-
     return out;
 }
 

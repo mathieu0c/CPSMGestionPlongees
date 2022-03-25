@@ -5,6 +5,7 @@
 #include "GUI/global.hpp"
 
 #include "../global.hpp"
+#include "Debug/global.hpp"
 
 #include <QSqlQueryModel>
 #include <QSqlQuery>
