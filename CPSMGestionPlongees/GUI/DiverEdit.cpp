@@ -120,7 +120,7 @@ void DiverEdit::setDiver(data::Diver diver){
     if(enableDebug)
     {
         qDebug() << "Setup diver in edition mode : ";
-//        qDebug() << m_tempDiver;
+        qDebug() << m_tempDiver;
     }
 
     ui->le_firstname->setText(m_tempDiver.firstName);
@@ -192,10 +192,13 @@ void gui::DiverEdit::on_buttonBox_accepted()
     //qDebug() << m_tempDiver;
     auto diverIdsSharingAddress{db::readLFromDB<int>(QSqlDatabase::database(),[&](const QSqlQuery& query){
             return query.value(0).value<int>();
-        },"SELECT %0.id FROM %0 WHERE memberAddressId=? AND memberAddressId!=?",
-        {global::table_divers},{m_tempDiver.address.id,m_tempDiver.id})};
+        },"SELECT %0.id FROM %0 WHERE memberAddressId=?",
+        {global::table_divers},{m_tempDiver.address.id})};
 
     qDebug() << __CURRENT_PLACE__ << diverIdsSharingAddress;
+
+    if(!diverIdsSharingAddress.contains(m_tempDiver.id))
+        diverIdsSharingAddress.append(m_tempDiver.id);
 
     if(diverIdsSharingAddress.size() > 1)//if multiple divers shares this address
     {
