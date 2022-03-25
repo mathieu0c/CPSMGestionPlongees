@@ -28,6 +28,12 @@ DiveMembersEditor::DiveMembersEditor(QWidget *parent) :
     ui->tv_divers->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
 
     connect(ui->le_search,&QLineEdit::textChanged,this,&DiveMembersEditor::applyFilter);
+    connect(ui->cb_search_firstName,&QCheckBox::stateChanged,this,[&](auto){
+        this->applyFilter(ui->le_search->text());
+    });
+    connect(ui->cb_search_lastName,&QCheckBox::stateChanged,this,[&](auto){
+        this->applyFilter(ui->le_search->text());
+    });
 }
 
 DiveMembersEditor::~DiveMembersEditor()
@@ -140,6 +146,9 @@ void DiveMembersEditor::applyFilter(const QString& toContains)
 
     ui->tv_divers->clearSelection();
 
+    static const QString searchRegex{"^%0.*"};
+    using global::tools::matchRegex;
+
     for(int i{}; i < ui->tv_divers->rowCount();++i)
     {
         const auto& e = m_divers->at(i);
@@ -148,12 +157,20 @@ void DiveMembersEditor::applyFilter(const QString& toContains)
         bool matchLastName{true};
 
         if(ui->cb_search_firstName->isChecked() &&
-           !e.fullDiver.firstName.contains(toContains,Qt::CaseSensitivity::CaseInsensitive))
+           !matchRegex(e.fullDiver.firstName,searchRegex.arg(toContains)))
+        {
+            matchFirstName = false;
+        }
+        else if(!ui->cb_search_firstName->isChecked())
         {
             matchFirstName = false;
         }
         if(ui->cb_search_lastName->isChecked() &&
-           !e.fullDiver.lastName.contains(toContains,Qt::CaseSensitivity::CaseInsensitive))
+           !matchRegex(e.fullDiver.lastName,searchRegex.arg(toContains)))
+        {
+            matchLastName = false;
+        }
+        else if(!ui->cb_search_lastName->isChecked())
         {
             matchLastName = false;
         }

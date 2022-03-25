@@ -54,11 +54,17 @@
    </item>
    <item>
     <widget class="QTableView" name="tv_divers">
+     <property name="locale">
+      <locale language="English" country="UnitedStates"/>
+     </property>
      <property name="dragDropMode">
       <enum>QAbstractItemView::DragDrop</enum>
      </property>
      <property name="defaultDropAction">
       <enum>Qt::MoveAction</enum>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
      </property>
      <property name="selectionMode">
       <enum>QAbstractItemView::ExtendedSelection</enum>

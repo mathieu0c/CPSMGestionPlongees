@@ -92,9 +92,11 @@ void applyToChildren(QObject* parent,UnaryFunction lambda)
 }
 
 inline
-bool matchRegex(const QString& str,const QString& regex)
+bool matchRegex(const QString& str,const QString& regex,bool caseInsensitive = true)
 {
     QRegularExpression re{regex};
+    if(caseInsensitive)
+        re.setPatternOptions(QRegularExpression::CaseInsensitiveOption);
     auto ans{re.match(str,0,QRegularExpression::MatchType::NormalMatch,
                       QRegularExpression::NoMatchOption)};
     return ans.hasMatch();
