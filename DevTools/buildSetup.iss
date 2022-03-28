@@ -23,7 +23,7 @@ DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 LicenseFile=..\LICENSE
 ; Remove the following line to run in administrative install mode (install for all users.)
-;PrivilegesRequired=lowest
+PrivilegesRequired=lowest
 OutputDir=.
 OutputBaseFilename="{#MyAppName}_setup_x64"
 Compression=lzma

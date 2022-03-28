@@ -147,7 +147,7 @@ def main():
 
     print("##########################################")
     print("\nCreating setup...")
-    # os.system("iscc.exe {}".format(CONFIG_INNOSETUP_SCRIPT))
+    os.system("iscc.exe {}".format(CONFIG_INNOSETUP_SCRIPT))
     print("##########################################\n")
     
 
