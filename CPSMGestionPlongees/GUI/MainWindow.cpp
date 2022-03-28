@@ -112,7 +112,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 // -- -- -- -- -- -- debugging purpose
 #ifdef COMPILED_FOR_RELEASE
-    QMessageBox::critical(this,"Rappel","C'est une version de test. Toute modification ne sera pas enregistrée");
+    QMessageBox::critical(this,"Rappel","C'est une version de test. Aucune modification ne sera enregistrée");
     ui->tabw_main->setTabVisible(0,false);
 #endif
 

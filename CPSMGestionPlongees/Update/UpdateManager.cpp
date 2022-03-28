@@ -25,6 +25,10 @@
 
 #include <QProcess>
 
+namespace{
+constexpr bool DISPLAY_NETWORK_ERROR{false};
+}
+
 namespace
 {
 inline
@@ -95,7 +99,8 @@ void UpdateManager::onApiRequestFinished(const QJsonDocument& doc)
     {
         QString errStr{QString{"ERROR - Impossible to check for update\n%1"}.arg(m_apiRequest.error())};
         qCritical() << errStr;
-        QMessageBox::warning(this,tr("Error"),errStr);
+        if constexpr(DISPLAY_NETWORK_ERROR)
+            QMessageBox::warning(this,tr("Error"),errStr);
         resetUpdateInfo();
         return;
     }
@@ -106,7 +111,8 @@ void UpdateManager::onApiRequestFinished(const QJsonDocument& doc)
     {
         QString errStr{QString{"ERROR\n%0 : Cannot retrieve dist version from JSON"}.arg(__CURRENT_PLACE__)};
         qCritical() << errStr;
-        QMessageBox::warning(this,tr("Error"),errStr);
+        if constexpr(DISPLAY_NETWORK_ERROR)
+            QMessageBox::warning(this,tr("Error"),errStr);
         resetUpdateInfo();
         return;
     }
@@ -117,7 +123,8 @@ void UpdateManager::onApiRequestFinished(const QJsonDocument& doc)
     {
         QString errStr{QString{"ERROR\n%0 : Cannot retrieve update file"}.arg(__CURRENT_PLACE__)};
         qCritical() << errStr;
-        QMessageBox::warning(this,tr("Error"),errStr);
+        if constexpr(DISPLAY_NETWORK_ERROR)
+            QMessageBox::warning(this,tr("Error"),errStr);
         resetUpdateInfo();
         return;
     }

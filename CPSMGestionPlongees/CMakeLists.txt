@@ -44,6 +44,8 @@ find_package(Qt6 COMPONENTS
                  Network
                  REQUIRED)
 
+set(APP_ICON_RESOURCE_WINDOWS "${CMAKE_CURRENT_SOURCE_DIR}/Assets/iconResource.rc")
+
 set(PROJECT_SOURCES
     Update/Update.hpp Update/Update.cpp
     Update/PostUpdate.hpp Update/PostUpdate.cpp
@@ -87,11 +89,7 @@ set(PROJECT_SOURCES
 
 qt_add_executable(${EXE_NAME} WIN32 MACOSX_BUNDLE
     ${PROJECT_SOURCES}
-#    DataStruct/Address.cpp DataStruct/Address.h
-#    DataStruct/Dive.cpp DataStruct/Dive.h
-#    DataStruct/Diver.cpp DataStruct/Diver.h
-#    DataStruct/User.cpp DataStruct/User.h
-#    DataStruct/global.cpp DataStruct/global.hpp
+    ${APP_ICON_RESOURCE_WINDOWS}
 )
 
 target_link_libraries(${EXE_NAME} PRIVATE
