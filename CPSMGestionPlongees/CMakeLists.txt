@@ -12,7 +12,7 @@ add_definitions("-DPROJECT_V_MAJOR=${VERSIONING_MAJOR}")
 add_definitions("-DPROJECT_V_MINOR=${VERSIONING_MINOR}")
 add_definitions("-DPROJECT_V_PATCH=${VERSIONING_PATCH}")
 
-add_compile_definitions(PROJECT_GITHUB_RELEASE="https://api.github.com/repos/BrokenGameNoob/BrokenTC2/releases/latest")
+add_compile_definitions(PROJECT_GITHUB_RELEASE="https://api.github.com/repos/mathieu0c/CPSMGestionPlongees/releases/latest")
 
 cmake_minimum_required(VERSION 3.16)
 project(CPSMGestionPlongees VERSION ${VERSIONING_MAJOR}.${VERSIONING_MINOR}.${VERSIONING_PATCH} LANGUAGES CXX)
