@@ -73,7 +73,7 @@ UpdateManager::UpdateManager(bool checkUpdateOnInit,QWidget *parent) :
         ui->prgb_download->setMaximum(size);
         ui->prgb_download->setValue(current);
     });
-    connect(&m_dlRequest,&utils::net::DownloadRequest::error,[&](){
+    connect(&m_dlRequest,&utils::net::DownloadRequest::error,this,[&](){
         ui->prgb_download->hide();
         ui->lbl_feedback->setText(tr("An error occurred : Cannot download update"));
     });

@@ -155,7 +155,7 @@ QString getLatestReleaseUpdateFile(const QJsonDocument& doc)
         auto dlUrl{e.toObject()["browser_download_url"].toString()};
 //        qDebug() << dlUrl;
         auto match{updateFileNameRegex.match(dlUrl)};
-        //check for finding at the end of the string : </XXXXXXvX.X.X.update>
+        //check for finding at the end of the string : </XXXXXX.update>
         if(match.hasMatch())
         {
             return {dlUrl};
