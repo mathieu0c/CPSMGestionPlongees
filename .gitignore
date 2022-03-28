@@ -58,3 +58,4 @@ compile_commands.json
 *.update
 *_release/
 deployLog.txt
+*setup*.exe
