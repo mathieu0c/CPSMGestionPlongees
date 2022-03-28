@@ -30,6 +30,12 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)
 
 
+if(CMAKE_BUILD_TYPE STREQUAL "Release")
+    add_compile_definitions(COMPILED_FOR_RELEASE)
+endif()
+
+
+
 find_package(Qt6 COMPONENTS
                  Core
                  Gui

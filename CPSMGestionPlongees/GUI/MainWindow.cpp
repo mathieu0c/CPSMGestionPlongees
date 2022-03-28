@@ -111,6 +111,11 @@ MainWindow::MainWindow(QWidget *parent)
     m_updateManager.checkUpdate();
 
 // -- -- -- -- -- -- debugging purpose
+#ifdef COMPILED_FOR_RELEASE
+    QMessageBox::critical(this,"Rappel","C'est une version de test. Toute modification ne sera pas enregistrée");
+    ui->tabw_main->setTabVisible(0,false);
+#endif
+
 //    ui->pg_editDive->setEditable(false);
     auto existingDivesIds{db::querySelect(db(),"SELECT id FROM %0",{global::table_dives},{})};
     QVector<data::Dive> existingDives{existingDivesIds.size()};
