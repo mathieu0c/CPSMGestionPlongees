@@ -25,6 +25,7 @@ DiveSearch::DiveSearch(QWidget *parent) :
     ui->setupUi(this);
 
     ui->de_endDate->setDate(QDate::currentDate());
+    ui->de_endDate->setMinimumDate(ui->de_beginDate->date());
 
     //nullif(COUNT(DivesMembers.diverId),0)
     setSelectionColumns(QString{"date,time,%0.name,COUNT(%1.diverId)"}.arg(//nullif(COUNT(%1.id),0)"}.arg(
