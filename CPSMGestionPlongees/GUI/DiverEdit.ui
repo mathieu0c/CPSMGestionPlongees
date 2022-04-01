@@ -537,7 +537,7 @@
         <item>
          <widget class="QLabel" name="lbl_disp_license">
           <property name="text">
-           <string>N°</string>
+           <string>Licence n°</string>
           </property>
          </widget>
         </item>
