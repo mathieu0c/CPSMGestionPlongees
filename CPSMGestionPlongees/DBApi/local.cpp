@@ -59,9 +59,13 @@ bool createDB(QSqlDatabase db)
 
     if(!addDiverLevel("Débutant"))
         return false;
+    if(!addDiverLevel("PE12"))
+        return false;
     if(!addDiverLevel("N1"))
         return false;
     if(!addDiverLevel("PE40"))
+        return false;
+    if(!addDiverLevel("PA20"))
         return false;
     if(!addDiverLevel("N2"))
         return false;
@@ -74,6 +78,14 @@ bool createDB(QSqlDatabase db)
     if(!addDiverLevel("N3"))
         return false;
     if(!addDiverLevel("N4"))
+        return false;
+    if(!addDiverLevel("E1"))//N2-3 initiateur
+        return false;
+    if(!addDiverLevel("E2"))//N4 initiateur
+        return false;
+    if(!addDiverLevel("E3"))//MF1
+        return false;
+    if(!addDiverLevel("E4"))//MF2
         return false;
 
 
