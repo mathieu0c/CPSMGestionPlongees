@@ -28,7 +28,8 @@ bool createDB(QSqlDatabase db)
     using namespace global;
 
     QString queryStr = "CREATE TABLE IF NOT EXISTS %1(id INTEGER PRIMARY KEY AUTOINCREMENT, "
-               "level TEXT UNIQUE NOT NULL)";
+                       "level TEXT UNIQUE NOT NULL,"
+                       "sortValue INTEGER UNIQUE NOT NULL)";
     auto err = QSqlQuery{queryStr.arg(table_diverLevel),db}.lastError();
     if(err.type() != QSqlError::ErrorType::NoError)
     {
@@ -38,12 +39,13 @@ bool createDB(QSqlDatabase db)
     }
 
     auto addDiverLevel{
-        [&](const auto& name)
+        [&](const auto& name,const auto& sortValue)
         {
-            queryStr = "INSERT OR IGNORE INTO %1(level) VALUES (?)";
+            queryStr = "INSERT OR IGNORE INTO %1(level,sortValue) VALUES (?,?)";
             auto query{QSqlQuery{db}};
             query.prepare(queryStr.arg(table_diverLevel));
             query.addBindValue(name);
+            query.addBindValue(sortValue);
             query.exec();
 
             err = query.lastError();
@@ -57,23 +59,23 @@ bool createDB(QSqlDatabase db)
         }
     };
 
-    if(!addDiverLevel("Débutant"))
+    if(!addDiverLevel("Débutant",0))
         return false;
-    if(!addDiverLevel("N1"))
+    if(!addDiverLevel("N1",10))
         return false;
-    if(!addDiverLevel("PE40"))
+    if(!addDiverLevel("PE40",20))
         return false;
-    if(!addDiverLevel("N2"))
+    if(!addDiverLevel("N2",30))
         return false;
-    if(!addDiverLevel("PA40"))
+    if(!addDiverLevel("PA40",40))
         return false;
-    if(!addDiverLevel("PE60"))
+    if(!addDiverLevel("PE60",50))
         return false;
-    if(!addDiverLevel("PA60"))
+    if(!addDiverLevel("PA60",60))
         return false;
-    if(!addDiverLevel("N3"))
+    if(!addDiverLevel("N3",70))
         return false;
-    if(!addDiverLevel("N4"))
+    if(!addDiverLevel("N4",80))
         return false;
 
 
