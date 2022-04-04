@@ -59,23 +59,36 @@ bool createDB(QSqlDatabase db)
         }
     };
 
-    if(!addDiverLevel("Débutant",0))
+    auto sortLevelValue{0};
+    if(!addDiverLevel("Débutant",(sortLevelValue++)*10))
         return false;
-    if(!addDiverLevel("N1",10))
+    if(!addDiverLevel("PE12",(sortLevelValue++)*10))
         return false;
-    if(!addDiverLevel("PE40",20))
+    if(!addDiverLevel("N1",(sortLevelValue++)*10))
         return false;
-    if(!addDiverLevel("N2",30))
+    if(!addDiverLevel("PE40",(sortLevelValue++)*10))
         return false;
-    if(!addDiverLevel("PA40",40))
+    if(!addDiverLevel("PA20",(sortLevelValue++)*10))
         return false;
-    if(!addDiverLevel("PE60",50))
+    if(!addDiverLevel("N2",(sortLevelValue++)*10))
         return false;
-    if(!addDiverLevel("PA60",60))
+    if(!addDiverLevel("PA40",(sortLevelValue++)*10))
         return false;
-    if(!addDiverLevel("N3",70))
+    if(!addDiverLevel("PE60",(sortLevelValue++)*10))
         return false;
-    if(!addDiverLevel("N4",80))
+    if(!addDiverLevel("PA60",(sortLevelValue++)*10))
+        return false;
+    if(!addDiverLevel("N3",(sortLevelValue++)*10))
+        return false;
+    if(!addDiverLevel("N4",(sortLevelValue++)*10))
+        return false;
+    if(!addDiverLevel("E1",(sortLevelValue++)*10))//N2-3 initiateur
+        return false;
+    if(!addDiverLevel("E2",(sortLevelValue++)*10))//N4 initiateur
+        return false;
+    if(!addDiverLevel("E3",(sortLevelValue++)*10))//MF1
+        return false;
+    if(!addDiverLevel("E4",(sortLevelValue++)*10))//MF2
         return false;
 
 
