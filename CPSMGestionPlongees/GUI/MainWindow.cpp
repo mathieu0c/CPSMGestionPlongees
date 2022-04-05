@@ -54,6 +54,8 @@ void setEnableDebug(bool state,bool enableLog = false){
     debug::enable_logFile = enableLog;
 }
 
+//QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow),
