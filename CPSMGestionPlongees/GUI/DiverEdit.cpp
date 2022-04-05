@@ -24,58 +24,58 @@ DiverEdit::DiverEdit(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    connect(ui->le_lastName,&QLineEdit::textChanged,[&](const auto& in){
+    connect(ui->le_lastName,&QLineEdit::textChanged,this,[&](const auto& in){
             ui->le_lastName->setText(in.toUpper());
             m_tempDiver.lastName = ui->le_lastName->text();});
-    connect(ui->le_firstname,&QLineEdit::textChanged,[&](const auto& in){
+    connect(ui->le_firstname,&QLineEdit::textChanged,this,[&](const auto& in){
             m_tempDiver.firstName = in;});
-    connect(ui->de_birthDate,&QDateEdit::dateChanged,[&](const auto& in){
+    connect(ui->de_birthDate,&QDateEdit::dateChanged,this,[&](const auto& in){
             m_tempDiver.birthDate = in;});
-    connect(ui->le_mail,&QLineEdit::textChanged,[&](const auto& in){
+    connect(ui->le_mail,&QLineEdit::textChanged,this,[&](const auto& in){
             m_tempDiver.email = in;
             ui->le_mail->setToolTip(in);});
 
-    connect(ui->le_address,&QLineEdit::textChanged,[&](const auto& in){
+    connect(ui->le_address,&QLineEdit::textChanged,this,[&](const auto& in){
             m_tempDiver.address.address = in;
             ui->le_address->setToolTip(in);});
-    connect(ui->le_postalCode,&QLineEdit::textChanged,[&](const auto& in){
+    connect(ui->le_postalCode,&QLineEdit::textChanged,this,[&](const auto& in){
             m_tempDiver.address.postalCode = in;});
-    connect(ui->le_city,&QLineEdit::textChanged,[&](const auto& in){
+    connect(ui->le_city,&QLineEdit::textChanged,this,[&](const auto& in){
             m_tempDiver.address.city = in;});
 
-    connect(ui->le_license,&QLineEdit::textChanged,[&](const auto& in){
+    connect(ui->le_license,&QLineEdit::textChanged,this,[&](const auto& in){
             m_tempDiver.licenseNumber = in;
             ui->le_license->setToolTip(in);});
-    connect(ui->cb_level,&QComboBox::currentIndexChanged,[&](const auto&){
+    connect(ui->cb_level,&QComboBox::currentIndexChanged,this,[&](const auto&){
             auto newLevelId{ui->cb_level->currentData().toInt()};
             m_tempDiver.diverLevelId = newLevelId;
         });//diver level id begins at 1
-    connect(ui->cb_member,&QCheckBox::stateChanged,[&](const auto& in){
+    connect(ui->cb_member,&QCheckBox::stateChanged,this,[&](const auto& in){
             m_tempDiver.member = bool(in);});
-    connect(ui->le_mail,&QLineEdit::textChanged,[&](const auto& in){
+    connect(ui->le_mail,&QLineEdit::textChanged,this,[&](const auto& in){
             m_tempDiver.email = in;});
-    connect(ui->le_phone,&QLineEdit::textChanged,[&](const auto& in){
+    connect(ui->le_phone,&QLineEdit::textChanged,this,[&](const auto& in){
             m_tempDiver.phoneNumber = in;});
 
-    connect(ui->sb_payment,&QSpinBox::valueChanged,[&](const auto&){
+    connect(ui->sb_payment,&QSpinBox::valueChanged,this,[&](const auto&){
             computeDivingCount();
             /*ui->sb_sold->setValue(m_tempDiver.sold());*/});
 
-    connect(ui->cb_regulator,&QCheckBox::stateChanged,[&](const auto& in){
+    connect(ui->cb_regulator,&QCheckBox::stateChanged,this,[&](const auto& in){
             m_tempDiver.gear_regulator = bool(in);});
-    connect(ui->cb_suit,&QCheckBox::stateChanged,[&](const auto& in){
+    connect(ui->cb_suit,&QCheckBox::stateChanged,this,[&](const auto& in){
             m_tempDiver.gear_suit = bool(in);});
-    connect(ui->cb_computer,&QCheckBox::stateChanged,[&](const auto& in){
+    connect(ui->cb_computer,&QCheckBox::stateChanged,this,[&](const auto& in){
             m_tempDiver.gear_computer = bool(in);});
-    connect(ui->cb_jacket,&QCheckBox::stateChanged,[&](const auto& in){
+    connect(ui->cb_jacket,&QCheckBox::stateChanged,this,[&](const auto& in){
             m_tempDiver.gear_jacket = bool(in);});
 
     m_tempDiver.birthDate = ui->de_birthDate->date();
     ui->de_certificate->setDate(QDate::currentDate());
 
-    connect(ui->pb_paymentPlus,&QPushButton::clicked,[&](){
+    connect(ui->pb_paymentPlus,&QPushButton::clicked,this,[&](){
             ui->sb_payment->setValue(ui->sb_payment->value()+1);});
-    connect(ui->pb_paymentMinus,&QPushButton::clicked,[&](){
+    connect(ui->pb_paymentMinus,&QPushButton::clicked,this,[&](){
             ui->sb_payment->setValue(ui->sb_payment->value()-1);});
 
     ui->diveSearch->setHiddenButton(true);
@@ -84,7 +84,7 @@ DiverEdit::DiverEdit(QWidget *parent) :
                             ),
                         {"Date","Site","Type"});
 
-    connect(ui->diveSearch,&gui::DiveSearch::divesSelected,[&](QVector<int> idList){
+    connect(ui->diveSearch,&gui::DiveSearch::divesSelected,this,[&](QVector<int> idList){
         auto dive{db::readDiveFromDB(idList[0],QSqlDatabase::database(),global::table_dives,global::table_divingSites,
                                     global::table_divesMembers,global::table_divers)};
         gui::DiveEdit::displayDive(dive,this);
