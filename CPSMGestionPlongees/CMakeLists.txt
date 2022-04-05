@@ -20,6 +20,7 @@ project(CPSMGestionPlongees VERSION ${VERSIONING_MAJOR}.${VERSIONING_MINOR}.${VE
 add_definitions("-DPROJECT_VERSION=\"${CMAKE_PROJECT_VERSION}\"")
 
 if(${PREVIEW})
+    add_compile_definitions(PROJECT_PREVIEW)
     add_compile_definitions(PROJECT_NAME="${PROJECT_NAME}_prev")
 else()
     add_compile_definitions(PROJECT_NAME="${PROJECT_NAME}")

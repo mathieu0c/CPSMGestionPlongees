@@ -100,14 +100,21 @@ MainWindow::MainWindow(QWidget *parent)
     auto& dbSaver{gens::SettingsManager::ref<db::DBSaverInfo>("DBSaverInfo")};
     db::refreshSave(dbSaver);
 
-
+    auto dbAlreadyExist{QFileInfo::exists(gens::SettingsManager::ref<QString>(global::sk_dbPath))};
 
     auto openedDB{db::openLocal(gens::SettingsManager::ref<QString>(global::sk_dbPath))};
     if(!openedDB)
         throw std::runtime_error("Cannot open DB");
 
-//    db::createDB();
-    db::initDB();
+    qDebug() << "CREATE DB § : " << !dbAlreadyExist;
+    if(!dbAlreadyExist)
+    {
+#ifdef PROJECT_PREVIEW
+        db::initDB();
+#else
+        db::createDB();
+#endif
+    }
 
     auto db{this->db()};
 
@@ -153,8 +160,10 @@ MainWindow::MainWindow(QWidget *parent)
 
 // -- -- -- -- -- -- debugging purpose
 #ifdef COMPILED_FOR_RELEASE
-    QMessageBox::critical(this,"Rappel","C'est une version de test. Aucune modification ne sera enregistrée");
+#ifdef PROJECT_PREVIEW
+    QMessageBox::critical(this,"Rappel","C'est une version de test. Elle n'est probablement pas stable et cela pour résulter en des pertes de données");
     ui->tabw_main->setTabVisible(0,false);
+#endif
 #endif
 
 //    ui->pg_editDive->setEditable(false);
