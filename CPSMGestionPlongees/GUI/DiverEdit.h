@@ -24,7 +24,7 @@ public:
     explicit DiverEdit(QWidget *parent = nullptr);
     ~DiverEdit();
 
-    void refreshLevelList(const QStringList& list);
+    void refreshLevelList(QVector<data::DiverLevel> levels, bool sortByAlphabetical = true);
 
     const data::Diver& diver() const{
         return m_tempDiver;

@@ -6,6 +6,7 @@
 //#include "DataStruct/Dive.h"
 #include "DBApi/DataStructs.hpp"
 #include "DBApi/DBDiver.hpp"
+#include "DBApi/DBDiverLevel.hpp"
 #include "DBApi/DBApi.hpp"
 
 #include "DBApi/Generic.hpp"
@@ -20,6 +21,7 @@
 
 #include <QDebug>
 
+
 namespace db
 {
 
@@ -29,7 +31,7 @@ bool createDB(QSqlDatabase db)
 
     QString queryStr = "CREATE TABLE IF NOT EXISTS %1(id INTEGER PRIMARY KEY AUTOINCREMENT, "
                        "level TEXT UNIQUE NOT NULL,"
-                       "sortValue INTEGER UNIQUE NOT NULL)";
+                       "sortValue INTEGER NOT NULL)";
     auto err = QSqlQuery{queryStr.arg(table_diverLevel),db}.lastError();
     if(err.type() != QSqlError::ErrorType::NoError)
     {
@@ -41,21 +43,8 @@ bool createDB(QSqlDatabase db)
     auto addDiverLevel{
         [&](const auto& name,const auto& sortValue)
         {
-            queryStr = "INSERT OR IGNORE INTO %1(level,sortValue) VALUES (?,?)";
-            auto query{QSqlQuery{db}};
-            query.prepare(queryStr.arg(table_diverLevel));
-            query.addBindValue(name);
-            query.addBindValue(sortValue);
-            query.exec();
-
-            err = query.lastError();
-            if(err.type() != QSqlError::ErrorType::NoError)
-            {
-                QString errStr{QString{"%0 : SQL error : %1"}.arg(__func__,err.text())};
-                qCritical() << errStr;
-                return false;
-            }
-            return true;
+            auto id{storeInDB(data::DiverLevel{.level=name,.sortValue=sortValue},db,global::table_diverLevel)};
+            return id > 0;
         }
     };
 
@@ -229,6 +218,7 @@ bool initDB(QSqlDatabase db)
         qCritical() << errStr;
         return false;
     }
+
 
 
     //table divers addresses

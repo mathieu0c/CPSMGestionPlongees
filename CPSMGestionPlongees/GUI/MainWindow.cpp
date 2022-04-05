@@ -24,6 +24,7 @@
 
 #include "DBApi/Database.hpp"
 #include "DBApi/Generic.hpp"
+#include "DBApi/DBDiverLevel.hpp"
 #include "DBApi/DBApi.hpp"
 #include <QSqlQueryModel>
 #include <QSqlQuery>
@@ -69,13 +70,17 @@ MainWindow::MainWindow(QWidget *parent)
     if(!openedDB)
         throw std::runtime_error("Cannot open DB");
 
-    db::createDB();
+//    db::createDB();
     db::initDB();
+
+    auto db{this->db()};
 
     ui->tab_debug->on_pb_refreshTablesList_clicked();
     ui->tab_debug->setTableIndex(1);
 
-    ui->pg_editDiver->refreshLevelList(db::getDiverLevels());
+    ui->pg_editDiver->refreshLevelList(db::readLFromDB<data::DiverLevel>
+                                       (db,db::extractDiverLevelFromQuery,"SELECT * FROM %1",
+                                        {global::table_diverLevel},{}),false);
     ui->pg_editDive->refreshSiteList(global::table_divingSites);
 
     connect(ui->mainDiverSearch,&gui::DiverSearch::diversSelected,this,&MainWindow::diversSelected);
@@ -117,16 +122,15 @@ MainWindow::MainWindow(QWidget *parent)
 #endif
 
 //    ui->pg_editDive->setEditable(false);
-    auto existingDivesIds{db::querySelect(db(),"SELECT id FROM %0",{global::table_dives},{})};
+    auto existingDivesIds{db::querySelect(db,"SELECT id FROM %0",{global::table_dives},{})};
     QVector<data::Dive> existingDives{existingDivesIds.size()};
     for(const auto& dbLine : existingDivesIds)
     {
-        auto dive{db::readDiveFromDB(dbLine[0].toInt(),db(),global::table_dives,global::table_divingSites,
+        auto dive{db::readDiveFromDB(dbLine[0].toInt(),db,global::table_dives,global::table_divingSites,
                                     global::table_divesMembers,global::table_divers)};
 //        db_syncDiversWithDives(dive.divers);
     }
 
-    auto db{this->db()};
 //    auto results{db::readLFromDB<int>(db,[&](const QSqlQuery& q)->int{return q.value(0).value<int>();},"SELECT id FROM %0",{global::table_dives},{})};
 //    for(const auto& e : results)
 //    {

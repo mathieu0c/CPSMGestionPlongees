@@ -46,8 +46,10 @@ DiverEdit::DiverEdit(QWidget *parent) :
     connect(ui->le_license,&QLineEdit::textChanged,[&](const auto& in){
             m_tempDiver.licenseNumber = in;
             ui->le_license->setToolTip(in);});
-    connect(ui->cb_level,&QComboBox::currentIndexChanged,[&](const auto& in){
-            m_tempDiver.diverLevelId = in+1;});//diver level id begins at 1
+    connect(ui->cb_level,&QComboBox::currentIndexChanged,[&](const auto&){
+            auto newLevelId{ui->cb_level->currentData().toInt()};
+            m_tempDiver.diverLevelId = newLevelId;
+        });//diver level id begins at 1
     connect(ui->cb_member,&QCheckBox::stateChanged,[&](const auto& in){
             m_tempDiver.member = bool(in);});
     connect(ui->le_mail,&QLineEdit::textChanged,[&](const auto& in){
@@ -94,12 +96,29 @@ DiverEdit::~DiverEdit()
     delete ui;
 }
 
-void DiverEdit::refreshLevelList(const QStringList& list)
+void DiverEdit::refreshLevelList(QVector<data::DiverLevel> levels,bool sortByAlphabetical)
 {
     ui->cb_level->clear();
-    for(const auto& e : list)
+
+    std::function<bool(const data::DiverLevel&,const data::DiverLevel&)> sortFunction;
+
+    if(sortByAlphabetical)
     {
-        ui->cb_level->addItem(e);
+        sortFunction = [&](const data::DiverLevel& e,const data::DiverLevel& r){
+                return e.level.toLower() < r.level.toLower();
+            };
+    }
+    else
+    {
+        sortFunction = [&](const data::DiverLevel& e,const data::DiverLevel& r){
+                return e.sortValue < r.sortValue;
+            };
+    }
+
+    std::sort(levels.begin(),levels.end(),sortFunction);
+    for(const auto& e : levels)
+    {
+        ui->cb_level->addItem(e.level,e.id);
     }
 }
 

@@ -112,6 +112,32 @@ QDebug operator<<(QDebug debug, const data::Dive& m)
 
 //###########################################
 //############               ################
+//#########     DiverLevel      #############
+//############               ################
+//###########################################
+
+QDebug operator<<(QDebug debug, const data::DiverLevel& m)
+{
+    QDebugStateSaver saver(debug);
+    debug.nospace() << "DiverLevel{\nid : " << m.id << "\n";
+    debug.nospace() << "Level name : " << m.level << "\n";
+    debug.nospace() << "Sort value : " << m.sortValue << "\n";
+    debug.nospace() << "};";
+
+    return debug;
+}
+
+QString to_string(const data::DiverLevel& level) {
+    QString str{};
+    QTextStream{&str} << "{" << level.id << "," <<
+                level.level << "," <<
+                level.sortValue << "}";
+    return str;
+}
+
+
+//###########################################
+//############               ################
 //#########       Diver         #############
 //############               ################
 //###########################################
@@ -119,7 +145,7 @@ QDebug operator<<(QDebug debug, const data::Dive& m)
 QDebug operator<<(QDebug debug, const data::Diver& m)
 {
     QDebugStateSaver saver(debug);
-    debug.nospace() << "Member{\nid : " << m.id << "\n";
+    debug.nospace() << "Diver{\nid : " << m.id << "\n";
     debug.nospace() << "First name : " << m.firstName << "\n";
     debug.nospace() << "Last name : " << m.lastName << "\n";
     debug.nospace() << "Birth date : " << m.birthDate << "\n";

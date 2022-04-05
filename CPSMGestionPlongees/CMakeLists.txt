@@ -59,6 +59,7 @@ set(PROJECT_SOURCES
     DBApi/DBAddress.hpp DBApi/DBAddress.cpp
     DBApi/DBDive.hpp DBApi/DBDive.cpp
     DBApi/DBDiver.hpp DBApi/DBDiver.cpp
+    DBApi/DBDiverLevel.hpp DBApi/DBDiverLevel.cpp
     DBApi/DBApi.hpp DBApi/DBApi.cpp
 
     Debug/ScopeTimer.hpp Debug/ScopeTimer.cpp

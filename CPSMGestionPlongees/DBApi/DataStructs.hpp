@@ -49,6 +49,25 @@ QDebug operator<<(QDebug debug, const Address& a);
 
 QString to_string(const Address& address);
 
+
+
+//###########################################
+//############               ################
+//#########     DiverLevel      #############
+//############               ################
+//###########################################
+
+struct DiverLevel
+{
+    int id{-1};
+    QString level{};
+    int sortValue{0};
+};
+
+QDebug operator<<(QDebug debug, const data::DiverLevel& m);
+QString to_string(const data::DiverLevel& diver);
+
+
 //###########################################
 //############               ################
 //#########       Diver         #############
