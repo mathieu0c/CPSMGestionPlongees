@@ -7,6 +7,7 @@ set(VERSIONING_MAJOR 0)#incompatible update
 set(VERSIONING_MINOR 0)#new features added
 set(VERSIONING_PATCH 0)#bug fixed / minor change
 
+set(PREVIEW true)
 
 add_definitions("-DPROJECT_V_MAJOR=${VERSIONING_MAJOR}")
 add_definitions("-DPROJECT_V_MINOR=${VERSIONING_MINOR}")
@@ -17,6 +18,12 @@ add_compile_definitions(PROJECT_GITHUB_RELEASE="https://api.github.com/repos/mat
 cmake_minimum_required(VERSION 3.16)
 project(CPSMGestionPlongees VERSION ${VERSIONING_MAJOR}.${VERSIONING_MINOR}.${VERSIONING_PATCH} LANGUAGES CXX)
 add_definitions("-DPROJECT_VERSION=\"${CMAKE_PROJECT_VERSION}\"")
+
+if(${PREVIEW})
+    add_compile_definitions(PROJECT_NAME="${PROJECT_NAME}_prev")
+else()
+    add_compile_definitions(PROJECT_NAME="${PROJECT_NAME}")
+endif()
 
 set(EXE_NAME ${PROJECT_NAME})
 
@@ -53,6 +60,7 @@ set(PROJECT_SOURCES
 
     DBApi/Database.cpp DBApi/Database.hpp
     DBApi/global.cpp
+    DBApi/DBSaver.hpp DBApi/DBSaver.cpp
     DBApi/local.cpp
     DBApi/Generic.hpp
     DBApi/DataStructs.hpp DBApi/DataStructs.cpp
@@ -88,6 +96,8 @@ set(PROJECT_SOURCES
     main.cpp
 )
 
+add_subdirectory(GenericSettings)
+
 qt_add_executable(${EXE_NAME} WIN32 MACOSX_BUNDLE
     ${PROJECT_SOURCES}
     ${APP_ICON_RESOURCE_WINDOWS}
@@ -99,6 +109,7 @@ target_link_libraries(${EXE_NAME} PRIVATE
     Qt${QT_VERSION_MAJOR}::Sql
     Qt${QT_VERSION_MAJOR}::Widgets
     Qt${QT_VERSION_MAJOR}::Network
+    GenericSettings::GenericSettings
 )
 
 #----- Used to get the current filename

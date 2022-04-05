@@ -6,6 +6,8 @@
 #include <QRegularExpression>
 #include <QRegularExpressionMatch>
 
+#include <QStandardPaths>
+
 #pragma clang diagnostic ignored "-Wstring-plus-int"
 
 namespace
@@ -19,7 +21,11 @@ namespace global
 
 //-- soft settings
 
-constexpr auto set_dataDir{"appdata"};
+static const auto settings_dataDir{QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)+"/"+QString{PROJECT_NAME}+"/"};
+static const QString settings_confFile{settings_dataDir+"settings.conf"};
+
+//sk stands for settingsKey
+static const auto sk_dbPath{"DBPath"};
 
 //-- DB
 

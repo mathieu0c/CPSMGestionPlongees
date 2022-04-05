@@ -26,6 +26,7 @@
 #include "DBApi/Generic.hpp"
 #include "DBApi/DBDiverLevel.hpp"
 #include "DBApi/DBApi.hpp"
+#include "DBApi/DBSaver.hpp"
 #include <QSqlQueryModel>
 #include <QSqlQuery>
 #include <QSqlError>
@@ -33,6 +34,11 @@
 #include "Debug/LogFile.hpp"
 #include "Debug/DbVisualizer.h"
 #include "Debug/Utils.h"
+
+#include "GenericSettings/GenericSettings.hpp"
+#include <QStandardPaths>
+#include <QDir>
+#include <QFileInfo>
 
 namespace gui
 {
@@ -56,6 +62,28 @@ void setEnableDebug(bool state,bool enableLog = false){
 
 //QStandardPaths::writableLocation(QStandardPaths::AppDataLocation)
 
+void MainWindow::initSettings()
+{
+    using namespace gens;
+    using namespace global;
+
+    if(!QFileInfo::exists(settings_dataDir))//if the appdata folder doesn't exist
+    {
+        if(!QDir::root().mkpath(settings_dataDir))
+        {
+            throw std::runtime_error{__CURRENT_PLACE__.toStdString() + " : Cannot create appData folder : <" + settings_dataDir.toStdString() + ">"};
+        }
+    }
+
+    db::DBSaverInfo dbSaver{};
+
+    SettingsManager::addSetting("DBSaverInfo",dbSaver,db::dbSaverInfoToJson,db::dbSaverInfoFromJson);
+    SettingsManager::addSetting(sk_dbPath,global::settings_dataDir+"cpsm.sqlite3");
+
+    SettingsManager::read(settings_confFile,true);//read config file if exists
+}
+
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow),
@@ -64,11 +92,17 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    constexpr auto enableDebug{false};
+    constexpr auto enableDebug{true};
     setEnableDebug(enableDebug,true);
-//    ui->tabw_main->setTabVisible(0,enableDebug);
 
-    auto openedDB{db::openLocal("d")};
+
+    initSettings();
+    auto& dbSaver{gens::SettingsManager::ref<db::DBSaverInfo>("DBSaverInfo")};
+    db::refreshSave(dbSaver);
+
+
+
+    auto openedDB{db::openLocal(gens::SettingsManager::ref<QString>(global::sk_dbPath))};
     if(!openedDB)
         throw std::runtime_error("Cannot open DB");
 
@@ -145,6 +179,9 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
+    qDebug() <<"Saving settings as : "<< global::settings_confFile;
+    gens::SettingsManager::saveAs(global::settings_confFile);
+
     delete ui;
 }
 

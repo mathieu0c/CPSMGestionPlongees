@@ -29,7 +29,7 @@ bool openLocal(const QString& fileName,const QString& connectionName)
     else
         db = QSqlDatabase::addDatabase("QSQLITE",connectionName);
     db.setHostName("localhost");
-    db.setDatabaseName(fileName+c_extension_DB);
+    db.setDatabaseName(fileName);
     if(!db.open())
     {
         if(enableDebug)

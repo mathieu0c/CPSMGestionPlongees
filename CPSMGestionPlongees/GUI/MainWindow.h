@@ -53,6 +53,8 @@ private slots:
     void on_pb_editDive_clicked();
 
 private:
+    void initSettings();
+
     QSqlDatabase db(){
         return QSqlDatabase::database();
     }
