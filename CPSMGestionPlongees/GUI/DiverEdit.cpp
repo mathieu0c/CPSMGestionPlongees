@@ -147,7 +147,7 @@ void DiverEdit::setDiver(data::Diver diver){
     ui->de_birthDate->setDate(m_tempDiver.birthDate);
     ui->le_license->setText(m_tempDiver.licenseNumber);
     ui->cb_member->setChecked(m_tempDiver.member);
-    ui->cb_level->setCurrentIndex(m_tempDiver.diverLevelId-1);
+    ui->cb_level->setCurrentIndex(m_tempDiver.diverLevelId-1);//index isn't corresponding to level
     ui->de_certificate->setDate(m_tempDiver.certifDate);
 
     setAddress(m_tempDiver.address);
