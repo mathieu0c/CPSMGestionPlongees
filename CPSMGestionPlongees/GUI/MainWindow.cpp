@@ -161,7 +161,7 @@ MainWindow::MainWindow(QWidget *parent)
 // -- -- -- -- -- -- debugging purpose
 #ifdef COMPILED_FOR_RELEASE
 #ifdef PROJECT_PREVIEW
-    QMessageBox::critical(this,"Rappel","C'est une version de test. Elle n'est probablement pas stable et cela pour résulter en des pertes de données");
+    QMessageBox::critical(this,"Rappel","C'est une version de test. Elle n'est probablement pas stable et cela pourrait résulter en des pertes de données");
     ui->tabw_main->setTabVisible(0,false);
 #endif
 #endif
