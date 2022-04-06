@@ -20,7 +20,7 @@ namespace{
 
 bool p_refreshSave(const QString& targetSaveFolder,int saveInterval,int saveCount)
 {
-    const auto& usedDbPath{gens::SettingsManager::ref<QString>(global::sk_dbPath)};
+    const auto& usedDbPath{gens::SettingsManager::ref<QString>(global::SK::dbPath)};
     QDate currentDate{QDate::currentDate()};
     const QString todaySaveFileName{currentDate.toString(global::format_date)+"."
                                     +QFileInfo{usedDbPath}.suffix()};

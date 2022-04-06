@@ -295,13 +295,28 @@ int storeInDB(data::Dive& dive, QSqlDatabase db, const QString &diveTable, const
         return -1;
     }
 
+    auto newDiveId{-1};
+
+    if(existBefore < 0)
+    {
+        auto id{getLastInsertId(db,diveTable)};
+        newDiveId = id;
+        for(auto& e : dive.diver)
+        {
+            e.diveId = newDiveId;
+        }
+    }
+    else
+    {
+        newDiveId = dive.id;
+    }
 
     //remove deleted divers from the dive
     auto existingDivers{readLFromDB<int>(db,[&](const QSqlQuery& query){
-        int out{query.value(0).toInt()};
-        return out;
-    },"SELECT diverId FROM %0 WHERE %0.diveId = ?",
-      {diveMembersTable},{dive.id})};
+                            int out{query.value(0).toInt()};
+                            return out;
+                        },"SELECT diverId FROM %0 WHERE %0.diveId = ?",
+                        {diveMembersTable},{dive.id})};
     QVector<QVariant> diversToRemoveFromDBDive{};
     diversToRemoveFromDBDive.reserve(existingDivers.size());
     QString removeListArgs{"("};//"?,?,?,?" with the right count of values corresponding to the number of divers to remove
@@ -351,22 +366,10 @@ int storeInDB(data::Dive& dive, QSqlDatabase db, const QString &diveTable, const
        return -1;
    }
 
-    auto returnId{-1};
 
-    if(existBefore < 0)
-    {
-        auto id{getLastInsertId(db,diveTable)};
-        returnId = id;
-    }
-    else
-    {
-        returnId = dive.id;
-    }
+   QSqlQuery{"COMMIT;",db};
 
-
-    QSqlQuery{"COMMIT;",db};
-
-    return returnId;
+   return newDiveId;
 }
 
 int exists(const data::Dive& a,QSqlDatabase db,const QString& table)

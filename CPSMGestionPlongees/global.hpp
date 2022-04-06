@@ -25,7 +25,10 @@ static const auto settings_dataDir{QStandardPaths::writableLocation(QStandardPat
 static const QString settings_confFile{settings_dataDir+"settings.conf"};
 
 //sk stands for settingsKey
-static const auto sk_dbPath{"DBPath"};
+struct SK{
+    constexpr static const auto dbPath{"DBPath"};
+    constexpr static const auto lastTab{"LastOpenedTab"};
+};
 
 //-- DB
 

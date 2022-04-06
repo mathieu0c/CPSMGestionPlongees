@@ -78,9 +78,12 @@ void MainWindow::initSettings()
     db::DBSaverInfo dbSaver{};
 
     SettingsManager::addSetting("DBSaverInfo",dbSaver,db::dbSaverInfoToJson,db::dbSaverInfoFromJson);
-    SettingsManager::addSetting(sk_dbPath,global::settings_dataDir+"cpsm.sqlite3");
+    SettingsManager::addSetting(SK::dbPath,global::settings_dataDir+"cpsm.sqlite3");
+    SettingsManager::addSetting(SK::lastTab,ui->tabw_main->currentIndex());
 
     SettingsManager::read(settings_confFile,true);//read config file if exists
+
+    ui->tabw_main->setCurrentIndex(SettingsManager::ref<int>(SK::lastTab));
 }
 
 
@@ -92,7 +95,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    constexpr auto enableDebug{true};
+    constexpr auto enableDebug{false};
     setEnableDebug(enableDebug,true);
 
 
@@ -100,9 +103,9 @@ MainWindow::MainWindow(QWidget *parent)
     auto& dbSaver{gens::SettingsManager::ref<db::DBSaverInfo>("DBSaverInfo")};
     db::refreshSave(dbSaver);
 
-    auto dbAlreadyExist{QFileInfo::exists(gens::SettingsManager::ref<QString>(global::sk_dbPath))};
+    auto dbAlreadyExist{QFileInfo::exists(gens::SettingsManager::ref<QString>(global::SK::dbPath))};
 
-    auto openedDB{db::openLocal(gens::SettingsManager::ref<QString>(global::sk_dbPath))};
+    auto openedDB{db::openLocal(gens::SettingsManager::ref<QString>(global::SK::dbPath))};
     if(!openedDB)
         throw std::runtime_error("Cannot open DB");
 
@@ -198,6 +201,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_tabw_main_currentChanged(int i)
 {
+    gens::SettingsManager::ref<int>(global::SK::lastTab) = i;
+
     if(ui->tabw_main->tabText(i) == "Plongeurs")
     {
         ui->mainDiverSearch->refreshDiverList();
