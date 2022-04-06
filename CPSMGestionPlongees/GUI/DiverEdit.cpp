@@ -99,6 +99,7 @@ DiverEdit::~DiverEdit()
 void DiverEdit::refreshLevelList(QVector<data::DiverLevel> levels,bool sortByAlphabetical)
 {
     ui->cb_level->clear();
+    m_diverLevelIdIndexMap.clear();
 
     std::function<bool(const data::DiverLevel&,const data::DiverLevel&)> sortFunction;
 
@@ -116,9 +117,12 @@ void DiverEdit::refreshLevelList(QVector<data::DiverLevel> levels,bool sortByAlp
     }
 
     std::sort(levels.begin(),levels.end(),sortFunction);
+    int i{};
     for(const auto& e : levels)
     {
         ui->cb_level->addItem(e.level,e.id);
+        m_diverLevelIdIndexMap[e.id] = i;
+        ++i;
     }
 }
 
@@ -147,7 +151,13 @@ void DiverEdit::setDiver(data::Diver diver){
     ui->de_birthDate->setDate(m_tempDiver.birthDate);
     ui->le_license->setText(m_tempDiver.licenseNumber);
     ui->cb_member->setChecked(m_tempDiver.member);
-    ui->cb_level->setCurrentIndex(m_tempDiver.diverLevelId-1);//index isn't corresponding to level
+    try
+    {
+        ui->cb_level->setCurrentIndex(m_diverLevelIdIndexMap[m_tempDiver.diverLevelId]);//index isn't corresponding to level
+    } catch (const std::out_of_range& e)
+    {
+        ui->cb_level->setCurrentIndex(0);
+    }
     ui->de_certificate->setDate(m_tempDiver.certifDate);
 
     setAddress(m_tempDiver.address);

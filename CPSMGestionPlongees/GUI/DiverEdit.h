@@ -6,6 +6,7 @@
 
 //#include "DataStruct/Diver.h"
 #include "DBApi/DataStructs.hpp"
+#include <unordered_map>
 
 #include "GUI/Dialog_EditFamily.h"
 
@@ -58,6 +59,8 @@ private:
 
     data::Diver m_tempDiver{};
     int m_tempDiverOriginalPaidDives{};
+
+    std::unordered_map<int,int> m_diverLevelIdIndexMap;
 };
 
 }//namespace gui

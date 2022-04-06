@@ -123,7 +123,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->pg_editDiver->refreshLevelList(db::readLFromDB<data::DiverLevel>
                                        (db,db::extractDiverLevelFromQuery,"SELECT * FROM %1",
-                                        {global::table_diverLevel},{}),false);
+                                        {global::table_diverLevel},{}),true);
     ui->pg_editDive->refreshSiteList(global::table_divingSites);
 
     connect(ui->mainDiverSearch,&gui::DiverSearch::diversSelected,this,&MainWindow::diversSelected);
