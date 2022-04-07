@@ -124,9 +124,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->tab_debug->on_pb_refreshTablesList_clicked();
     ui->tab_debug->setTableIndex(1);
 
-    ui->pg_editDiver->refreshLevelList(db::readLFromDB<data::DiverLevel>
-                                       (db,db::extractDiverLevelFromQuery,"SELECT * FROM %1",
-                                        {global::table_diverLevel},{}),true);
+
+    auto lvlList{db::readLFromDB<data::DiverLevel>
+                (db,db::extractDiverLevelFromQuery,"SELECT * FROM %1",
+                 {global::table_diverLevel},{})};
+    ui->pg_editDiver->refreshLevelList(lvlList,true);
+    ui->pg_editDive->setDiverLevelList(lvlList);
     ui->pg_editDive->refreshSiteList(global::table_divingSites);
 
     connect(ui->mainDiverSearch,&gui::DiverSearch::diversSelected,this,&MainWindow::diversSelected);

@@ -46,6 +46,8 @@ public:
 
     void resetDive();
 
+    void setDiverLevelList(const QVector<data::DiverLevel> &lvlList);
+
 public:
 static void displayDive(const data::Dive& dive,QWidget* parent);
 

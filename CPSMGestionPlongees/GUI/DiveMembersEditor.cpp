@@ -12,6 +12,7 @@
 #include <QSqlQuery>
 #include "DBApi/DBApi.hpp"
 #include "DBApi/DataStructs.hpp"
+#include <unordered_map>
 
 #include <QDebug>
 
@@ -83,7 +84,7 @@ QVector<int> DiveMembersEditor::selectedDiversId() const
     return out;
 }
 
-void DiveMembersEditor::refreshDiverList(QSqlDatabase db,const QString& table_diverLevel,bool sortBefore)
+void DiveMembersEditor::refreshDiverList(bool sortBefore)
 {
     if(!m_divers)//if the diver list pointer isn't initialized
     {
@@ -95,17 +96,12 @@ void DiveMembersEditor::refreshDiverList(QSqlDatabase db,const QString& table_di
             return e.fullDiver.lastName < r.fullDiver.lastName;
         });
 
-    ui->tv_divers->setRowCount(m_divers->count());
-
-    auto lvlList{db::readLFromDB<QString>(db,[&](const QSqlQuery& query)->QString{
-            return query.value(0).value<QString>();
-        },"SELECT level FROM %0",{table_diverLevel},{})};
-    if(lvlList.size() == 0)
+    if(empty(m_diverLevelIdIndexMap))
     {
-        QString errStr{QString{"%0 : Cannot get level list"}.arg(__CURRENT_PLACE__)};
-        qCritical() << errStr;
-        throw std::runtime_error{errStr.toStdString()};
+        throw std::runtime_error{__CURRENT_PLACE__.toStdString()+" : Cannot set diver with empty level list"};
     }
+
+    ui->tv_divers->setRowCount(m_divers->count());
 
     QString ansRegex{
         ".*"//anything before
@@ -119,7 +115,7 @@ void DiveMembersEditor::refreshDiverList(QSqlDatabase db,const QString& table_di
 
         ui->tv_divers->setCellWidget(i,0,new QLabel(" "+e.fullDiver.lastName+" ",ui->tv_divers));
         ui->tv_divers->setCellWidget(i,1,new QLabel(" "+e.fullDiver.firstName+" ",ui->tv_divers));
-        ui->tv_divers->setCellWidget(i,2,new QLabel(" "+lvlList[e.fullDiver.diverLevelId]+" ",ui->tv_divers));
+        ui->tv_divers->setCellWidget(i,2,new QLabel(" "+m_diverLevelIdIndexMap.at(e.fullDiver.diverLevelId).level+" ",ui->tv_divers));
         ui->tv_divers->setCellWidget(i,ui->tv_divers->columnCount()-1,
                                      new QLabel(QString::number(e.diverId),ui->tv_divers));
 
@@ -135,6 +131,12 @@ void DiveMembersEditor::refreshDiverList(QSqlDatabase db,const QString& table_di
         });
         ui->tv_divers->setCellWidget(i,3,cbDiveType);
     }
+    ui->tv_divers->horizontalHeader()->setSectionResizeMode(QHeaderView::ResizeToContents);
+}
+
+void DiveMembersEditor::refreshDiverList(const QVector<data::DiverLevel>& lvlList,bool sortBefore)
+{
+    setDiverLevelList(lvlList);
 }
 
 void DiveMembersEditor::applyFilter(const QString& toContains)

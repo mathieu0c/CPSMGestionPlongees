@@ -7,6 +7,7 @@
 #include <memory>
 #include "DBApi/DataStructs.hpp"
 #include "DBApi/DBApi.hpp"
+#include <unordered_map>
 #include <QSqlDatabase>
 
 #include "../global.hpp"
@@ -40,13 +41,16 @@ public:
         m_divers = divers;
     }
 
+    void setDiverLevelList(const QVector<data::DiverLevel>& lvlList);
+
     QVector<int> selectedDiversId() const;
 
     inline QVector<int> diversIds()const;
     QString formattedDiversIds()const;
 
 public slots:
-    void refreshDiverList(QSqlDatabase db, const QString &table_diverLevel, bool sortBefore = true);
+    void refreshDiverList(const QVector<data::DiverLevel>& lvlList,bool sortBefore = true);
+    void refreshDiverList(bool sortBefore = true);
     void applyFilter(const QString& toContains);
 
 signals:
@@ -56,7 +60,19 @@ private:
     Ui::DiveMembersEditor *ui;
     DiverList* m_divers;
     bool m_isEditable;
+    std::unordered_map<int,data::DiverLevel> m_diverLevelIdIndexMap;
 };
+
+inline
+void DiveMembersEditor::setDiverLevelList(const QVector<data::DiverLevel>& lvlList)
+{
+    m_diverLevelIdIndexMap.clear();
+    m_diverLevelIdIndexMap.reserve(lvlList.size());
+    for(const auto& lvl : lvlList)
+    {
+        m_diverLevelIdIndexMap[lvl.id] = lvl;
+    }
+}
 
 inline
 QVector<int> DiveMembersEditor::diversIds()const {

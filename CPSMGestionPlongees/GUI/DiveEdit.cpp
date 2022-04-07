@@ -128,7 +128,7 @@ void DiveEdit::refreshDiversList()
 {
     refreshDiverSearchFilters_global();
     refreshDiverSearchFilters_dive();
-    ui->diverSearch_dive->refreshDiverList(QSqlDatabase::database(),global::table_diverLevel);
+    ui->diverSearch_dive->refreshDiverList();
     ui->diverSearch_global->refreshDiverList();
 }
 
@@ -188,6 +188,13 @@ void DiveEdit::resetDive(){
     m_tempDive.time = QTime::currentTime();
     setDive(std::move(m_tempDive));
 }
+
+
+void DiveEdit::setDiverLevelList(const QVector<data::DiverLevel>& lvlList)
+{
+    ui->diverSearch_dive->setDiverLevelList(lvlList);
+}
+
 
 /*
  * Function called when a list of diver is required to move from the global
