@@ -154,6 +154,7 @@ T readFromDB(const QSqlDatabase& db,UnaryFunction extractValue,QString request,c
     {
         QString errStr{QString{"%0 : SQL error : %1"}.arg(__CURRENT_PLACE__,err.text())};
         qCritical() << errStr;
+        debug::debugQuery(query,__CURRENT_PLACE__);
         return {};
     }
 

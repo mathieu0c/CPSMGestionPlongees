@@ -23,11 +23,11 @@ DiverSearch::DiverSearch(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    setSelectionColumns("lastName,firstName,member,level,paidDives-diveCount",{"Nom de famille","Prénom","Membre","Niv.","Solde"});
+    setSelectionColumns(QString{"lastName,firstName,member,level,paidDives-COUNT(%4.diveId)"}.arg(global::table_divesMembers),{"Nom de famille","Prénom","Membre","Niv.","Solde"});
 
     //refreshing diver list
-    connect(ui->le_search,&QLineEdit::textChanged,[&](){refreshDiverList();});
-    connect(ui->cb_search_firstName,&QCheckBox::stateChanged,[&](){refreshDiverList();});
+    connect(ui->le_search,&QLineEdit::textChanged,this,[&](){refreshDiverList();});
+    connect(ui->cb_search_firstName,&QCheckBox::stateChanged,this,[&](){refreshDiverList();});
     connect(ui->cb_search_lastName,&QCheckBox::stateChanged,[&](){refreshDiverList();});
 
     connect(ui->tv_divers,&QTableView::doubleClicked,this,[&](const auto&){
@@ -99,8 +99,9 @@ void DiverSearch::refreshDiverList()
 
     emit askRefreshDiverList();
 
-    QString querStr{"SELECT %0 FROM %1 INNER JOIN %2 ON %1.diverLevelId = %2.id INNER JOIN %3 ON %1.memberAddressId = %3.id"};
-    querStr = querStr.arg(m_sql_diversColumns,global::table_divers,global::table_diverLevel,global::table_diversAddresses);
+    QString querStr{"SELECT %0 as sold FROM %1 INNER JOIN %2 ON %1.diverLevelId = %2.id INNER JOIN %3 ON %1.memberAddressId = %3.id INNER JOIN %4 ON %4.diverId = Divers.id"};
+    querStr = querStr.arg(m_sql_diversColumns,global::table_divers,global::table_diverLevel,
+                          global::table_diversAddresses,global::table_divesMembers);
 
     if(!m_sqlJoins.isEmpty())
         querStr += m_sqlJoins;

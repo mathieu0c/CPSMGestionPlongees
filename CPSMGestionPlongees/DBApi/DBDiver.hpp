@@ -10,10 +10,11 @@
 namespace db
 {
 
-data::Diver extractDiverFromQuery(const QSqlQuery& query);
+data::Diver extractFullDiverFromQuery(const QSqlQuery& query);
+data::Diver extractDiverFromQuery(const QSqlQuery& query, int offset = 0);
 
-data::Diver readDiverFromDB(int id, QSqlDatabase db, QString table);
-QVector<data::Diver> readDiverLFromDB(QVector<int> idList, QSqlDatabase db, QString table);
+data::Diver readDiverFromDB(int id, QSqlDatabase db, const QString &diversTable, const QString &diveMembersTable);
+QVector<data::Diver> readDiverLFromDB(QVector<int> idList, QSqlDatabase db, const QString &diversTable, const QString &diveMembersTable);
 
 //search if the diver already exists and return id if true, -1 otherwise
 int exists(const data::Diver& a, QSqlDatabase db, const QString &table);

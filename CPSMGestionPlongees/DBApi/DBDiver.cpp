@@ -20,9 +20,10 @@
 namespace db
 {
 
-data::Diver extractDiverFromQuery(const QSqlQuery& query){
+data::Diver extractDiverFromQuery(const QSqlQuery& query,int offset){
     data::Diver out{};
-    int currentIndex{};
+    int currentIndex{offset};
+    debug::debugQuery(query,__PRETTY_FUNCTION__);
     out.id = query.value(currentIndex++).value<int>();
     out.firstName = query.value(currentIndex++).value<QString>();
     out.lastName = query.value(currentIndex++).value<QString>();
@@ -43,9 +44,21 @@ data::Diver extractDiverFromQuery(const QSqlQuery& query){
     return out;
 }
 
-data::Diver readDiverFromDB(int id, QSqlDatabase db, QString table)
+data::Diver extractFullDiverFromQuery(const QSqlQuery& query)
 {
-    return readFromDB<data::Diver>(db,extractDiverFromQuery,"SELECT * FROM %1 WHERE id=?",{table},{id});
+    auto out{extractDiverFromQuery(query,1)};
+    out.diveCount = query.value(0).value<int>();
+    qDebug() << __CURRENT_PLACE__ << out.diveCount;
+    return out;
+}
+
+data::Diver readDiverFromDB(int id, QSqlDatabase db, const QString& diversTable,const QString& diveMembersTable)
+{
+    return readFromDB<data::Diver>(db,extractFullDiverFromQuery,
+//                                   "SELECT COUNT(%0.diveId),* FROM %1 WHERE id=?"
+                                   "SELECT COUNT(%0.diveId),* FROM %1 INNER JOIN "
+                                   "%0 ON %0.diverId = %1.id WHERE "
+                                   "%1.id=? GROUP BY %1.id;",{diveMembersTable,diversTable},{id});
 }
 
 /*!
@@ -55,10 +68,13 @@ data::Diver readDiverFromDB(int id, QSqlDatabase db, QString table)
  * \param table : divers table
  * \return a list of divers
  */
-QVector<data::Diver> readDiverLFromDB(QVector<int> idList, QSqlDatabase db, QString table)
+QVector<data::Diver> readDiverLFromDB(QVector<int> idList, QSqlDatabase db, const QString& diversTable,const QString& diveMembersTable)
 {
     auto [str,values]{db::prepRequestListFilter(idList)};
-    return readLFromDB<data::Diver>(db,extractDiverFromQuery,"SELECT * FROM %1 WHERE id IN %2",{table,str},values);
+    return readLFromDB<data::Diver>(db,extractFullDiverFromQuery,
+                                    "SELECT COUNT(%0.diveId),* FROM %1 INNER JOIN "
+                                    "%0 ON %0.diverId = %1.id WHERE "
+                                    "%1.id IN %2 GROUP BY %1.id;",{diveMembersTable,diversTable,str},values);
 }
 
 int exists(const data::Diver& a,QSqlDatabase db,const QString& table)
