@@ -224,8 +224,6 @@ void gui::DiverEdit::on_buttonBox_accepted()
         },"SELECT %0.id FROM %0 WHERE memberAddressId=?",
         {global::table_divers},{m_tempDiver.address.id})};
 
-    qDebug() << __CURRENT_PLACE__ << diverIdsSharingAddress;
-
     if(!diverIdsSharingAddress.contains(m_tempDiver.id))
         diverIdsSharingAddress.append(m_tempDiver.id);
 
