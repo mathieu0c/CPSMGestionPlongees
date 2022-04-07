@@ -91,6 +91,7 @@ struct Diver
     int diverLevelId{1};
 
     bool member{false};
+    QDate registrationDate{QDate(2000,1,1)};
 
     int diveCount{0};
     int paidDives{0};

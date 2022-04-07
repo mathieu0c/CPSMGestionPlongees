@@ -109,6 +109,7 @@ bool createDB(QSqlDatabase db)
     "certifDate TEXT, "
     "diverLevelId INTEGER, "
     "member INTEGER CHECK(member=0 OR member=1), "
+    "registrationDate TEXT, "
     "paidDives INTEGER, "
     "gear_regulator INTEGER, "
     "gear_suit INTEGER, "
@@ -294,15 +295,15 @@ bool initDB(QSqlDatabase db)
                           QDate::fromString("2021-08-01",global::format_date),
                           8,//diverLevelId
                           false,//Member ?
-                          0,//diveCount
+                          QDate(2020,01,01),//registration date
                           2,//paidDives
                           true,//
                           false,//
                           true,//
                           false};//
-    data::Diver tempDiver2{-1,"Bidule","TRUX",QDate::fromString("1975-01-14",global::format_date),"trux@free.fr","0136984125",{-1,"12 rue des miolis","14000","Juin"},"AE-258-54",QDate::fromString("2021-08-01",global::format_date),8,false,0,10,1,0,1,0};
-    data::Diver tempDiver3{-1,"Nouveau","PLONGEUR",QDate::fromString("1975-01-14",global::format_date),"nouveau@free.fr","0136984125",{-1,"1360 Route","14000","Juillet"},"AE-258-54",QDate::fromString("2021-08-01",global::format_date),1,false,0,20,1,0,1,0};
-    data::Diver tempDiver4{-1,"Machin","TEST",QDate::fromString("1975-01-14",global::format_date),"test@free.fr","0136984125",{-1,"23 route de Sainte Anne","24200","Août"},"AE-258-54",QDate::fromString("2021-08-01",global::format_date),8,false,0,3,1,0,1,0};
+    data::Diver tempDiver2{-1,"Bidule","TRUX",QDate::fromString("1975-01-14",global::format_date),"trux@free.fr","0136984125",{-1,"12 rue des miolis","14000","Juin"},"AE-258-54",QDate::fromString("2021-08-01",global::format_date),8,false,QDate(2020,01,01),10,1,0,1,0};
+    data::Diver tempDiver3{-1,"Nouveau","PLONGEUR",QDate::fromString("1975-01-14",global::format_date),"nouveau@free.fr","0136984125",{-1,"1360 Route","14000","Juillet"},"AE-258-54",QDate::fromString("2021-08-01",global::format_date),1,false,QDate(2020,01,01),20,1,0,1,0};
+    data::Diver tempDiver4{-1,"Machin","TEST",QDate::fromString("1975-01-14",global::format_date),"test@free.fr","0136984125",{-1,"23 route de Sainte Anne","24200","Août"},"AE-258-54",QDate::fromString("2021-08-01",global::format_date),8,false,QDate(2020,01,01),3,1,0,1,0};
 
     if(!storeInDB(tempDiver,db,table_divers))
         return false;
