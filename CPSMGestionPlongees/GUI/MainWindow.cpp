@@ -219,20 +219,6 @@ void MainWindow::on_tabw_main_currentChanged(int i)
 }
 
 
-void MainWindow::db_syncDiversWithDives(const QVector<data::Dive::MinimalDiver> &diversList)
-{
-    for(const auto& diver : diversList)
-    {
-        auto fullDiver{db::readDiverFromDB(diver.id,db(),global::table_divers,global::table_divesMembers)};
-        auto diveCount{db::querySelect(db(),"SELECT COUNT(diverId) FROM %0 WHERE diverId=?",
-                                            {global::table_divesMembers},
-                                            {diver.id})[0][0].toInt()};
-        db::updateDBField(diver.id,"diveCount",diveCount,db(),global::table_divers);
-//        qDebug() << __CURRENT_PLACE__ << " : " << fullDiver.firstName << "  " << fullDiver.lastName;
-//        qDebug() << diveCount;
-    }
-}
-
 void MainWindow::diversSelected(QVector<int> idList)
 {
 //    qDebug() << "   DIVERS IDs : " << idList;
@@ -240,7 +226,6 @@ void MainWindow::diversSelected(QVector<int> idList)
         return;
 
     auto id{idList[0]};
-    qDebug() << __CURRENT_PLACE__ << " : Get diver";
     auto tempDiver{db::readDiverFromDB(id,db(),global::table_divers,global::table_divesMembers)};
 
     ui->pg_editDiver->setDiver(std::move(tempDiver));

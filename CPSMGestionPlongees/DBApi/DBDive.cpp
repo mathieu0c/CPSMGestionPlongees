@@ -68,9 +68,9 @@ bool removeAllFromDB(const data::Dive& dive,QSqlDatabase db, const QString& tabl
 //    }
 //    idList.chop(1);//remove last ','
 
-    static const QString queryStr{"DELETE FROM %0 WHERE diveId=? AND diverId IN (%1)"};
+    static const QString queryStr{"DELETE FROM %0 WHERE diveId=?"/* AND diverId IN (%1)"*/};
     QSqlQuery query{db};
-    query.prepare(queryStr.arg(global::table_divesMembers,std::move(idList)));
+    query.prepare(queryStr.arg(global::table_divesMembers/*,std::move(idList)*/));
     query.addBindValue(dive.id);
     query.exec();
 

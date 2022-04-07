@@ -45,11 +45,8 @@ data::Diver extractDiverFromQuery(const QSqlQuery& query,int offset){
 
 data::Diver extractFullDiverFromQuery(const QSqlQuery& query)
 {
-    qDebug() << __CURRENT_PLACE__;
-    qDebug() << "Query size : " <<query.size();
     auto out{extractDiverFromQuery(query,1)};
     out.diveCount = query.value(0).value<int>();
-    qDebug() << __CURRENT_PLACE__ << out.diveCount;
     return out;
 }
 

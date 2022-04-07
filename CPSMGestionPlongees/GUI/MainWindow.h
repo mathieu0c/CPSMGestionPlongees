@@ -28,8 +28,6 @@ public:
     ~MainWindow();
 
 private slots:
-    void db_syncDiversWithDives(const QVector<data::Dive::MinimalDiver>& diversList);
-
     void diversSelected(QVector<int> idList);
     void diverChangeAccepted(data::Diver diver);
     void diverChangeRejected();
