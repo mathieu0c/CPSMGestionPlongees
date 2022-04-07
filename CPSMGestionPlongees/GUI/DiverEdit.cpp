@@ -51,7 +51,11 @@ DiverEdit::DiverEdit(QWidget *parent) :
             m_tempDiver.diverLevelId = newLevelId;
         });//diver level id begins at 1
     connect(ui->cb_member,&QCheckBox::stateChanged,this,[&](const auto& in){
-            m_tempDiver.member = bool(in);});
+            m_tempDiver.member = bool(in);
+            ui->de_registrationDate->setEnabled(m_tempDiver.member);
+        });
+    connect(ui->de_registrationDate,&QDateEdit::dateChanged,this,[&](const auto& in){
+            m_tempDiver.registrationDate = in;});
     connect(ui->le_mail,&QLineEdit::textChanged,this,[&](const auto& in){
             m_tempDiver.email = in;});
     connect(ui->le_phone,&QLineEdit::textChanged,this,[&](const auto& in){
@@ -151,6 +155,8 @@ void DiverEdit::setDiver(data::Diver diver){
     ui->de_birthDate->setDate(m_tempDiver.birthDate);
     ui->le_license->setText(m_tempDiver.licenseNumber);
     ui->cb_member->setChecked(m_tempDiver.member);
+    ui->de_registrationDate->setEnabled(m_tempDiver.member);
+    ui->de_registrationDate->setDate(m_tempDiver.registrationDate);
     try
     {
         ui->cb_level->setCurrentIndex(m_diverLevelIdIndexMap[m_tempDiver.diverLevelId]);//index isn't corresponding to level

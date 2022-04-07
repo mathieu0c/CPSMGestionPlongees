@@ -26,8 +26,9 @@ static const QString settings_confFile{settings_dataDir+"settings.conf"};
 
 //sk stands for settingsKey
 struct SK{
-    constexpr static const auto dbPath{"DBPath"};
-    constexpr static const auto lastTab{"LastOpenedTab"};
+    constexpr static const auto dbPath{"DBPath"};//str
+    constexpr static const auto lastTab{"LastOpenedTab"};//int (index)
+    constexpr static const auto sortLevelsByAlphabetical{"SortLevelsByAlphabetical"};//bool
 };
 
 //-- DB

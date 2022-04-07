@@ -81,6 +81,8 @@ void MainWindow::initSettings()
     SettingsManager::addSetting(SK::dbPath,global::settings_dataDir+"cpsm.sqlite3");
     SettingsManager::addSetting(SK::lastTab,ui->tabw_main->currentIndex());
 
+    SettingsManager::addSetting(SK::sortLevelsByAlphabetical,true);
+
     SettingsManager::read(settings_confFile,true);//read config file if exists
 
     ui->tabw_main->setCurrentIndex(SettingsManager::ref<int>(SK::lastTab));
@@ -128,7 +130,8 @@ MainWindow::MainWindow(QWidget *parent)
     auto lvlList{db::readLFromDB<data::DiverLevel>
                 (db,db::extractDiverLevelFromQuery,"SELECT * FROM %1",
                  {global::table_diverLevel},{})};
-    ui->pg_editDiver->refreshLevelList(lvlList,true);
+    ui->pg_editDiver->refreshLevelList(lvlList,
+                                       gens::SettingsManager::ref<bool>(global::SK::sortLevelsByAlphabetical));
     ui->pg_editDive->setDiverLevelList(lvlList);
     ui->pg_editDive->refreshSiteList(global::table_divingSites);
 

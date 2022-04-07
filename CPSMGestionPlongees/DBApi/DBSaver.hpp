@@ -21,7 +21,7 @@ struct DBSaverInfo
     int frequentSaveCount{7};//how many save we should keep
     int spacedSaveCount{3};//how many save we should keep
 
-    int frequentSaveInterval{2};//how many days between two saves
+    int frequentSaveInterval{0};//how many days between two saves
     int spacedSaveInterval{30};//how many days between two saves
 
 
