@@ -100,10 +100,7 @@ QVector<T> readLFromDB(const QSqlDatabase& db,UnaryFunction extractValue,QString
     {
         QString errStr{QString{"%0 : SQL error : %1"}.arg(__CURRENT_PLACE__,err.text())};
         qCritical() << errStr;
-        if(enableDebug || true)
-        {
-            debug::debugQuery(query,__CURRENT_PLACE__);
-        }
+        debug::debugQuery(query,__CURRENT_PLACE__);
         return out;
     }
 
@@ -163,6 +160,7 @@ T readFromDB(const QSqlDatabase& db,UnaryFunction extractValue,QString request,c
         if(enableDebug)
         {
             QString errStr{QString{"%0 : SQL no result found : %1"}.arg(__CURRENT_PLACE__,err.text())};
+            debug::debugQuery(query,__CURRENT_PLACE__);
             qCritical() << errStr;
         }
         return {};

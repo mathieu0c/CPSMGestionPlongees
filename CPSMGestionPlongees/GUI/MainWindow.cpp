@@ -240,6 +240,7 @@ void MainWindow::diversSelected(QVector<int> idList)
         return;
 
     auto id{idList[0]};
+    qDebug() << __CURRENT_PLACE__ << " : Get diver";
     auto tempDiver{db::readDiverFromDB(id,db(),global::table_divers,global::table_divesMembers)};
 
     ui->pg_editDiver->setDiver(std::move(tempDiver));

@@ -99,7 +99,7 @@ void DiverSearch::refreshDiverList()
 
     emit askRefreshDiverList();
 
-    QString querStr{"SELECT %0 as sold FROM %1 INNER JOIN %2 ON %1.diverLevelId = %2.id INNER JOIN %3 ON %1.memberAddressId = %3.id INNER JOIN %4 ON %4.diverId = Divers.id"};
+    QString querStr{"SELECT %0 as sold FROM %1 INNER JOIN %2 ON %1.diverLevelId = %2.id INNER JOIN %3 ON %1.memberAddressId = %3.id LEFT JOIN %4 ON %4.diverId = Divers.id"};
     querStr = querStr.arg(m_sql_diversColumns,global::table_divers,global::table_diverLevel,
                           global::table_diversAddresses,global::table_divesMembers);
 

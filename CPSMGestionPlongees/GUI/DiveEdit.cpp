@@ -1,4 +1,5 @@
 #include "DiveEdit.h"
+#include "DBApi/DBDiverLevel.hpp"
 #include "ui_DiveEdit.h"
 
 #include "../global.hpp"
@@ -138,9 +139,17 @@ void DiveEdit::displayDive(const data::Dive& dive,QWidget* parent)
 {
     QDialog dial(parent);
 
+    auto db{QSqlDatabase::database()};
+    auto lvlList{db::readLFromDB<data::DiverLevel>
+                (db,db::extractDiverLevelFromQuery,"SELECT * FROM %1",
+                 {global::table_diverLevel},{})};
+
     DiveEdit de{&dial};
+    de.setDiverLevelList(lvlList);
     de.refreshSiteList(global::table_divingSites);
     de.setDive(dive);
+
+//    de.refreshLevelList(lvlList,true);
 
     DiveEdit::connect(&de,&DiveEdit::endEditing,&dial,[&](const auto&){
         dial.done(QDialog::Accepted);

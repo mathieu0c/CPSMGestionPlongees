@@ -23,7 +23,6 @@ namespace db
 data::Diver extractDiverFromQuery(const QSqlQuery& query,int offset){
     data::Diver out{};
     int currentIndex{offset};
-    debug::debugQuery(query,__PRETTY_FUNCTION__);
     out.id = query.value(currentIndex++).value<int>();
     out.firstName = query.value(currentIndex++).value<QString>();
     out.lastName = query.value(currentIndex++).value<QString>();
@@ -46,6 +45,8 @@ data::Diver extractDiverFromQuery(const QSqlQuery& query,int offset){
 
 data::Diver extractFullDiverFromQuery(const QSqlQuery& query)
 {
+    qDebug() << __CURRENT_PLACE__;
+    qDebug() << "Query size : " <<query.size();
     auto out{extractDiverFromQuery(query,1)};
     out.diveCount = query.value(0).value<int>();
     qDebug() << __CURRENT_PLACE__ << out.diveCount;
@@ -56,7 +57,7 @@ data::Diver readDiverFromDB(int id, QSqlDatabase db, const QString& diversTable,
 {
     return readFromDB<data::Diver>(db,extractFullDiverFromQuery,
 //                                   "SELECT COUNT(%0.diveId),* FROM %1 WHERE id=?"
-                                   "SELECT COUNT(%0.diveId),* FROM %1 INNER JOIN "
+                                   "SELECT COUNT(%0.diveId),* FROM %1 LEFT JOIN "
                                    "%0 ON %0.diverId = %1.id WHERE "
                                    "%1.id=? GROUP BY %1.id;",{diveMembersTable,diversTable},{id});
 }
@@ -72,7 +73,7 @@ QVector<data::Diver> readDiverLFromDB(QVector<int> idList, QSqlDatabase db, cons
 {
     auto [str,values]{db::prepRequestListFilter(idList)};
     return readLFromDB<data::Diver>(db,extractFullDiverFromQuery,
-                                    "SELECT COUNT(%0.diveId),* FROM %1 INNER JOIN "
+                                    "SELECT COUNT(%0.diveId),* FROM %1 LEFT JOIN "
                                     "%0 ON %0.diverId = %1.id WHERE "
                                     "%1.id IN %2 GROUP BY %1.id;",{diveMembersTable,diversTable,str},values);
 }
