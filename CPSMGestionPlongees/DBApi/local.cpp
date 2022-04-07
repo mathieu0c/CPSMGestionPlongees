@@ -109,7 +109,6 @@ bool createDB(QSqlDatabase db)
     "certifDate TEXT, "
     "diverLevelId INTEGER, "
     "member INTEGER CHECK(member=0 OR member=1), "
-    "diveCount INTEGER, "
     "paidDives INTEGER, "
     "gear_regulator INTEGER, "
     "gear_suit INTEGER, "

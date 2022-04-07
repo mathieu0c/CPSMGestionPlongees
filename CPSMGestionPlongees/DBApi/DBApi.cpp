@@ -71,44 +71,6 @@ int storeInDB(const data::DivingSite &a, QSqlDatabase db, const QString &address
     return a.id;
 }
 
-int updateDiversDiveCount(const QVector<data::DiveMember>& divers,QSqlDatabase db,const QString& diveMembersTable,
-                          const QString& diversTable)
-{
-    QSqlQuery{"BEGIN TRANSACTION;",db};
-
-    //UPDATE Divers SET diveCount = (SELECT COUNT(diveId) FROM DivesMembers WHERE diverId = 2) WHERE id = 2
-
-    static const QString queryStr{QString{"UPDATE %1 SET "
-                                          "diveCount = "
-                                          "(SELECT COUNT(diveId) FROM %2 WHERE diverId = ?)"
-                                          "WHERE %1.id = ?"}.arg(diversTable,diveMembersTable)};
-
-    QSqlQuery query{db};
-
-    for(const auto& diver : divers)
-    {
-        query.prepare(queryStr);
-        query.addBindValue(diver.diverId);
-        query.addBindValue(diver.diverId);
-        query.exec();
-//        debug::debugQuery(query,__CURRENT_PLACE__);
-
-        auto err = query.lastError();
-        if(err.type() != QSqlError::ErrorType::NoError)
-        {
-            QString errStr{QString{"%0 : SQL error : %1 :"}.arg(__CURRENT_PLACE__,err.text())};
-            qCritical() << errStr;
-            debug::debugQuery(query,__CURRENT_PLACE__);
-            QSqlQuery{"ROLLBACK;",db};
-            return -1;
-        }
-    }
-
-    QSqlQuery{"COMMIT;",db};
-
-    return 0;
-}
-
 int storeInDB(const data::DiveMember& diver,QSqlDatabase db, const QString& diveMembersTable)
 {
 //    auto existBefore{exists(diver,db,diveMembersTable)};

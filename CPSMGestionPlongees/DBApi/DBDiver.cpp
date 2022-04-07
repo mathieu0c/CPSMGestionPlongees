@@ -34,7 +34,7 @@ data::Diver extractDiverFromQuery(const QSqlQuery& query,int offset){
     out.certifDate = QDate::fromString(query.value(currentIndex++).value<QString>(),global::format_date);
     out.diverLevelId = query.value(currentIndex++).value<int>();
     out.member = query.value(currentIndex++).value<bool>();
-    out.diveCount = query.value(currentIndex++).value<int>();
+//    out.diveCount = query.value(currentIndex++).value<int>();
     out.paidDives = query.value(currentIndex++).value<int>();
     out.gear_regulator = query.value(currentIndex++).value<bool>();
     out.gear_suit = query.value(currentIndex++).value<bool>();
@@ -97,13 +97,12 @@ int storeInDB(data::Diver &a, QSqlDatabase db, const QString &diverTable)
                             "certifDate,"
                             "diverLevelId,"
                             "member,"
-                            "diveCount,"
                             "paidDives,"
                             "gear_regulator,"
                             "gear_suit,"
                             "gear_computer,"
                             "gear_jacket"
-                            ") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) "
+                            ") VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) "
                             "ON CONFLICT(id) DO UPDATE SET "
                             "firstName=excluded.firstName,"
                             "lastName=excluded.lastName,"
@@ -115,7 +114,6 @@ int storeInDB(data::Diver &a, QSqlDatabase db, const QString &diverTable)
                             "certifDate=excluded.certifDate,"
                             "diverLevelId=excluded.diverLevelId,"
                             "member=excluded.member,"
-                            "diveCount=excluded.diveCount,"
                             "paidDives=excluded.paidDives,"
                             "gear_regulator=excluded.gear_regulator,"
                             "gear_suit=excluded.gear_suit,"
@@ -147,7 +145,7 @@ int storeInDB(data::Diver &a, QSqlDatabase db, const QString &diverTable)
     query.addBindValue(a.certifDate);
     query.addBindValue(a.diverLevelId);
     query.addBindValue(a.member);
-    query.addBindValue(a.diveCount);
+//    query.addBindValue(a.diveCount);
     query.addBindValue(a.paidDives);
     query.addBindValue(a.gear_regulator);
     query.addBindValue(a.gear_suit);

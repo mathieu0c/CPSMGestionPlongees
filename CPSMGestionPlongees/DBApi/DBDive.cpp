@@ -358,13 +358,13 @@ int storeInDB(data::Dive& dive, QSqlDatabase db, const QString &diveTable, const
 
 //    debug::debugQuery(query,__CURRENT_PLACE__);
 
-   if(updateDiversDiveCount(dive.diver,db,diveMembersTable,diversTable) < 0)//update diveCount
-   {
-       QString errStr{QString{"%0 : SQL error : Cannot update divers DiveCount"}.arg(__CURRENT_PLACE__)};
-       qCritical() << errStr;
-       QSqlQuery{"ROLLBACK;",db};//cancel transaction
-       return -1;
-   }
+//   if(updateDiversDiveCount(dive.diver,db,diveMembersTable,diversTable) < 0)//update diveCount
+//   {
+//       QString errStr{QString{"%0 : SQL error : Cannot update divers DiveCount"}.arg(__CURRENT_PLACE__)};
+//       qCritical() << errStr;
+//       QSqlQuery{"ROLLBACK;",db};//cancel transaction
+//       return -1;
+//   }
 
 
    QSqlQuery{"COMMIT;",db};

@@ -25,9 +25,6 @@ int storeInDB(const data::DivingSite &a, QSqlDatabase db, const QString &address
 
 //---------- Dives
 
-int updateDiversDiveCount(const QVector<data::DiveMember>& divers,QSqlDatabase db,const QString& diveMembersTable,
-                          const QString& diversTable);
-
 /*!
  * \brief exists : Checks if a DiveMember exists in the DB based on diverId and diveId
  * \param diver to check
