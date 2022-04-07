@@ -119,6 +119,8 @@ void DiveMembersEditor::refreshDiverList(bool sortBefore)
         ui->tv_divers->setCellWidget(i,ui->tv_divers->columnCount()-1,
                                      new QLabel(QString::number(e.diverId),ui->tv_divers));
 
+        if(e.type == data::DiveType::undefined)
+            (*m_divers)[i].type = data::DiveType::exploration;
         auto cbDiveType{new QComboBox{ui->tv_divers}};
         cbDiveType->addItem(to_string(data::DiveType::exploration),i);
         cbDiveType->addItem(to_string(data::DiveType::technical),i);
