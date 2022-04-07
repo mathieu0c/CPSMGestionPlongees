@@ -138,27 +138,6 @@ bool createDB(QSqlDatabase db)
         return false;
     }
 
-    auto addDivingSite{
-        [&](const auto& name)
-        {
-            queryStr = "INSERT INTO %1(name) VALUES (?)";
-            auto query{QSqlQuery{db}};
-            query.prepare(queryStr.arg(table_divingSites));
-            query.addBindValue(name);
-            query.exec();
-
-            err = query.lastError();
-            if(err.type() != QSqlError::ErrorType::NoError)
-            {
-                QString errStr{QString{"%0 : SQL error : %1 :"}.arg(__func__,err.text())};
-                qCritical() << errStr;
-                qCritical() << query.lastQuery();
-                return false;
-            }
-            return true;
-        }
-    };
-
     if(storeInDB(data::DivingSite{-1,"Les deux frères"},db,global::table_divingSites) < 0)
         return false;
 
@@ -172,6 +151,30 @@ bool createDB(QSqlDatabase db)
         return false;
 
     if(storeInDB(data::DivingSite{-1,"La vallée aux gorgones"},db,global::table_divingSites) < 0)
+        return false;
+    //----
+    if(storeInDB(data::DivingSite{-1,"La sèche de St-Elme"},db,global::table_divingSites) < 0)
+        return false;
+
+    if(storeInDB(data::DivingSite{-1,"La Pierre à Pierre"},db,global::table_divingSites) < 0)
+        return false;
+
+    if(storeInDB(data::DivingSite{-1,"La Corée"},db,global::table_divingSites) < 0)
+        return false;
+
+    if(storeInDB(data::DivingSite{-1,"La roche à l'ancre"},db,global::table_divingSites) < 0)
+        return false;
+
+    if(storeInDB(data::DivingSite{-1,"Le Dornier"},db,global::table_divingSites) < 0)
+        return false;
+
+    if(storeInDB(data::DivingSite{-1,"La cabine du Dornier"},db,global::table_divingSites) < 0)
+        return false;
+
+    if(storeInDB(data::DivingSite{-1,"Le SMB2"},db,global::table_divingSites) < 0)
+        return false;
+
+    if(storeInDB(data::DivingSite{-1,"Le marauder"},db,global::table_divingSites) < 0)
         return false;
 
 
@@ -301,9 +304,9 @@ bool initDB(QSqlDatabase db)
                           false,//
                           true,//
                           false};//
-    data::Diver tempDiver2{-1,"Bidule","TRUX",QDate::fromString("1975-01-14",global::format_date),"trux@free.fr","0136984125",{-1,"12 rue des miolis","14000","Juin"},"AE-258-54",QDate::fromString("2021-08-01",global::format_date),8,false,QDate(2020,01,01),10,1,0,1,0};
+    data::Diver tempDiver2{-1,"Bidule","TRUX",QDate::fromString("1975-01-14",global::format_date),"trux@free.fr","0136984125",{-1,"12 rue des miolis","14000","Juin"},"AE-258-54",QDate::fromString("2021-08-01",global::format_date),3,false,QDate(2020,01,01),10,1,0,1,0};
     data::Diver tempDiver3{-1,"Nouveau","PLONGEUR",QDate::fromString("1975-01-14",global::format_date),"nouveau@free.fr","0136984125",{-1,"1360 Route","14000","Juillet"},"AE-258-54",QDate::fromString("2021-08-01",global::format_date),1,false,QDate(2020,01,01),20,1,0,1,0};
-    data::Diver tempDiver4{-1,"Machin","TEST",QDate::fromString("1975-01-14",global::format_date),"test@free.fr","0136984125",{-1,"23 route de Sainte Anne","24200","Août"},"AE-258-54",QDate::fromString("2021-08-01",global::format_date),8,false,QDate(2020,01,01),3,1,0,1,0};
+    data::Diver tempDiver4{-1,"Machin","TEST",QDate::fromString("1975-01-14",global::format_date),"test@free.fr","0136984125",{-1,"23 route de Sainte Anne","24200","Août"},"AE-258-54",QDate::fromString("2021-08-01",global::format_date),5,false,QDate(2020,01,01),3,1,0,1,0};
 
     if(!storeInDB(tempDiver,db,table_divers))
         return false;
